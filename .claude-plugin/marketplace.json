@@ -18,6 +18,16 @@
         "name": "Till Gartner"
       },
       "strict": false
+    },
+    {
+      "name": "md2pdf",
+      "source": "./plugins/md2pdf",
+      "description": "Convert Markdown files to beautifully formatted PDFs with tables, code blocks, mermaid diagrams, images, and ASCII art",
+      "version": "1.0.0",
+      "author": {
+        "name": "Till Gartner"
+      },
+      "strict": false
     }
   ]
 }

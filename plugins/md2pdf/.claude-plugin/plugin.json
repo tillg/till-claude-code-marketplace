@@ -1,0 +1,7 @@
+{
+  "name": "md2pdf",
+  "description": "Convert Markdown files to beautifully formatted PDFs with support for tables, code blocks, mermaid diagrams, images, and ASCII art",
+  "author": {
+    "name": "Till Gartner"
+  }
+}

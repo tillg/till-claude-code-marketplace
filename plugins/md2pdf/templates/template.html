@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{TITLE}}</title>
+  <link rel="stylesheet" href="{{HIGHLIGHT_CSS}}">
+  <link rel="stylesheet" href="{{STYLE_CSS}}">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      securityLevel: 'loose',
+      fontFamily: 'Inter, system-ui, sans-serif'
+    });
+  </script>
+</head>
+<body>
+  <article class="markdown-body">
+    {{CONTENT}}
+  </article>
+  <script>
+    // Wait for mermaid to finish rendering before signaling ready
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        await mermaid.run();
+      } catch (e) {
+        // mermaid may throw if no diagrams found — that's fine
+      }
+      // Signal to Playwright that rendering is complete
+      window.__PDF_READY = true;
+    });
+  </script>
+</body>
+</html>

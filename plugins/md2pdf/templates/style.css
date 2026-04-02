@@ -1,0 +1,257 @@
+/* ── Base ───────────────────────────────────────────── */
+
+:root {
+  --color-text: #1a1a2e;
+  --color-text-secondary: #555;
+  --color-bg: #fff;
+  --color-border: #d0d7de;
+  --color-border-light: #e8ecf0;
+  --color-accent: #0969da;
+  --color-code-bg: #f6f8fa;
+  --color-blockquote-border: #d0d7de;
+  --color-blockquote-text: #636c76;
+  --color-table-stripe: #f6f8fa;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-text);
+  background: var(--color-bg);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.markdown-body {
+  max-width: 100%;
+  padding: 40px 60px;
+}
+
+/* ── Headings ──────────────────────────────────────── */
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 1.8em;
+  margin-bottom: 0.6em;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-text);
+  page-break-after: avoid;
+}
+
+h1 {
+  font-size: 2em;
+  padding-bottom: 0.3em;
+  border-bottom: 2px solid var(--color-border);
+}
+
+h2 {
+  font-size: 1.5em;
+  padding-bottom: 0.25em;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+h3 { font-size: 1.25em; }
+h4 { font-size: 1.1em; }
+h5 { font-size: 1em; }
+h6 { font-size: 0.9em; color: var(--color-text-secondary); }
+
+h1:first-child {
+  margin-top: 0;
+}
+
+/* ── Paragraphs & inline ───────────────────────────── */
+
+p {
+  margin: 0 0 1em;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+strong { font-weight: 600; }
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  border-top: 2px solid var(--color-border-light);
+  margin: 2em 0;
+}
+
+/* ── Lists ─────────────────────────────────────────── */
+
+ul, ol {
+  padding-left: 2em;
+  margin: 0 0 1em;
+}
+
+li {
+  margin: 0.3em 0;
+}
+
+li > ul, li > ol {
+  margin: 0.2em 0;
+}
+
+/* ── Blockquotes ───────────────────────────────────── */
+
+blockquote {
+  margin: 0 0 1em;
+  padding: 0.5em 1em;
+  border-left: 4px solid var(--color-blockquote-border);
+  color: var(--color-blockquote-text);
+  background: var(--color-table-stripe);
+  border-radius: 0 4px 4px 0;
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Code: inline ──────────────────────────────────── */
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  padding: 0.15em 0.4em;
+  background: var(--color-code-bg);
+  border-radius: 4px;
+  border: 1px solid var(--color-border-light);
+}
+
+/* ── Code: blocks ──────────────────────────────────── */
+
+pre {
+  margin: 0 0 1.2em;
+  padding: 0;
+  background: var(--color-code-bg);
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  overflow-x: auto;
+  page-break-inside: avoid;
+}
+
+pre code {
+  display: block;
+  padding: 1em 1.2em;
+  font-size: 0.825em;
+  line-height: 1.6;
+  background: none;
+  border: none;
+  border-radius: 0;
+  white-space: pre;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+/* ── Tables ────────────────────────────────────────── */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1.2em;
+  font-size: 0.925em;
+  page-break-inside: avoid;
+}
+
+thead {
+  background: var(--color-code-bg);
+}
+
+th {
+  font-weight: 600;
+  text-align: left;
+  padding: 0.6em 1em;
+  border: 1px solid var(--color-border);
+}
+
+td {
+  padding: 0.5em 1em;
+  border: 1px solid var(--color-border);
+}
+
+tbody tr:nth-child(even) {
+  background: var(--color-table-stripe);
+}
+
+/* ── Mermaid diagrams ──────────────────────────────── */
+
+.mermaid {
+  text-align: center;
+  margin: 1.2em 0;
+  page-break-inside: avoid;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── ASCII art (indented code blocks) ──────────────── */
+
+pre code {
+  /* Monospace already set — this ensures ASCII art lines up */
+  tab-size: 4;
+  -moz-tab-size: 4;
+}
+
+/* ── Footnotes ─────────────────────────────────────── */
+
+.footnotes {
+  margin-top: 2em;
+  padding-top: 1em;
+  border-top: 1px solid var(--color-border-light);
+  font-size: 0.9em;
+  color: var(--color-text-secondary);
+}
+
+/* ── Task lists ────────────────────────────────────── */
+
+.task-list-item {
+  list-style: none;
+  margin-left: -1.5em;
+}
+
+.task-list-item input[type="checkbox"] {
+  margin-right: 0.5em;
+}
+
+/* ── Print / PDF ───────────────────────────────────── */
+
+@media print {
+  body {
+    font-size: 12px;
+  }
+
+  .markdown-body {
+    padding: 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+
+  pre, table, .mermaid, img {
+    page-break-inside: avoid;
+  }
+
+  a {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+}
