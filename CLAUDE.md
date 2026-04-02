@@ -18,4 +18,6 @@ A Claude Code plugin marketplace — a registry of plugins that can be installed
 
 ## Plugin Authoring
 
-Skills are directories containing a `SKILL.md` file. The frontmatter defines behavior (name, description, `disable-model-invocation`, `argument-hint`, etc.) and the body is the prompt Claude receives when the skill is invoked. Skills can include supporting files (templates, scripts) alongside `SKILL.md`.
+Skills are directories containing a `SKILL.md` file. The frontmatter defines behavior (`description`, `disable-model-invocation`, `argument-hint`, etc.) and the body is the prompt Claude receives when the skill is invoked. Skills can include supporting files (templates, scripts) alongside `SKILL.md`.
+
+**Important: Do NOT use the `name` field in SKILL.md frontmatter.** It overrides auto-namespacing and skills will appear without the plugin prefix (e.g. `/propose` instead of `/spec:propose`). The skill name comes from the directory name, and the namespace prefix comes from `plugin.json`.
