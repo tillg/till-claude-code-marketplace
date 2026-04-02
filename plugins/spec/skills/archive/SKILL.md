@@ -1,5 +1,5 @@
 ---
-name: spec:archive
+name: archive
 description: Archive a completed spec change
 disable-model-invocation: true
 argument-hint: "[change-name]"

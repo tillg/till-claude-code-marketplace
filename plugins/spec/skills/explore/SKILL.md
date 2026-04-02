@@ -1,5 +1,5 @@
 ---
-name: spec:explore
+name: explore
 description: "Enter explore mode - think through ideas, investigate problems, clarify requirements. Use when the user wants to think through an idea, compare approaches, or understand a problem before proposing changes."
 argument-hint: "[topic or question]"
 metadata:

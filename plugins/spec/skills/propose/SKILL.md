@@ -1,5 +1,5 @@
 ---
-name: spec:propose
+name: propose
 description: Propose a new change - create it and generate all artifacts in one step
 disable-model-invocation: true
 argument-hint: "[change-name or description]"

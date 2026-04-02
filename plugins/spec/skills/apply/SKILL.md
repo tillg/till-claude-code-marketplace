@@ -1,5 +1,5 @@
 ---
-name: spec:apply
+name: apply
 description: Implement tasks from a spec change
 disable-model-invocation: true
 argument-hint: "[change-name]"
