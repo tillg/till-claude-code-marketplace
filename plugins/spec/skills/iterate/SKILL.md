@@ -23,11 +23,11 @@ If omitted, iterate across all artifacts of the current change.
 1. **Identify the target documents**
 
    If the user specified a document, use that. Otherwise, find the active change
-   in `spec/changes/` and read all its artifacts:
+   in `specs/changes/` and read all its artifacts:
    - `proposal.md`
    - `domain.md`
-   - `design.md`
-   - `tasks.md`
+   - `architecture.md`
+   - `plan.md`
 
    If multiple changes exist and none is obvious from context, use the
    **AskUserQuestion tool** to let the user select.
@@ -74,8 +74,8 @@ If omitted, iterate across all artifacts of the current change.
 5. **Propagate changes across artifacts**
 
    Changes in one artifact often affect others. Check for consistency:
-   - A rejected design approach → remove related tasks from `tasks.md`
-   - A scope change in `proposal.md` → update `design.md` accordingly
+   - A rejected architecture approach → remove related steps from `plan.md`
+   - A scope change in `proposal.md` → update `architecture.md` accordingly
    - New domain concepts → reflect in `domain.md`
 
    Make these updates, but keep them minimal and traceable.
@@ -95,15 +95,15 @@ If omitted, iterate across all artifacts of the current change.
 ## Iteration Complete
 
 **Change:** <change-name>
-**Documents reviewed:** proposal.md, domain.md, design.md, tasks.md
+**Documents reviewed:** proposal.md, domain.md, architecture.md, plan.md
 
 ### Annotations Applied
 - proposal.md: 3 annotations (2 accepted, 1 rejected)
-- design.md: 1 annotation (decision applied)
-- tasks.md: 2 tasks removed (from rejected design option)
+- architecture.md: 1 annotation (decision applied)
+- plan.md: 2 steps removed (from rejected architecture option)
 
 ### Needs Clarification
-- design.md line 42: comment unclear — "maybe Redis?" — should this replace
+- architecture.md line 42: comment unclear — "maybe Redis?" — should this replace
   the current caching approach?
 
 Please review the updated documents.

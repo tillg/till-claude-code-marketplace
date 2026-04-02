@@ -18,7 +18,7 @@ changes.
 
 1. **Select the change**
 
-   If no change name provided, list directories in `spec/changes/` (excluding
+   If no change name provided, list directories in `specs/changes/` (excluding
    `archive/`). Use the **AskUserQuestion tool** to let the user select.
 
    **IMPORTANT**: Do NOT guess or auto-select a change. Always let the user
@@ -27,18 +27,18 @@ changes.
 2. **Check readiness**
 
    a. **Check artifacts exist.** Read the change's directory
-      `spec/changes/<name>/` and verify the expected files are present
-      (`proposal.md`, `design.md`, `tasks.md`, and optionally `domain.md`).
+      `specs/changes/<name>/` and verify the expected files are present
+      (`proposal.md`, `architecture.md`, `plan.md`, and optionally `domain.md`).
 
       If any are missing, warn the user and ask for confirmation to continue.
 
-   b. **Check task completion.** Read `tasks.md` and count `- [ ]` (incomplete)
+   b. **Check task completion.** Read `plan.md` and count `- [ ]` (incomplete)
       vs `- [x]` (complete).
 
-      If incomplete tasks remain, display a warning with the count and ask for
+      If incomplete steps remain, display a warning with the count and ask for
       confirmation to continue.
 
-      If no `tasks.md` exists, proceed without warning.
+      If no `plan.md` exists, proceed without warning.
 
 3. **Ensure a system description exists**
 
@@ -51,8 +51,8 @@ changes.
 
 4. **Update the system description**
 
-   Read all artifacts from the change (`proposal.md`, `domain.md`, `design.md`,
-   `tasks.md`) and the current system description files in `specs/system/`.
+   Read all artifacts from the change (`proposal.md`, `domain.md`, `architecture.md`,
+   `plan.md`) and the current system description files in `specs/system/`.
 
    Update **every relevant perspective** of the system description to reflect
    what this change introduced:
@@ -61,6 +61,8 @@ changes.
      actors, roles
    - **architecture.md** — New components, changed interactions, updated system
      boundaries, technology additions
+   - **functional.md** — New or changed features, user journeys, states,
+     permissions, inputs/outputs
    - **Any other files in `specs/system/`** — Update whatever is relevant. If
      the change touches aspects not yet captured, add them.
 
@@ -89,7 +91,7 @@ changes.
 
    Remove the change directory:
    ```bash
-   rm -rf spec/changes/<name>
+   rm -rf specs/changes/<name>
    ```
 
    Then commit again with the same message appended with
@@ -111,6 +113,7 @@ changes.
    ### System Description Updated
    - specs/system/domain.md — <brief summary of updates>
    - specs/system/architecture.md — <brief summary of updates>
+   - specs/system/functional.md — <brief summary of updates>
    ```
 
 **Guardrails**

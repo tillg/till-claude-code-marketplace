@@ -7,7 +7,7 @@ metadata:
 
 Enter explore mode. Think deeply. Visualize freely. Follow the conversation wherever it goes.
 
-**IMPORTANT: Explore mode is for thinking, not implementing.** You may read files, search code, and investigate the codebase, but you must NEVER write code or implement features. If the user asks you to implement something, remind them to exit explore mode first and create a change proposal. You MAY create spec artifacts (proposals, designs, specs) if the user asks—that's capturing thinking, not implementing.
+**IMPORTANT: Explore mode is for thinking, not implementing.** You may read files, search code, and investigate the codebase, but you must NEVER write code or implement features. If the user asks you to implement something, remind them to exit explore mode first and create a change proposal. You MAY create spec artifacts (proposals, architectures, specs) if the user asks—that's capturing thinking, not implementing.
 
 **This is a stance, not a workflow.** There are no fixed steps, no required sequence, no mandatory outputs. You're a thinking partner helping the user explore.
 
@@ -78,7 +78,7 @@ You have full context of the spec system. Use it naturally, don't force it.
 ### Check for context
 
 At the start, quickly check what exists by listing directories in
-`spec/changes/` (excluding `archive/`).
+`specs/changes/` (excluding `archive/`).
 
 This tells you:
 - If there are active changes
@@ -98,13 +98,13 @@ Think freely. When insights crystallize, you might offer:
 If the user mentions a change or you detect one is relevant:
 
 1. **Read existing artifacts for context**
-   - `spec/changes/<name>/proposal.md`
-   - `spec/changes/<name>/domain.md`
-   - `spec/changes/<name>/design.md`
-   - `spec/changes/<name>/tasks.md`
+   - `specs/changes/<name>/proposal.md`
+   - `specs/changes/<name>/domain.md`
+   - `specs/changes/<name>/architecture.md`
+   - `specs/changes/<name>/plan.md`
 
 2. **Reference them naturally in conversation**
-   - "Your design mentions using Redis, but we just realized SQLite fits better..."
+   - "Your architecture mentions using Redis, but we just realized SQLite fits better..."
    - "The proposal scopes this to premium users, but we're now thinking everyone..."
 
 3. **Offer to capture when decisions are made**
@@ -113,12 +113,12 @@ If the user mentions a change or you detect one is relevant:
    |--------------|------------------|
    | Scope changed | `proposal.md` |
    | New domain concept | `domain.md` |
-   | Design decision made | `design.md` |
-   | New work identified | `tasks.md` |
+   | Architecture decision made | `architecture.md` |
+   | New work identified | `plan.md` |
    | Assumption invalidated | Relevant artifact |
 
    Example offers:
-   - "That's a design decision. Capture it in design.md?"
+   - "That's an architecture decision. Capture it in architecture.md?"
    - "New domain concept here. Add it to domain.md?"
    - "This changes scope. Update the proposal?"
 
@@ -142,7 +142,7 @@ If the user mentions a change or you detect one is relevant:
 There's no required ending. Discovery might:
 
 - **Flow into a proposal**: "Ready to start? I can create a change proposal."
-- **Result in artifact updates**: "Updated design.md with these decisions"
+- **Result in artifact updates**: "Updated architecture.md with these decisions"
 - **Just provide clarity**: User has what they need, moves on
 - **Continue later**: "We can pick this up anytime"
 

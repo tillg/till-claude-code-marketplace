@@ -21,9 +21,9 @@ explore → [iterate] → propose → apply → archive
 | ----------------------- | ----------------------------------------------------------------------------------------- |
 | `/spec:document-system` | Create a base description of the system                                                   |
 | `/spec:explore`         | Think through ideas, investigate, clarify                                                 |
-| `/spec:propose`         | Create a change with artifacts (proposal, design, tasks)                                  |
+| `/spec:propose`         | Create a change with artifacts (proposal, architecture, plan)                             |
 | `/spec:iterate`         | Review artifacts, apply user annotations, and produce a clean consolidated version         |
-| `/spec:apply`           | Implement the tasks from a change                                                         |
+| `/spec:apply`           | Implement the plan from a change                                                          |
 | `/spec:archive`         | Archive a completed change                                                                |
 
 ## Typical Flow
@@ -35,10 +35,10 @@ explore → [iterate] → propose → apply → archive
    clarity.
 1. **Iterate** — Exploration and proposing often alternate. You may explore,
    propose, then re-explore when new questions surface. This is expected.
-1. **Propose** — Formalize a change: what, why, how, and the concrete tasks.
-   Creates `spec/changes/<name>/` with `proposal.md`, `domain.md`, `design.md`,
-   and `tasks.md`.
-1. **Apply** — Work through the tasks, marking each done. Pause on blockers
+1. **Propose** — Formalize a change: what, why, how, and the concrete plan.
+   Creates `specs/changes/<name>/` with `proposal.md`, `domain.md`, `architecture.md`,
+   and `plan.md`.
+1. **Apply** — Work through the plan, marking each step done. Pause on blockers
    rather than guessing.
 1. **Archive** — Verify readiness, update the system description
    (`specs/system/`) to reflect everything this change introduced (domain,
@@ -47,9 +47,9 @@ explore → [iterate] → propose → apply → archive
 
 ## Artifacts
 
-Changes live in `spec/changes/<name>/` and contain:
+Changes live in `specs/changes/<name>/` and contain:
 
 - **proposal.md** — What and why
 - **domain.md** — New domain concepts, vocabulary, processes
-- **design.md** — How
-- **tasks.md** — Implementation steps (checkboxes)
+- **architecture.md** — How
+- **plan.md** — Implementation steps (checkboxes)

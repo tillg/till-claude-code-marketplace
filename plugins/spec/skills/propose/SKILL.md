@@ -12,8 +12,8 @@ I'll create a change with artifacts:
 
 - proposal.md (what & why)
 - domain.md (new domain concepts)
-- design.md (how)
-- tasks.md (implementation steps)
+- architecture.md (how)
+- plan.md (implementation steps)
 
 When ready to implement, run /spec:apply
 
@@ -48,7 +48,7 @@ OR a description of what the user wants to build.
 
 1. **Create the change directory**
 
-   Create the directory `spec/changes/<name>/`.
+   Create the directory `specs/changes/<name>/`.
 
    If a change with that name already exists, ask if user wants to continue it
    or create a new one.
@@ -65,12 +65,12 @@ OR a description of what the user wants to build.
      terms, processes, involved parties. Or changed concepts, terms, processes,
      parties. Use Mermaid diagrams to visualize entity relationships, process
      flows, or actor interactions.
-   - **design.md** — How. Read proposal.md for context first. Describe the
+   - **architecture.md** — How. Read proposal.md for context first. Describe the
      technical approach, key decisions, tradeoffs considered, and integration
      points. Use Mermaid diagrams for component interactions, data flows, and
      sequence diagrams.
-   - **tasks.md** — Implementation steps. Read proposal.md and design.md for
-     context first. Break the design into concrete, ordered tasks as a checkbox
+   - **plan.md** — Implementation steps. Read proposal.md and architecture.md for
+     context first. Break the architecture into concrete, ordered steps as a checkbox
      list (`- [ ] task`). Each task should be small enough to implement in one
      step.
 
@@ -89,7 +89,7 @@ tool** to clarify, then continue.
 
 **Guardrails**
 
-- Create ALL four artifacts (proposal, domain, design, tasks)
+- Create ALL four artifacts (proposal, domain, architecture, plan)
 - Always read earlier artifacts before creating later ones
 - If context is critically unclear, ask the user — but prefer making reasonable
   decisions to keep momentum

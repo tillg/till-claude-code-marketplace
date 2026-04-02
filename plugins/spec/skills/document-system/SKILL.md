@@ -71,10 +71,31 @@ The system description lives in `specs/system/` and captures what the system
    - **Infrastructure** — How the system is deployed, hosted, and operated
      (if discoverable from the codebase).
 
-5. **Identify additional perspectives**
+5. **Create or update `specs/system/functional.md`**
 
-   If the codebase reveals other important aspects not covered by domain and
-   architecture, create additional files in `specs/system/`. For example:
+   Document what the system does from a user's perspective — the capabilities
+   it provides, independent of how they're implemented:
+
+   - **Features** — The concrete things users can do. Group by area or module.
+     For each feature: what it does, who uses it, and any notable behaviors.
+   - **User journeys** — Key end-to-end flows that span multiple features.
+     Use Mermaid sequence or flowchart diagrams to illustrate the most
+     important ones.
+   - **Inputs and outputs** — What data goes in, what comes out. Forms,
+     uploads, reports, notifications, exports — document what the system
+     accepts and produces.
+   - **States and transitions** — Key entities that have lifecycle states
+     (e.g., draft → published → archived). Use Mermaid state diagrams.
+   - **Permissions and visibility** — What different user roles can see and
+     do. Which features are gated behind roles, subscriptions, or flags.
+   - **Edge cases and known limitations** — Documented or discovered limits,
+     quotas, unsupported scenarios, and intentional omissions.
+
+6. **Identify additional perspectives**
+
+   If the codebase reveals other important aspects not covered by domain,
+   architecture, and functional, create additional files in `specs/system/`.
+   For example:
 
    - `security.md` — Authentication, authorization, data protection patterns
    - `api.md` — Public API surface, versioning, conventions
@@ -83,7 +104,7 @@ The system description lives in `specs/system/` and captures what the system
    Only create these if the codebase warrants it — don't force perspectives
    that aren't meaningful for this system.
 
-6. **Present for review**
+7. **Present for review**
 
    Show the user a summary of what was documented:
    - Files created or updated
@@ -100,6 +121,7 @@ The system description lives in `specs/system/` and captures what the system
 ### Files
 - domain.md — <brief summary>
 - architecture.md — <brief summary>
+- functional.md — <brief summary>
 
 ### Key Findings
 - <notable discovery about the system>
