@@ -1,5 +1,5 @@
 ---
-name: document-system
+name: spec:document-system
 description: "Document the system in its current state — domain, architecture, and all relevant perspectives."
 disable-model-invocation: true
 metadata:

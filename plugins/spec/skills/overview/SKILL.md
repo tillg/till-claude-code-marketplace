@@ -1,5 +1,5 @@
 ---
-name: overview
+name: spec:overview
 description:
   Show the spec workflow overview — how explore, propose, apply, and archive fit
   together

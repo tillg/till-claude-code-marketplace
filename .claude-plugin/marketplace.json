@@ -12,7 +12,7 @@
     {
       "name": "spec",
       "source": "./plugins/spec",
-      "version": "3.0.0"
+      "version": "3.1.0"
     }
   ]
 }
