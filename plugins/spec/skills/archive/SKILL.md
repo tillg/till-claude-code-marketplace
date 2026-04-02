@@ -65,6 +65,10 @@ changes.
    - **Any other files in `specs/system/`** — Update whatever is relevant. If
      the change touches aspects not yet captured, add them.
 
+   Use Mermaid diagrams to visualize new or changed structures, flows, and
+   relationships. Update existing diagrams in the system description if this
+   change alters them.
+
    The goal: after archiving, the system description fully reflects the current
    state of the system including this change. Don't leave knowledge only in the
    archived change artifacts.
@@ -119,3 +123,4 @@ changes.
 - Never commit without the user's approval of the commit message
 - The first commit includes all implementation work and system description
   updates; the second commit only removes the change directory
+- Use Mermaid as the preferred format for all diagrams in the system description

@@ -61,13 +61,15 @@ OR a description of what the user wants to build.
    Create each artifact in order, since later artifacts depend on earlier ones:
    - **proposal.md** — What and why. Describe the change, its motivation, scope,
      and expected outcome. Read the codebase as needed to ground the proposal in
-     reality.
-   - **domain.md** - New findings about the domain we work on. New concepts,
+     reality. Use Mermaid diagrams to illustrate scope or impact where helpful.
+   - **domain.md** — New findings about the domain we work on. New concepts,
      terms, processes, involved parties. Or changed concepts, terms, processes,
-     parties
+     parties. Use Mermaid diagrams to visualize entity relationships, process
+     flows, or actor interactions.
    - **design.md** — How. Read proposal.md for context first. Describe the
      technical approach, key decisions, tradeoffs considered, and integration
-     points. Use Mermaid diagrams where they help clarify.
+     points. Use Mermaid diagrams for component interactions, data flows, and
+     sequence diagrams.
    - **tasks.md** — Implementation steps. Read proposal.md and design.md for
      context first. Break the design into concrete, ordered tasks as a checkbox
      list (`- [ ] task`). Each task should be small enough to implement in one
@@ -93,3 +95,5 @@ tool** to clarify, then continue.
 - If context is critically unclear, ask the user — but prefer making reasonable
   decisions to keep momentum
 - Verify each artifact file exists after writing before proceeding to next
+- Use Mermaid diagrams liberally — they are the preferred format for all
+  diagrams in spec artifacts

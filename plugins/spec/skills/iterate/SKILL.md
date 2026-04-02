@@ -69,6 +69,8 @@ If omitted, iterate across all artifacts of the current change.
    - Reads as a coherent, settled document — not a draft with markup
    - Preserve the original structure and sections
    - Keep Mermaid diagrams up to date with any changes
+   - Where decisions remove or add complexity, update or add Mermaid diagrams
+     to reflect the new state
 
 5. **Propagate changes across artifacts**
 
@@ -116,3 +118,4 @@ Please review the updated documents.
 - Always propagate changes to related artifacts
 - Ask before finalizing — the user gets the last word
 - If an annotation is ambiguous, flag it rather than guessing
+- Use Mermaid as the preferred format for all diagrams
