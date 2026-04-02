@@ -1,0 +1,8 @@
+{
+  "name": "spec",
+  "description": "Spec workflow — propose, explore, apply, and archive changes",
+  "author": {
+    "name": "tgartner"
+  },
+  "keywords": ["spec", "workflow", "spec-driven", "change-management"]
+}
