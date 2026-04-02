@@ -1,8 +1,9 @@
 ---
-name: "Spec: Explore"
-description: "Enter explore mode - think through ideas, investigate problems, clarify requirements"
-category: Workflow
-tags: [workflow, explore, thinking]
+name: explore
+description: "Enter explore mode - think through ideas, investigate problems, clarify requirements. Use when the user wants to think through an idea, compare approaches, or understand a problem before proposing changes."
+argument-hint: "[topic or question]"
+metadata:
+  author: Till Gartner
 ---
 
 Enter explore mode. Think deeply. Visualize freely. Follow the conversation wherever it goes.
@@ -24,7 +25,7 @@ Enter explore mode. Think deeply. Visualize freely. Follow the conversation wher
 
 - **Curious, not prescriptive** - Ask questions that emerge naturally, don't follow a script
 - **Open threads, not interrogations** - Surface multiple interesting directions and let the user follow what resonates. Don't funnel them through a single path of questions.
-- **Visual** - Use ASCII diagrams liberally when they'd help clarify thinking
+- **Visual** - Use Mermaid diagrams liberally when they'd help clarify thinking
 - **Adaptive** - Follow interesting threads, pivot when new information emerges
 - **Patient** - Don't rush to conclusions, let the shape of the problem emerge
 - **Grounded** - Explore the actual codebase when relevant, don't just theorize
@@ -53,23 +54,16 @@ Depending on what the user brings, you might:
 - Sketch tradeoffs
 - Recommend a path (if asked)
 
-**Visualize**
+**Visualize** — use Mermaid as the default format for all diagrams.
+
+```mermaid
+stateDiagram-v2
+    StateA --> StateB: transition
+    StateB --> StateC: transition
 ```
-┌─────────────────────────────────────────┐
-│     Use ASCII diagrams liberally        │
-├─────────────────────────────────────────┤
-│                                         │
-│   ┌────────┐         ┌────────┐        │
-│   │ State  │────────▶│ State  │        │
-│   │   A    │         │   B    │        │
-│   └────────┘         └────────┘        │
-│                                         │
-│   System diagrams, state machines,      │
-│   data flows, architecture sketches,    │
-│   dependency graphs, comparison tables  │
-│                                         │
-└─────────────────────────────────────────┘
-```
+
+System diagrams, state machines, data flows, architecture sketches,
+dependency graphs — Mermaid handles all of these well.
 
 **Surface risks and unknowns**
 - Identify what could go wrong
@@ -84,14 +78,11 @@ You have full context of the spec system. Use it naturally, don't force it.
 
 ### Check for context
 
-At the start, quickly check what exists:
-```bash
-spec list --json
-```
+At the start, quickly check what exists by listing directories in
+`spec/changes/` (excluding `archive/`).
 
 This tells you:
 - If there are active changes
-- Their names, schemas, and status
 - What the user might be working on
 
 If the user mentioned a specific change name, read its artifacts for context.
@@ -109,9 +100,9 @@ If the user mentions a change or you detect one is relevant:
 
 1. **Read existing artifacts for context**
    - `spec/changes/<name>/proposal.md`
+   - `spec/changes/<name>/domain.md`
    - `spec/changes/<name>/design.md`
    - `spec/changes/<name>/tasks.md`
-   - etc.
 
 2. **Reference them naturally in conversation**
    - "Your design mentions using Redis, but we just realized SQLite fits better..."
@@ -121,16 +112,15 @@ If the user mentions a change or you detect one is relevant:
 
    | Insight Type | Where to Capture |
    |--------------|------------------|
-   | New requirement discovered | `specs/<capability>/spec.md` |
-   | Requirement changed | `specs/<capability>/spec.md` |
-   | Design decision made | `design.md` |
    | Scope changed | `proposal.md` |
+   | New domain concept | `domain.md` |
+   | Design decision made | `design.md` |
    | New work identified | `tasks.md` |
    | Assumption invalidated | Relevant artifact |
 
    Example offers:
    - "That's a design decision. Capture it in design.md?"
-   - "This is a new requirement. Add it to specs?"
+   - "New domain concept here. Add it to domain.md?"
    - "This changes scope. Update the proposal?"
 
 4. **The user decides** - Offer and move on. Don't pressure. Don't auto-capture.
@@ -168,6 +158,6 @@ When things crystallize, you might offer a summary - but it's optional. Sometime
 - **Don't rush** - Discovery is thinking time, not task time
 - **Don't force structure** - Let patterns emerge naturally
 - **Don't auto-capture** - Offer to save insights, don't just do it
-- **Do visualize** - A good diagram is worth many paragraphs
+- **Do visualize** - Use Mermaid diagrams liberally; a good diagram is worth many paragraphs
 - **Do explore the codebase** - Ground discussions in reality
 - **Do question assumptions** - Including the user's and your own

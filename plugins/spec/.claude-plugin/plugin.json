@@ -1,6 +1,6 @@
 {
   "name": "spec",
-  "description": "Spec workflow — propose, explore, apply, and archive changes",
+  "description": "Spec workflow — document, explore, propose, iterate, apply, and archive changes",
   "author": {
     "name": "tgartner"
   },

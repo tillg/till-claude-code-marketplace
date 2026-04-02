@@ -10,12 +10,12 @@ A Claude Code plugin marketplace — a registry of plugins that can be installed
 
 - `.claude-plugin/marketplace.json` — marketplace manifest listing all available plugins with name, source path, and version
 - `plugins/<name>/.claude-plugin/plugin.json` — per-plugin metadata (name, description, author, keywords)
-- `plugins/<name>/commands/<name>/*.md` — slash command definitions as Markdown files with YAML frontmatter (`name`, `description`, `category`, `tags`) followed by the prompt template
+- `plugins/<name>/skills/<skill-name>/SKILL.md` — skill definitions as Markdown files with YAML frontmatter followed by the prompt
 
 ## Current Plugins
 
-- **spec** (`plugins/spec/`) — spec workflow plugin for spec-driven change management. Provides commands like `/spec:explore` for thinking through ideas without implementing.
+- **spec** (`plugins/spec/`) — spec workflow plugin for spec-driven change management. Provides skills like `/spec:explore`, `/spec:propose`, `/spec:apply`, `/spec:archive`.
 
 ## Plugin Authoring
 
-Slash commands are plain Markdown files. The frontmatter defines how the command appears in Claude Code, and the body is the prompt that Claude receives when the command is invoked. Commands can reference the spec artifact system (`spec/changes/<name>/`) and use bash tool calls.
+Skills are directories containing a `SKILL.md` file. The frontmatter defines behavior (name, description, `disable-model-invocation`, `argument-hint`, etc.) and the body is the prompt Claude receives when the skill is invoked. Skills can include supporting files (templates, scripts) alongside `SKILL.md`.
