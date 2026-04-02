@@ -1,5 +1,4 @@
 ---
-name: iterate
 description: Review spec artifacts, apply user annotations, and produce a clean consolidated version
 disable-model-invocation: true
 argument-hint: "[document-path]"
