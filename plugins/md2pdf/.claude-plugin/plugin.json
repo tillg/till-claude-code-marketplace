@@ -1,6 +1,8 @@
 {
   "name": "md2pdf",
+  "version": "1.0.0",
   "description": "Convert Markdown files to beautifully formatted PDFs with support for tables, code blocks, mermaid diagrams, images, and ASCII art",
+  "marketplace": "https://raw.githubusercontent.com/tillg/till-claude-code-marketplace/main/.claude-plugin/marketplace.json",
   "author": {
     "name": "Till Gartner"
   }
