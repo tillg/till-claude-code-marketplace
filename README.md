@@ -6,7 +6,7 @@ Personal marketplace for Claude Code plugins.
 
 Open Claude Code in any project directory:
 
-- **Remote**: `/plugin marketplace add tgartner/till-claude-code-marketplace`
+- **Remote**: `/plugin marketplace add tillg/till-claude-code-marketplace`
   (Recommended)
 - **Local** (from a clone of this repo): `/plugin marketplace add ./`
 
@@ -22,8 +22,8 @@ plugins.
 
 ## Available Plugins
 
-| Plugin   | Description                            | Commands                                                         |
-| -------- | -------------------------------------- | ---------------------------------------------------------------- |
+| Plugin   | Description                            | Commands                                                                                                                     |
+| -------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | **spec** | Spec-driven change management workflow | `/spec:overview`, `/spec:document-system`, `/spec:explore`, `/spec:propose`, `/spec:iterate`, `/spec:apply`, `/spec:archive` |
 
 ## Plugin Development Workflow
@@ -56,7 +56,7 @@ marketplace as usual.
 | ----------------- | ----------------------------------------------------- | ------------------------------------------------------------------------- |
 | `--plugin-dir`    | `claude --plugin-dir ./plugins/x`                     | **Recommended.** Live reload, but you must pass the flag at every startup |
 | Local marketplace | `/plugin marketplace add ./` then `/plugin install x` | One-time setup, but files are **copied** — must reinstall after changes   |
-| Symlinks          | `ln -s /path/to/repo/plugins/x ~/.claude/plugins/x`  | Changes reflected live, but manual setup and fragile                      |
+| Symlinks          | `ln -s /path/to/repo/plugins/x ~/.claude/plugins/x`   | Changes reflected live, but manual setup and fragile                      |
 
 ## Disable Plugins per Repo
 
