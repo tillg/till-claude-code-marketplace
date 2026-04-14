@@ -17,7 +17,7 @@ Show the spec workflow overview and assess current status.
    of this plugin) and extract the `version` and `marketplace` fields.
 
    Display the installed version:
-   > **spec** v6.0.0
+   > **spec** v6.1.0
 
    Then check for a newer version:
    - Use the `WebFetch` tool (or `curl` via Bash) to fetch the URL in the
@@ -27,7 +27,7 @@ Show the spec workflow overview and assess current status.
    - Compare the remote `version` with the local `version`.
 
    **If a newer version is available:**
-   > Update available: v6.0.0 → v6.1.0
+   > Update available: v6.1.0 → v6.2.0
    > Run `/plugin marketplace update <marketplace-name>` to update.
 
    **If up to date:** show nothing extra (no noise).
@@ -35,9 +35,98 @@ Show the spec workflow overview and assess current status.
    **If the fetch fails** (offline, URL missing, etc.): silently skip the
    check — don't show an error, this is a nice-to-have.
 
-2. **Show the workflow reference**
+2. **Assess active changes**
 
-   Always start by displaying this reference section:
+   List directories in `specs/changes/` (excluding `archive/`).
+
+   **If no active change exists:** Report that and suggest next steps:
+   > No active changes. Run `/spec:explore` to think through an idea, or
+   > `/spec:propose` to start a new change.
+
+   **If one or more active changes exist:**
+
+   First, build a **summary table** of all active changes:
+
+   | Change | Description | Phase | Next Step |
+   |--------|-------------|-------|-----------|
+   | `<name>` | 1-line summary from `proposal.md` | Phase with progress | Suggested action |
+
+   The Phase column uses a compact format:
+
+   | Signal | Phase |
+   |--------|-------|
+   | No artifacts yet | Exploring |
+   | `proposal.md` exists but no `architecture.md`/`plan.md` | Proposing (in progress) |
+   | All artifacts exist, `plan.md` has no `[x]` checkboxes | Proposed (ready) |
+   | `plan.md` has mix of `[ ]` and `[x]` | Applying (N/M) |
+   | All `plan.md` checkboxes are `[x]` | Applied (ready to archive) |
+
+   The Next Step column maps from the phase:
+   - Exploring → `/spec:propose` to formalize
+   - Proposing → Continue with `/spec:propose`
+   - Proposed → `/spec:apply` to start implementing
+   - Applying → `/spec:apply` to continue
+   - Applied → `/spec:archive` to wrap up
+
+   Then, for each change, show a **detail block** below the table:
+
+   a. **Read the artifacts** — Read whatever exists: `proposal.md`,
+      `domain.md`, `architecture.md`, `plan.md`.
+
+   b. **Summarize the change** — In 2 lines max: what is this change about and
+      why is it being made?
+
+   c. **Show the workflow with position** — Render the flow and mark where we
+      are. Example:
+      ```
+      explore → propose → apply ← YOU ARE HERE → archive
+      ```
+
+   d. **Suggest what's next** — Based on the phase, recommend the natural next
+      action. Examples:
+      - "All artifacts look solid. Run `/spec:apply` to start implementing."
+      - "3/7 steps done. Run `/spec:apply` to continue."
+      - "All steps complete! Run `/spec:archive` to wrap up."
+
+   e. **Give a maturity assessment** — Read through the artifacts and give an
+      honest, brief judgement of how ready this change feels:
+      - Are the artifacts thorough or thin?
+      - Is the proposal clear about scope and motivation?
+      - Does the architecture cover the key decisions and tradeoffs?
+      - Is the plan concrete enough to implement step by step?
+      - Are there open questions, TODOs, or placeholders that need attention?
+
+      Be direct. If it looks good, say so. If something feels undercooked,
+      point it out specifically. Use a simple rating:
+
+      - **Ready** — Artifacts are solid, no gaps, ready to move forward
+      - **Almost there** — Minor gaps or questions, but workable
+      - **Needs work** — Significant gaps, vague sections, or missing artifacts
+
+3. **Check system description status**
+
+   Check if `specs/system/` exists and contains files (at least `domain.md` or
+   `architecture.md`).
+
+   **If a system description exists:** Note it briefly:
+   > System description: present (`specs/system/`)
+
+   **If no system description exists:** Assess the codebase size to decide
+   whether to suggest creating one:
+   - Count source files and check for meaningful code (entry points, modules,
+     configuration, dependencies, tests).
+   - **If the codebase is substantial** (existing application with multiple
+     modules, dependencies, config — a brownfield project): suggest running
+     `/spec:document-system` to establish a shared foundation before making
+     changes.
+   - **If the codebase is minimal or empty** (greenfield project, just getting
+     started): do NOT suggest creating a system description — there's nothing
+     meaningful to document yet. Just note:
+     > System description: not yet (project is just getting started — no need yet)
+
+4. **Show the workflow reference**
+
+   Display the reference section:
 
    ---
 
@@ -90,81 +179,6 @@ Show the spec workflow overview and assess current status.
 
    ---
 
-3. **Check system description status**
-
-   Check if `specs/system/` exists and contains files (at least `domain.md` or
-   `architecture.md`).
-
-   **If a system description exists:** Note it briefly:
-   > System description: present (`specs/system/`)
-
-   **If no system description exists:** Assess the codebase size to decide
-   whether to suggest creating one:
-   - Count source files and check for meaningful code (entry points, modules,
-     configuration, dependencies, tests).
-   - **If the codebase is substantial** (existing application with multiple
-     modules, dependencies, config — a brownfield project): suggest running
-     `/spec:document-system` to establish a shared foundation before making
-     changes.
-   - **If the codebase is minimal or empty** (greenfield project, just getting
-     started): do NOT suggest creating a system description — there's nothing
-     meaningful to document yet. Just note:
-     > System description: not yet (project is just getting started — no need yet)
-
-4. **Assess the current change**
-
-   List directories in `specs/changes/` (excluding `archive/`).
-
-   **If no active change exists:** Report that and suggest next steps:
-   > No active change. Run `/spec:explore` to think through an idea, or
-   > `/spec:propose` to start a new change.
-
-   **If one or more active changes exist:** For each change:
-
-   a. **Read the artifacts** — Read whatever exists: `proposal.md`,
-      `domain.md`, `architecture.md`, `plan.md`.
-
-   b. **Summarize the change** — In 2 lines max: what is this change about and
-      why is it being made?
-
-   c. **Determine the current phase** — Based on which artifacts exist and their
-      state, figure out where this change is in the workflow:
-
-      | Signal | Phase |
-      |--------|-------|
-      | No artifacts yet | Exploring |
-      | `proposal.md` exists but no `architecture.md`/`plan.md` | Proposing (in progress) |
-      | All artifacts exist, `plan.md` has no `[x]` checkboxes | Proposed (ready to apply) |
-      | `plan.md` has mix of `[ ]` and `[x]` | Applying (in progress) |
-      | All `plan.md` checkboxes are `[x]` | Applied (ready to archive) |
-
-   d. **Show the workflow with position** — Render the flow and mark where we
-      are. Example:
-      ```
-      explore → propose → apply ← YOU ARE HERE → archive
-      ```
-
-   e. **Suggest what's next** — Based on the phase, recommend the natural next
-      action. Examples:
-      - "All artifacts look solid. Run `/spec:apply` to start implementing."
-      - "3/7 steps done. Run `/spec:apply` to continue."
-      - "All steps complete! Run `/spec:archive` to wrap up."
-
-   f. **Give a maturity assessment** — Read through the artifacts and give an
-      honest, brief judgement of how ready this change feels:
-      - Are the artifacts thorough or thin?
-      - Is the proposal clear about scope and motivation?
-      - Does the architecture cover the key decisions and tradeoffs?
-      - Is the plan concrete enough to implement step by step?
-      - Are there open questions, TODOs, or placeholders that need attention?
-
-      Be direct. If it looks good, say so. If something feels undercooked,
-      point it out specifically. Use a simple rating:
-
-      - **Ready** — Artifacts are solid, no gaps, ready to move forward
-      - **Almost there** — Minor gaps or questions, but workable
-      - **Needs work** — Significant gaps, vague sections, or missing artifacts
-
 5. **Format the output**
 
    ```
@@ -172,32 +186,50 @@ Show the spec workflow overview and assess current status.
 
    **spec** v<version from plugin.json>
 
-   [workflow reference from step 2]
-
    ---
 
-   ## Current Status
+   ## Active Changes
 
-   **System description:** [present / not yet / suggested]
+   | Change | Description | Phase | Next Step |
+   |--------|-------------|-------|-----------|
+   | <name> | <summary>   | <phase> | <action> |
 
-   ### Change: <name>
+   ### <name>
    <2-line summary>
 
    **Phase:** <phase name>
    ```
-   explore → propose ← HERE → apply → archive
+   explore → propose → apply ← HERE → archive
    ```
 
    **Next:** <suggested action>
 
    **Maturity:** <Ready / Almost there / Needs work>
    <1-3 sentences explaining the assessment>
+
+   ---
+
+   ## System Description
+
+   **System description:** [present / not yet / suggested]
+
+   ---
+
+   ## Workflow Reference
+
+   [existing static reference block]
+   ```
+
+   When there are no active changes, the "Active Changes" section shows:
+
+   ```
+   No active changes. Run `/spec:explore` to think through an idea,
+   or `/spec:propose` to start a new change.
    ```
 
 **Guardrails**
 
-- Always show the workflow reference first — it's useful even when there's no
-  active change
+- Lead with the active changes table — it's the most actionable information
 - Read all available artifacts before making assessments — don't guess
 - Be honest in the maturity assessment — a false "ready" wastes more time than
   a candid "needs work"

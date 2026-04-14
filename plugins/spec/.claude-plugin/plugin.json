@@ -1,6 +1,6 @@
 {
   "name": "spec",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "description": "Spec workflow — document, explore, propose, iterate, apply, and archive changes",
   "marketplace": "https://raw.githubusercontent.com/tillg/till-claude-code-marketplace/main/.claude-plugin/marketplace.json",
   "author": {
