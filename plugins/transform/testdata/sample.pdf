@@ -1,0 +1,45 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 983 >>
+stream
+BT /F1 16 Tf 72 780 Td (Quarterly Report) Tj ET
+BT /F1 10 Tf 72 750 Td (Quarterly Report) Tj ET
+BT /F1 10 Tf 72 726 Td (Executive Summary) Tj ET
+BT /F1 10 Tf 72 702 Td (This report covers Q1 2025 performance metrics across all departments.) Tj ET
+BT /F1 10 Tf 72 688 Td (Revenue grew **12% year-over-year** while maintaining operational efficiency.) Tj ET
+BT /F1 10 Tf 72 664 Td (Key Metrics) Tj ET
+BT /F1 10 Tf 72 640 Td (| Metric          | Q1 2025  | Q4 2024  | Change |) Tj ET
+BT /F1 10 Tf 72 626 Td (|-----------------|----------|----------|--------|) Tj ET
+BT /F1 10 Tf 72 612 Td (| Revenue         | $2.4M    | $2.1M    | +14%   |) Tj ET
+BT /F1 10 Tf 72 598 Td (| Active Users    | 45,000   | 38,000   | +18%   |) Tj ET
+BT /F1 10 Tf 72 584 Td (| Churn Rate      | 2.1%     | 2.8%     | -0.7%  |) Tj ET
+BT /F1 10 Tf 72 570 Td (| NPS Score       | 72       | 68       | +4     |) Tj ET
+BT /F1 10 Tf 72 546 Td (Department Updates) Tj ET
+BT /F1 10 Tf 72 522 Td (Engineering) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000001275 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1345
+%%EOF

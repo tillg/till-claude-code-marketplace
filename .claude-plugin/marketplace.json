@@ -28,6 +28,16 @@
         "name": "Till Gartner"
       },
       "strict": false
+    },
+    {
+      "name": "transform",
+      "source": "./plugins/transform",
+      "description": "Convert documents (DOCX, PDF, MSG) to clean Markdown",
+      "version": "1.0.0",
+      "author": {
+        "name": "Till Gartner"
+      },
+      "strict": false
     }
   ]
 }

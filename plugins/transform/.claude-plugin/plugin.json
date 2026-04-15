@@ -1,0 +1,9 @@
+{
+  "name": "transform",
+  "version": "1.0.0",
+  "description": "Convert documents (DOCX, PDF, MSG) to clean Markdown",
+  "marketplace": "https://raw.githubusercontent.com/tillg/till-claude-code-marketplace/main/.claude-plugin/marketplace.json",
+  "author": {
+    "name": "Till Gartner"
+  }
+}

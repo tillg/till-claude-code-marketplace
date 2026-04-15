@@ -1,0 +1,27 @@
+From: alice@example.com
+To: bob@example.com
+Subject: Q1 Planning Meeting Notes
+Date: Mon, 15 Jan 2025 10:30:00 +0000
+MIME-Version: 1.0
+Content-Type: text/html; charset="utf-8"
+
+<html>
+<body>
+<h1>Q1 Planning Meeting Notes</h1>
+<p>Hi team,</p>
+<p>Here are the <strong>key takeaways</strong> from today's planning meeting:</p>
+<ul>
+<li>Budget approved for new infrastructure</li>
+<li>Hiring plan: 3 engineers, 1 designer</li>
+<li>Launch target: March 15</li>
+</ul>
+<h2>Action Items</h2>
+<table border="1">
+<tr><th>Owner</th><th>Task</th><th>Due Date</th></tr>
+<tr><td>Alice</td><td>Draft technical spec</td><td>Jan 22</td></tr>
+<tr><td>Bob</td><td>Create design mockups</td><td>Jan 29</td></tr>
+<tr><td>Charlie</td><td>Set up CI/CD pipeline</td><td>Feb 5</td></tr>
+</table>
+<p>Best regards,<br>Alice</p>
+</body>
+</html>

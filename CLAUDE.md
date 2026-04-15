@@ -15,6 +15,8 @@ A Claude Code plugin marketplace — a registry of plugins that can be installed
 ## Current Plugins
 
 - **spec** (`plugins/spec/`) — spec workflow plugin for spec-driven change management. Provides skills like `/spec:explore`, `/spec:propose`, `/spec:apply`, `/spec:archive`.
+- **md2pdf** (`plugins/md2pdf/`) — Markdown to PDF converter with code highlighting, tables, mermaid diagrams, and images.
+- **transform** (`plugins/transform/`) — document to Markdown converter for DOCX, PDF, and MSG files. Skills: `/transform:doc2md`, `/transform:batch`.
 
 ## Plugin Authoring
 

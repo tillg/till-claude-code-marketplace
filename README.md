@@ -10,6 +10,7 @@ Register the marketplace, then install any plugin:
 /plugin marketplace add tillg/till-claude-code-marketplace
 /plugin install spec@till-claude-code-marketplace
 /plugin install md2pdf@till-claude-code-marketplace
+/plugin install transform@till-claude-code-marketplace
 ```
 
 Select "Install for all collaborators on this repository (project scope)" or
