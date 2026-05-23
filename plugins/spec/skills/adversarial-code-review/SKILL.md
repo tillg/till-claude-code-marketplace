@@ -1,6 +1,7 @@
 ---
-name: adversarial-code-review
 description: Use when reviewing implemented code for bugs, regressions, edge cases, race conditions, and plan drift. Prioritizes findings over summaries and is useful after a story, before completion, or across an epic.
+metadata:
+  author: Till Gartner
 ---
 
 # Adversarial Code Review
