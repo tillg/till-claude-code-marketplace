@@ -26,4 +26,40 @@ Skills are directories containing a `SKILL.md` file. The frontmatter defines beh
 
 ## Versioning
 
-Each plugin has a `version` field in both `plugin.json` and `marketplace.json`. **When you change a plugin, always bump the version number in both places.** Keep them in sync. Use semver: patch for fixes, minor for new features, major for breaking changes (e.g. renamed artifacts, restructured skills).
+Each plugin has a `version` field in both `plugin.json` and `marketplace.json`. These two numbers must stay in sync.
+
+**Rule: every commit that touches a plugin must bump that plugin's version in both files.** Do this as part of the same commit as the change — not in a follow-up. If a commit touches multiple plugins, bump each of them.
+
+Use [semantic versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`) and let the nature of the change pick the level. When in doubt, bump higher rather than lower — users installing a plugin should never be surprised by a breaking change hidden behind a patch bump.
+
+### How to pick the level
+
+**PATCH** (`x.y.Z`) — fixes and refinements that don't change what the plugin does or how it's invoked. Existing users see no behavioral difference beyond "it works better now."
+- Typo or wording fix in a `SKILL.md` body
+- Bugfix in a script bundled with a skill
+- Clarifying a description or `argument-hint` without changing the trigger
+- Internal refactor of a skill's prompt that preserves behavior
+- Tightening guardrails without removing capability
+
+**MINOR** (`x.Y.0`) — new capability added in a backward-compatible way. Existing invocations still work; users get something new.
+- New skill added to a plugin (e.g. adding `/spec:ready-or-not`)
+- New optional argument or flag on an existing skill
+- New optional frontmatter field on a skill
+- Materially expanded behavior in an existing skill (new checks, new output sections) where prior invocations still produce sensible output
+- New supporting file (template, helper script) that augments an existing skill
+
+**MAJOR** (`X.0.0`) — breaking change. Anything an existing user could have a script, a memory, or muscle memory pointing at that no longer works the same way.
+- Renaming a skill (`/spec:propose` → `/spec:create-proposal`)
+- Removing a skill entirely
+- Renaming the plugin itself or changing its namespace prefix
+- Changing the required arguments of a skill (positional → flag, renaming, removing)
+- Restructuring artifact layout in a way that changes paths users reference (e.g. moving `specs/changes/<name>/proposal.md` to a new location)
+- Changing default behavior in a way that contradicts what prior versions did
+- Dropping a previously supported input format
+
+### Both files, same number
+
+- `plugins/<name>/.claude-plugin/plugin.json` — the plugin's own `version`
+- `.claude-plugin/marketplace.json` — the matching entry's `version`
+
+Mismatch is a bug. If you notice the two are out of sync (as happened when `marketplace.json` lagged at `6.1.0` while `plugin.json` was at `6.2.1`), resolve to the higher of the two and bump from there.
