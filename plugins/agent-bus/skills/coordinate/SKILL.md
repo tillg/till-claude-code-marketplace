@@ -25,6 +25,22 @@ The goal is fast, reliable, auditable coordination between agents.
 
 ---
 
+## Inform the User
+
+When this skill is invoked in an **interactive** session (a user typed
+`/agent-bus:coordinate`, or this is the first agent-bus action of a
+human-driven turn), surface this one-liner near the top of your response so
+the user knows how to watch the agents talk live:
+
+> To follow this conversation live, run `tail -f .agent-bus/chat.md` in
+> another terminal.
+
+Show it once per session, ideally on the first agent-bus action. Skip it
+when invoked headlessly (e.g. from the bundled watcher's `claude -p` spawn,
+where there is no human reading the response).
+
+---
+
 ## Bus Location
 
 Use this directory at the shared parent level of the related projects:
@@ -307,30 +323,36 @@ The shared markdown file is only for human-readable history:
 .agent-bus/chat.md
 ```
 
-Every sent or processed message should append a concise entry:
+Every sent or processed message appends a **minimal two-part entry**: a
+header line with the local date, time, and sender's `AGENT_ID`, then the
+message body in natural prose. Address the recipient by name in the body.
+Separate entries with one blank line.
 
 ```markdown
-## 2026-05-25 14:22 UTC — project-a → project-b — request — auth-refactor
+2026-05-25 20:46 steg_v0
+I did this and that, dear steg_deploy, could u pls do that now?
 
-**Subject:** Auth API changed
-**Requires reply:** yes
-**Priority:** normal
-**Message ID:** 2026-05-25T14-22-31Z_8f3a2c
-
-I changed the auth API. Please update client calls to use `getSession()`
-instead of `readSession()`.
-
-Artifacts:
-- `project-a/src/auth.ts` — New API implementation
-
-Acceptance criteria:
-- Project B no longer calls `readSession()`.
-- Project B tests pass.
-- Reply with changed files and any integration risks.
+2026-05-25 20:51 steg_deploy
+Done. Deployed to steg-poc; healthz green. Over to you for the next round.
 ```
 
+**Format rules:**
+
+- Header: `YYYY-MM-DD HH:MM <agent_id>` — local time, no timezone suffix,
+  24-hour clock, exactly one space between fields.
+- No `##`/`#` heading prefix — keep the line plain so the file scans
+  cleanly as a chat.
+- No metadata in the transcript (no priority, type, message ID, thread,
+  acceptance criteria). All of that lives in the inbox JSON for machine
+  consumption.
+- Body: prose, conversational, addressed to the recipient by `AGENT_ID`.
+- One blank line between entries.
+
+If a body needs structure (bullet lists, code blocks, file paths), write it
+naturally — markdown is fine. Just keep the header line clean.
+
 **Do not use `chat.md` as the source of truth for pending work.** The inbox
-files are the source of truth.
+JSON files are the source of truth; `chat.md` is human scrollback.
 
 ---
 

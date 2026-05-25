@@ -1,6 +1,6 @@
 {
   "name": "agent-bus",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "File-based inbox protocol for coordinating multiple Claude Code agents working on related repositories",
   "marketplace": "https://raw.githubusercontent.com/tillg/till-claude-code-marketplace/main/.claude-plugin/marketplace.json",
   "author": {
