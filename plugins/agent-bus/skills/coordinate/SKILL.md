@@ -42,7 +42,7 @@ Use this directory at the shared parent level of the related projects:
   threads/
 ```
 
-Example layout:
+Example layout (assuming default `AGENT_ID`s from project basenames):
 
 ```txt
 workspace/
@@ -50,16 +50,42 @@ workspace/
   project-b/
   .agent-bus/
     agents/
-      project-a-agent/
-      project-b-agent/
+      project-a/
+      project-b/
 ```
 
-Each agent must know its own `AGENT_ID`.
+---
 
-Recommended IDs:
+## Agent Identity
 
-- `project-a-agent`
-- `project-b-agent`
+Each agent has a stable `AGENT_ID`.
+
+**Default:** the basename of the project's primary working directory,
+normalized to lowercase kebab-case. A Claude Code session running in
+`~/workspace/project-a/` defaults to `AGENT_ID = project-a`. This makes the
+inbox tree self-documenting — `.agent-bus/agents/project-a/` sits next to
+`project-a/`.
+
+Normalization rules:
+
+- Lowercase the basename.
+- Replace any run of non-alphanumeric characters with a single `-`.
+- Strip leading and trailing `-`.
+
+Examples:
+
+- `~/workspace/project-a/` → `project-a`
+- `~/workspace/My Project (v2)/` → `my-project-v2`
+- `~/git/till-claude-code-marketplace/` → `till-claude-code-marketplace`
+
+**Override:** set `AGENT_ID` explicitly in the project's `CLAUDE.md` when:
+
+- Two sibling projects happen to share the same basename.
+- The dirname is unstable (e.g. it changes across branches or checkouts).
+- A more meaningful name exists than the directory provides.
+
+Sibling agents on the same bus must have distinct `AGENT_ID`s. If two default
+to the same name, override at least one.
 
 ---
 
@@ -76,7 +102,7 @@ Filename format:
 Example:
 
 ```txt
-2026-05-25T14-22-31Z__project-a-agent__project-b-agent__request__8f3a2c.json
+2026-05-25T14-22-31Z__project-a__project-b__request__8f3a2c.json
 ```
 
 Message body:
@@ -86,8 +112,8 @@ Message body:
   "schema": "agent-bus-message-v1",
   "id": "2026-05-25T14-22-31Z_8f3a2c",
   "created_at": "2026-05-25T14:22:31Z",
-  "from": "project-a-agent",
-  "to": "project-b-agent",
+  "from": "project-a",
+  "to": "project-b",
   "type": "request",
   "thread": "auth-refactor",
   "priority": "normal",
@@ -229,7 +255,7 @@ The shared markdown file is only for human-readable history:
 Every sent or processed message should append a concise entry:
 
 ```markdown
-## 2026-05-25 14:22 UTC — project-a-agent → project-b-agent — request — auth-refactor
+## 2026-05-25 14:22 UTC — project-a → project-b — request — auth-refactor
 
 **Subject:** Auth API changed
 **Requires reply:** yes
@@ -270,8 +296,8 @@ Example reply body:
   "schema": "agent-bus-message-v1",
   "id": "2026-05-25T14-35-10Z_d91b7a",
   "created_at": "2026-05-25T14:35:10Z",
-  "from": "project-b-agent",
-  "to": "project-a-agent",
+  "from": "project-b",
+  "to": "project-a",
   "type": "reply",
   "thread": "auth-refactor",
   "priority": "normal",
@@ -436,8 +462,8 @@ Examples:
   "schema": "agent-bus-message-v1",
   "id": "2026-05-25T15-01-22Z_4c10aa",
   "created_at": "2026-05-25T15:01:22Z",
-  "from": "project-a-agent",
-  "to": "project-b-agent",
+  "from": "project-a",
+  "to": "project-b",
   "type": "request",
   "thread": "schema-migration",
   "priority": "high",
@@ -474,8 +500,8 @@ Examples:
   "schema": "agent-bus-message-v1",
   "id": "2026-05-25T15-09-44Z_f813bd",
   "created_at": "2026-05-25T15:09:44Z",
-  "from": "project-b-agent",
-  "to": "project-a-agent",
+  "from": "project-b",
+  "to": "project-a",
   "type": "blocker",
   "thread": "schema-migration",
   "priority": "high",

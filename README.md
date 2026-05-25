@@ -145,17 +145,22 @@ workspace/
   project-b/
   .agent-bus/
     agents/
-      project-a-agent/
+      project-a/
         inbox/        # new messages land here
         processing/   # being worked on
         done/         # processed successfully
         failed/       # malformed or rejected
-      project-b-agent/
+      project-b/
     chat.md           # human-readable transcript
 ```
 
-Each agent has a stable `AGENT_ID` (e.g. `project-a-agent`). To send a
-message, an agent writes a JSON file
+Each agent has a stable `AGENT_ID`. **By default it's the normalized basename
+of the project's working directory** (e.g. `~/workspace/project-a/` →
+`project-a`), which keeps the inbox tree self-documenting. Override
+explicitly in the project's `CLAUDE.md` when two sibling projects share a
+basename, the dirname is unstable, or a more meaningful name exists.
+
+To send a message, an agent writes a JSON file
 (`<timestamp>__<from>__<to>__<type>__<id>.json`) into the recipient's
 `inbox/` via temp-write + atomic rename. The recipient sorts inbox by
 priority + timestamp, moves each message through `inbox → processing → done`,
@@ -166,9 +171,9 @@ Message types: `request`, `reply`, `status`, `handoff`, `blocker`,
 
 #### Setup
 
-1. Pick an `AGENT_ID` for each agent (e.g. `project-a-agent`,
-   `project-b-agent`). Tell each session its own ID in its `CLAUDE.md` or
-   project memory.
+1. Confirm the default `AGENT_ID`s — they fall out of the project basenames
+   automatically. Only set `AGENT_ID` explicitly in `CLAUDE.md` if two
+   siblings collide or you want a different name.
 2. Add `.agent-bus/` to `.gitignore` at the workspace level (or commit only
    `chat.md` if you want the transcript versioned).
 3. *(Recommended)* Set up a filesystem watcher in the host runtime to invoke
