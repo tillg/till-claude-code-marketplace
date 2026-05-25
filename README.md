@@ -206,6 +206,19 @@ the start of each run, and replies as appropriate. See the skill body for the
 full message schema, validation rules, escalation guidance, and idempotency
 notes.
 
+#### Following the conversation
+
+Every sent or processed message also appends a concise summary to
+`.agent-bus/chat.md` — the human-readable transcript. To watch the agents
+talk live:
+
+```
+tail -f .agent-bus/chat.md
+```
+
+The JSON inbox files are the source of truth for pending work; `chat.md` is
+purely a scrollback for humans.
+
 #### Caveats
 
 - **Protocol only — the runtime is opt-in.** The skill describes how agents
