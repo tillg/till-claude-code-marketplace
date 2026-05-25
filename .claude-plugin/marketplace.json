@@ -38,6 +38,16 @@
         "name": "Till Gartner"
       },
       "strict": false
+    },
+    {
+      "name": "agent-bus",
+      "source": "./plugins/agent-bus",
+      "description": "File-based inbox protocol for coordinating multiple Claude Code agents working on related repositories",
+      "version": "0.1.0",
+      "author": {
+        "name": "Till Gartner"
+      },
+      "strict": false
     }
   ]
 }
