@@ -176,9 +176,22 @@ Message types: `request`, `reply`, `status`, `handoff`, `blocker`,
    siblings collide or you want a different name.
 2. Add `.agent-bus/` to `.gitignore` at the workspace level (or commit only
    `chat.md` if you want the transcript versioned).
-3. *(Recommended)* Set up a filesystem watcher in the host runtime to invoke
-   each agent when a new inbox file appears. Without that, agents fall back
-   to polling — workable, but slower.
+3. Pick at least one wake-up mechanism (see below).
+
+#### Waking the agents
+
+The plugin ships three ways to keep agents informed, listed from cheapest to
+most event-driven:
+
+| Mechanism | Latency | Limit | Setup |
+| --- | --- | --- | --- |
+| **A. Prompt-submit hook** (`scripts/check-inbox-hook.sh`) | Next user prompt | Doesn't wake an idle session | Wire into `.claude/settings.json` as a `UserPromptSubmit` hook |
+| **C. External watcher** (`scripts/watch.mjs`) | Sub-second | Spawns a fresh Claude session per event | `node plugins/agent-bus/scripts/watch.mjs ~/workspace` as a background daemon |
+| **D. Polling loop** | 2 min | Session-local; lost when Claude exits | An agent runs `/loop 2m /agent-bus:coordinate` |
+
+A and C are complementary — the hook catches you when you type, the watcher
+catches you when you're idle. D is the fallback when neither host
+integration is available.
 
 #### Usage
 
@@ -195,9 +208,10 @@ notes.
 
 #### Caveats
 
-- **Protocol only, no runtime.** The skill describes how agents should
-  behave; something else has to actually invoke them when new messages
-  arrive (IDE runtime, watcher, or `/loop` as fallback).
+- **Protocol only — the runtime is opt-in.** The skill describes how agents
+  should behave; the bundled hook, watcher, and polling loop are the
+  invocation mechanisms. Without at least one, agents only check their
+  inbox when manually told to.
 - **Single-machine, filesystem-first.** No Redis, no HTTP, no central
   orchestrator. For cross-machine coordination, port the same schema to a
   real message bus (NATS, Redis Streams).

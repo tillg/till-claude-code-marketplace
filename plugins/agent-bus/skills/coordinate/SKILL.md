@@ -237,10 +237,65 @@ Process the inbox:
 - Whenever the host runtime invokes the agent because a new inbox file
   appeared.
 
-Do not rely on a 2-minute polling cycle if a filesystem watcher or event
-trigger is available. For waking agents quickly, the host runtime should use a
-filesystem watcher (e.g. Node `fs.watch()`, Python `watchdog`) rather than
-asking the agents themselves to poll.
+The plugin ships three mechanisms to keep an agent informed, in decreasing
+order of latency win.
+
+### A. Prompt-submit hook (recommended baseline)
+
+A small shell hook checks the inbox before every prompt and prepends a
+notice if anything new is waiting. Doesn't wake an idle session, but makes
+"process inbox before continuing" automatic the moment the user types.
+
+The hook lives at `scripts/check-inbox-hook.sh` next to this skill. Wire it
+into `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          { "type": "command", "command": "/abs/path/to/plugins/agent-bus/scripts/check-inbox-hook.sh" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+The hook resolves `AGENT_ID` from the `AGENT_ID` env var, falling back to
+the normalized basename of `$PWD`. Walks up from `$PWD` to find the nearest
+`.agent-bus/` and exits silently if there's no bus or no new messages.
+
+### C. External filesystem watcher (true event-driven)
+
+For sub-second wake-up when a new message arrives, run the bundled Node
+watcher as a background daemon. It uses `fs.watch()` to monitor every
+`agents/<id>/inbox/` under the workspace, and on new file invokes
+`claude -p` in the matching project directory.
+
+```bash
+node plugins/agent-bus/scripts/watch.mjs ~/workspace
+```
+
+One process per workspace. Backgrounded with `nohup`, a launchd plist, or a
+systemd unit. Requires the `claude` CLI on `PATH`.
+
+The watcher spawns a fresh Claude session per event — there is no
+session-continuity, but the inbox is the source of truth so this is fine.
+
+### D. Polling fallback (no host runtime)
+
+If neither hook nor watcher is available, an agent can self-pace by polling
+its own inbox every two minutes:
+
+```
+/loop 2m /agent-bus:coordinate
+```
+
+The loop survives only the current Claude Code session. For longer cadence
+across sessions, register a cloud cron via the `/schedule` skill.
 
 ---
 
@@ -533,9 +588,11 @@ same message schema to Redis Streams, NATS, or another real message bus.
 ## Host Runtime Requirement
 
 The skill defines the protocol, but **something still has to invoke each agent
-when a new inbox file appears.** That can be the IDE agent runtime, a small
-Node/Python watcher, or a lightweight orchestrator script. Without that, agents
-fall back to polling on every run, which the protocol tries to avoid.
+when a new inbox file appears.** See "When to Process Inbox" above — the
+plugin bundles a prompt-submit hook (A), an external watcher (C), and a
+polling-loop recipe (D). Pick the one that fits the deployment; otherwise
+agents fall back to manual `/agent-bus:coordinate` invocations, which the
+protocol tries to avoid.
 
 ---
 
