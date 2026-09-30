@@ -74,6 +74,7 @@ you exactly where you are and what to do next.
 | `/spec:apply`           | Implement the plan step by step, tracking progress                               | When artifacts are ready and it's time to code                  |
 | `/spec:adversarial-code-review` | Hostile-mindset review of implemented code for bugs, regressions, edge cases | After implementation, before archiving                          |
 | `/spec:archive`         | Update system docs, commit, and clean up the change                              | When all steps are complete                                     |
+| `/spec:view`            | Open a change (or all specs) as HTML in the browser; a watcher keeps it current  | Reading a change with rendered Mermaid (needs the md2html plugin) |
 
 #### Artifacts
 
@@ -96,6 +97,26 @@ is and does right now:
 | `domain.md`       | New or changed domain concepts                     |
 | `architecture.md` | Technical approach, key decisions, tradeoffs       |
 | `plan.md`         | Implementation steps as a checkbox list            |
+
+Every spec file starts with YAML frontmatter that the skills write and update:
+
+```yaml
+---
+feature: add-auth            # change name = directory name (change files only)
+title: "Proposal: add authentication"
+status: proposed             # exploring → proposed → applying → (paused) → applied
+order: 1                     # nav position: 1 proposal, 2 domain, 3 architecture, 4 plan
+created: 2026-09-30
+edited: 2026-09-30
+---
+```
+
+All files of a change share one `status`; `/spec:overview` reads the phase from
+it (legacy changes without frontmatter fall back to counting `plan.md`
+checkboxes). System docs carry only `title`, `created`, `edited`.
+`/spec:view` renders the specs as local, gitignored HTML via md2html's spec
+profile and keeps it current with a watcher (committed report HTML is left
+alone).
 
 ---
 
@@ -143,6 +164,9 @@ same bytes, so the HTML is committed and checked in CI.
   in the same turn; formats it only when lint-clean (silent outside projects
   with `reports.json`)
 - Theming via `reports/theme.css` against a versioned class/token contract
+- Spec profile (`specs` key in `reports.json`): renders spec plugin files as
+  local, gitignored HTML with per-change nav, a project index and client-side
+  Mermaid; `build --specs [--watch]` builds only those (used by `/spec:view`)
 - Committed single-file bundle: needs only `node`, can be vendored for CI
 
 **Skills:**

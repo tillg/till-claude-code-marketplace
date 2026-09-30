@@ -71,7 +71,22 @@ If omitted, iterate across all artifacts of the current change.
    - Where decisions remove or add complexity, update or add Mermaid diagrams
      to reflect the new state
 
-5. **Propagate changes across artifacts**
+5. **Keep the spec frontmatter**
+
+   Every file keeps (or gets) the spec frontmatter defined in
+   `/spec:propose` (`feature`, `title`, `status`, `order`, `created`,
+   `edited`). Rules:
+   - Set `edited` to today on every file whose content you changed; leave it on
+     untouched files.
+   - A file without frontmatter gets it now (`created` = today unless the file's
+     git history says otherwise; `order` 1–4 for proposal, domain,
+     architecture, plan; none or ≥ 5 for other files).
+   - `status`: if the change is at `exploring` and all four artifacts now
+     exist, set `proposed` on all files. Otherwise keep the existing status.
+     All files of the change must carry the same `feature` and `status`.
+   - Update `title` if the `# …` heading changed.
+
+6. **Propagate changes across artifacts**
 
    Changes in one artifact often affect others. Check for consistency:
    - A rejected architecture approach → remove related steps from `plan.md`
@@ -80,7 +95,7 @@ If omitted, iterate across all artifacts of the current change.
 
    Make these updates, but keep them minimal and traceable.
 
-6. **Present for review**
+7. **Present for review**
 
    Show the user what changed:
    - List of annotations found and how each was applied
@@ -114,7 +129,10 @@ Please review the updated documents.
 - Never skip annotations — scan every line
 - Remove rejected content cleanly, don't leave traces
 - Preserve document structure and formatting
+- Keep spec frontmatter consistent across the change; bump `edited` on changed files
 - Always propagate changes to related artifacts
 - Ask before finalizing — the user gets the last word
 - If an annotation is ambiguous, flag it rather than guessing
 - Use Mermaid as the preferred format for all diagrams
+- Edit spec files with the Edit/Write tools, not sed/python in Bash, so the
+  md2html lint hook sees every change

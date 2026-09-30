@@ -1,0 +1,1 @@
+specs/changes/add-x/bad-order.md:5:8  error  "order" must be an integer ≥ 0, got "-1"  [spec-frontmatter]

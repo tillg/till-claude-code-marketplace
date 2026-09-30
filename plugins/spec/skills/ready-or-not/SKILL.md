@@ -97,6 +97,20 @@ Always announce: "Auditing change: <name>".
 - No contradictions (e.g., proposal says "synchronous", architecture says
   "queue-based async")
 
+### Spec Frontmatter
+
+Each `.md` in the change directory should start with spec frontmatter (schema
+in `/spec:propose`). Record a `MEDIUM` finding (category Consistency) for:
+
+- a file with no frontmatter, or missing a required key (`feature`, `title`,
+  `status`, `created`, `edited`), or with an unknown key
+- `feature` ≠ the directory name
+- files disagreeing on `feature` or `status`
+- a `status` outside `exploring · proposed · applying · paused · applied`, or
+  one that contradicts `plan.md` (e.g. `applied` with open steps)
+- non-ISO dates or `edited` earlier than `created`
+- a non-integer `order`
+
 ### Plan Quality
 
 - Steps are **concrete and ordered**, not aspirational ("design the system" is
@@ -194,7 +208,7 @@ Severity guide:
 - **HIGH** — will cause rework or scope confusion mid-implementation:
   overloaded component, missing acceptance criteria, hidden assumption
 - **MEDIUM** — fixable cheaply now, painful later: name drift, unjustified
-  decisions, vague plan steps
+  decisions, vague plan steps, missing or inconsistent spec frontmatter
 - **LOW** — nits and polish: dead domain terms, undocumented alternatives
 
 Group findings by category (Term & Domain, Architecture, Consistency, Plan,

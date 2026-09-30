@@ -1,3 +1,12 @@
+---
+feature: add-md2html-plugin
+title: "Proposal: add the md2html plugin (deterministic Markdown → HTML reports)"
+status: applied
+order: 1
+created: 2026-09-30
+edited: 2026-09-30
+---
+
 # Proposal: add the `md2html` plugin (deterministic Markdown → HTML reports)
 
 ## What

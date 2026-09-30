@@ -5,8 +5,14 @@ import { findRoot, loadConfig, ConfigError } from './config.mjs';
 import { matchesAny } from './glob.mjs';
 import { toPosix } from './util.mjs';
 import { format } from './fmt.mjs';
-import { lint, lintTheme, formatMessages } from './lint.mjs';
+import { lint, lintTheme, formatMessages, lintSpec, lintSpecGroup, specData } from './lint.mjs';
 import { build } from './build.mjs';
+import { profileOf } from './profile.mjs';
+import { groups as specGroups } from './spec/groups.mjs';
+import { buildSpec } from './spec/build.mjs';
+import { buildIndex } from './spec/index.mjs';
+import { parseFrontmatter } from './transforms/frontmatter.mjs';
+import { normalizeInput } from './processor.mjs';
 import { syntaxMarkdown, syntaxJson } from './syntax.mjs';
 import { version } from './assets.mjs';
 import YAML from 'yaml';
@@ -16,7 +22,7 @@ Usage:
   md2html new <path> [--title "…"]     write a report skeleton
   md2html fmt [--check] [paths…]       rewrite reports into canonical form
   md2html lint [--format json] [paths…]
-  md2html build [--check] [--watch] [paths…]
+  md2html build [--check] [--watch] [--specs] [paths…]   --specs: spec pages + index only
   md2html check                        fmt --check + lint + build --check over all sources
   md2html syntax [--json]              the cheat sheet
 Exit codes: 0 clean, 1 lint errors / stale / non-canonical, 2 usage or config error.`;
@@ -25,9 +31,23 @@ class UsageError extends Error {}
 
 const SKIP_DIRS = new Set(['node_modules', '.git', '.worktrees']);
 
-/** All root-relative files matching `sources`, sorted. */
+/** All root-relative report and spec sources, sorted. */
 export function listSources(root, config) {
-  return listFiles(root, (rel) => rel.endsWith('.md') && matchesAny(rel, config.sources));
+  return listFiles(root, (rel) => profileOf(rel, config) !== null);
+}
+
+/** Split files into reports and spec files. An explicit file outside every glob is a report. */
+function byProfile(files, config) {
+  const specs = files.filter((f) => profileOf(f, config) === 'spec');
+  return { reports: files.filter((f) => !specs.includes(f)), specs };
+}
+
+const GENERATED = /<meta name="generator" content="md2html /;
+
+/** Leading YAML frontmatter of a source as data ({} when absent or invalid). */
+function frontmatterOf(source) {
+  const m = /^---\n([\s\S]*?)\n---(?:\n|$)/.exec(normalizeInput(source ?? ''));
+  return m ? parseFrontmatter(m[1]).data : {};
 }
 
 /** Root-relative files accepted by `keep`, skipping dot-dirs and SKIP_DIRS, sorted. */
@@ -144,7 +164,7 @@ function project(cwd) {
 
 function runFmt(ctx, files, { check }, out) {
   let dirty = 0;
-  for (const f of files) {
+  for (const f of byProfile(files, ctx.config).reports) { // spec files are never reformatted
     const src = ctx.readFile(f);
     const formatted = format(src);
     if (formatted === src) continue;
@@ -165,8 +185,24 @@ function runLint(ctx, files, { format: fmtName = 'text' }, out, { theme = true }
     else if (messages.length) out.log(formatMessages(messages, displayPath, { format: 'text' }));
   };
   const cache = new Map(); // heading ids of link targets, shared across the files of this run
+  const { reports, specs } = byProfile(files, ctx.config);
+  const opts = (f) => ({ file: f, root: ctx.root, config: ctx.config, readFile: ctx.readFile, exists: ctx.exists, cache });
+  const perFile = new Map();
+  for (const f of reports) perFile.set(f, lint(ctx.readFile(f), opts(f)));
+  for (const f of specs) perFile.set(f, lintSpec(ctx.readFile(f), opts(f)));
+  if (theme && ctx.config.specs) {
+    // Files of one group must agree on feature and status.
+    for (const group of groupsOf(ctx, specs)) {
+      const items = group.items.map(({ file }) => ({ file, ...specData(ctx.readFile(file)) }));
+      for (const m of lintSpecGroup(items)) {
+        const { file, ...message } = m;
+        if (perFile.has(file)) perFile.get(file).push(message);
+      }
+    }
+  }
   for (const f of files) {
-    report(lint(ctx.readFile(f), { file: f, root: ctx.root, config: ctx.config, readFile: ctx.readFile, exists: ctx.exists, cache }), ctx.display(f));
+    const messages = perFile.get(f).sort((a, b) => a.line - b.line || a.column - b.column || a.ruleId.localeCompare(b.ruleId));
+    report(messages, ctx.display(f));
   }
   if (theme && ctx.config.theme) {
     const css = ctx.readFile(ctx.config.theme);
@@ -195,18 +231,66 @@ function lintMenu(ctx) {
   return messages;
 }
 
-/** Generated HTML (md2html generator meta) whose `.md` source is gone. */
+/** Generated report HTML (md2html generator meta) whose `.md` source is gone. Spec HTML is local-only, so skipped. */
 function orphans(ctx) {
-  const candidates = listFiles(ctx.root, (rel) => rel.endsWith('.html') && matchesAny(rel.replace(/\.html$/, '.md'), ctx.config.sources));
-  return candidates.filter((f) => !ctx.exists(f.replace(/\.html$/, '.md')) && /<meta name="generator" content="md2html /.test(ctx.readFile(f) ?? ''));
+  const candidates = listFiles(ctx.root, (rel) => rel.endsWith('.html') && profileOf(rel.replace(/\.html$/, '.md'), ctx.config) === 'report');
+  return candidates.filter((f) => !ctx.exists(f.replace(/\.html$/, '.md')) && GENERATED.test(ctx.readFile(f) ?? ''));
+}
+
+/** Groups of the given spec files (default: all spec sources), with frontmatter read from disk. */
+function groupsOf(ctx, files = listSources(ctx.root, ctx.config).filter((f) => profileOf(f, ctx.config) === 'spec')) {
+  return specGroups(files, (f) => frontmatterOf(ctx.readFile(f)));
+}
+
+const writeIfChanged = (ctx, rel, html, out) => {
+  if (ctx.readFile(rel) === html) return;
+  fs.mkdirSync(path.dirname(path.join(ctx.root, rel)), { recursive: true });
+  fs.writeFileSync(path.join(ctx.root, rel), html);
+  out.log(`wrote ${ctx.display(rel)}`);
+};
+
+const notGenerated = (html) => html !== null && !GENERATED.test(html);
+
+/**
+ * Rebuild every spec page, drop pages whose source is gone, and write the project index.
+ * Hand-written HTML next to a spec file is skipped with a warning; a hand-written index fails last.
+ */
+function buildSpecs(ctx, themeCss, out) {
+  const { index } = ctx.config.specs;
+  const clash = listSources(ctx.root, ctx.config).find((f) => htmlPathFor(f) === index);
+  if (clash) throw new ConfigError(`reports.json: "specs.index" ${index} is also the page of ${clash}; choose another path`);
+  const all = groupsOf(ctx);
+  for (const group of all) {
+    for (const { file } of group.items) {
+      const target = htmlPathFor(file);
+      if (notGenerated(ctx.readFile(target))) {
+        out.err(`warning: ${ctx.display(target)} exists and was not generated by md2html; not overwriting`);
+        continue;
+      }
+      writeIfChanged(ctx, target, buildSpec(ctx.readFile(file), { file, config: ctx.config, group, themeCss }), out);
+    }
+  }
+  const stale = listFiles(ctx.root, (rel) => rel !== index && rel.endsWith('.html') && profileOf(rel.replace(/\.html$/, '.md'), ctx.config) === 'spec');
+  for (const f of stale) {
+    if (!ctx.exists(f.replace(/\.html$/, '.md')) && GENERATED.test(ctx.readFile(f) ?? '')) {
+      fs.unlinkSync(path.join(ctx.root, f)); out.log(`removed ${ctx.display(f)}`);
+    }
+  }
+  if (notGenerated(ctx.readFile(index))) {
+    throw new ConfigError(`${index} exists and was not generated by md2html; set "specs.index" in reports.json (e.g. "specs/index.html") so it is not overwritten`);
+  }
+  writeIfChanged(ctx, index, buildIndex(all, { config: ctx.config, themeCss }), out);
 }
 
 function buildOne(ctx, f, themeCss) {
   return build(ctx.readFile(f), { file: f, root: ctx.root, config: ctx.config, themeCss, exists: ctx.exists });
 }
 
-function runBuild(ctx, files, { check }, out, { orphanCheck = false } = {}) {
+/** `specsOnly`: skip reports; spec pages + index are always rebuilt. */
+function runBuild(ctx, allFiles, { check }, out, { orphanCheck = false, specs: specsTouched = false, specsOnly = false } = {}) {
   const themeCss = ctx.themeCss();
+  const { reports, specs } = byProfile(allFiles, ctx.config);
+  const files = specsOnly ? [] : reports;
   let stale = 0;
   if (check && orphanCheck) {
     for (const f of orphans(ctx)) {
@@ -223,19 +307,36 @@ function runBuild(ctx, files, { check }, out, { orphanCheck = false } = {}) {
     if (check) out.err(`${ctx.display(target)}: stale (run md2html build)`);
     else { fs.writeFileSync(path.join(ctx.root, target), html); out.log(`wrote ${ctx.display(target)}`); }
   }
+  // Reports first, so a spec problem (e.g. a hand-written index) never blocks them.
+  // Spec HTML is gitignored: never "stale" for --check; rebuilt whole (nav + index) when any spec file is involved.
+  if (!check && ctx.config.specs && (specs.length || specsTouched || specsOnly)) buildSpecs(ctx, themeCss, out);
   return check && stale ? 1 : 0;
 }
 
-function watch(cwd, positional, out) {
+/**
+ * Could this non-`.md` event change the spec file list? A directory renamed or moved (in or out)
+ * reports only the directory's name, so any path that is now a directory or gone counts. Our own
+ * `.html` writes, existing plain files (logs …) and skipped dirs (.git …) never do.
+ */
+function specRelevant(ctx, rel) {
+  if (!ctx.config.specs || rel.endsWith('.html')) return false;
+  if (rel.split('/').some((s) => s.startsWith('.') || SKIP_DIRS.has(s))) return false;
+  const stat = fs.statSync(path.join(ctx.root, rel), { throwIfNoEntry: false });
+  return !stat || stat.isDirectory();
+}
+
+function watch(cwd, positional, out, { specsOnly = false } = {}) {
   // Re-resolve config and the file list on every batch, so new reports and reports.json edits are picked up.
   let ctx = project(cwd);
-  let timer = null; let all = false; const pending = new Set();
-  out.log(`watching ${ctx.files(positional).length} report(s); Ctrl-C to stop`);
+  let timer = null; let all = false; let specsDirty = false; const pending = new Set();
+  const { reports, specs } = byProfile(ctx.files(positional), ctx.config);
+  out.log(`watching ${specsOnly ? 0 : reports.length} report(s) and ${specs.length} spec file(s); Ctrl-C to stop`);
   fs.watch(ctx.root, { recursive: true }, (_event, name) => {
     if (!name) return;
     const rel = toPosix(name);
     if (rel === 'reports.json' || rel === ctx.config.theme) all = true;
     else if (rel.endsWith('.md')) pending.add(rel);
+    else if (specRelevant(ctx, rel)) specsDirty = true;
     else return;
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -243,8 +344,17 @@ function watch(cwd, positional, out) {
         ctx = project(cwd);
         const files = ctx.files(positional);
         const batch = all ? files : files.filter((f) => pending.has(f));
-        pending.clear(); all = false;
-        runBuild(ctx, batch, {}, out);
+        const changedSpecs = [...pending].filter((f) => profileOf(f, ctx.config) === 'spec');
+        const specs = all || specsDirty || changedSpecs.length > 0; // incl. deleted files
+        pending.clear(); all = false; specsDirty = false;
+        runBuild(ctx, batch, {}, out, { specs, specsOnly });
+        // Nobody reads a watcher's output closely: surface spec frontmatter errors of the files that changed.
+        for (const f of changedSpecs) {
+          const source = ctx.readFile(f);
+          if (source === null) continue;
+          const errors = lintSpec(source, { file: f, root: ctx.root, config: ctx.config, readFile: ctx.readFile, exists: ctx.exists }).filter((m) => m.severity === 'error');
+          if (errors.length) out.err(formatMessages(errors, ctx.display(f), { format: 'text' }));
+        }
       } catch (e) { out.err(e.message); }
     }, 100);
   });
@@ -280,12 +390,15 @@ export async function main(argv, { cwd = process.cwd(), out = { log: console.log
       case 'fmt': allowFlags(flags, ['check'], cmd); { const ctx = project(cwd); return runFmt(ctx, ctx.files(positional), flags, out); }
       case 'lint': allowFlags(flags, ['format'], cmd); { const ctx = project(cwd); return runLint(ctx, ctx.files(positional), flags, out, { theme: !positional.length }); }
       case 'build': {
-        allowFlags(flags, ['check', 'watch'], cmd);
+        allowFlags(flags, ['check', 'watch', 'specs'], cmd);
         if (flags.check && flags.watch) throw new UsageError('--check and --watch cannot be combined');
+        if (flags.check && flags.specs) throw new UsageError('--check and --specs cannot be combined (spec HTML is never checked)');
         const ctx = project(cwd);
+        if (flags.specs && !ctx.config.specs) throw new ConfigError('reports.json has no "specs" key; add "specs": {} to build spec pages');
+        const specsOnly = Boolean(flags.specs);
         const files = ctx.files(positional);
-        const code = runBuild(ctx, files, flags, out, { orphanCheck: !positional.length });
-        return flags.watch ? watch(cwd, positional, out) : code;
+        const code = runBuild(ctx, files, flags, out, { orphanCheck: !positional.length, specsOnly });
+        return flags.watch ? watch(cwd, positional, out, { specsOnly }) : code;
       }
       case 'check': {
         allowFlags(flags, [], cmd);

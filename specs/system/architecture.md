@@ -1,3 +1,9 @@
+---
+title: "Architecture: Claude Code Plugin Marketplace"
+created: 2026-04-15
+edited: 2026-04-15
+---
+
 # Architecture: Claude Code Plugin Marketplace
 
 ## Repository Structure

@@ -1,3 +1,12 @@
+---
+feature: add-md2html-plugin
+title: "Decisions log: add-md2html-plugin (autonomous run, 2026-09-30)"
+status: applied
+order: 5
+created: 2026-09-30
+edited: 2026-09-30
+---
+
 # Decisions log: add-md2html-plugin (autonomous run, 2026-09-30)
 
 Everything below was decided without the user. Review each; all are reversible.

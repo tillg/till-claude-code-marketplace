@@ -12,6 +12,10 @@ self-contained HTML page next to it. The `.md` is the source of truth. The
 The full syntax (frontmatter keys, directives, attributes) is in
 [syntax.md](syntax.md). Read it before your first edit in a session.
 
+Spec files (`.md` under `specs.sources` in `reports.json`, e.g.
+`proposal.md`) are not reports: they use md2html's spec profile and the spec
+frontmatter from `/spec:propose`. Don't apply this skill to them.
+
 ## Locate the tool
 
 Run from the project root (the directory holding `reports.json`):

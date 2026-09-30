@@ -1,0 +1,1 @@
+specs/changes/add-x/no-frontmatter.md:1:1  warning  add spec frontmatter (feature, title, status, created, edited)  [spec-frontmatter]

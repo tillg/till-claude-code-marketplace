@@ -1,3 +1,9 @@
+---
+title: "Functional: Claude Code Plugin Marketplace"
+created: 2026-04-15
+edited: 2026-04-15
+---
+
 # Functional: Claude Code Plugin Marketplace
 
 ## Marketplace Functions

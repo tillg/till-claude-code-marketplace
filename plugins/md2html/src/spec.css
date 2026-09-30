@@ -1,0 +1,36 @@
+
+.spec-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
+  padding: 8px 16px; background: var(--card); border-bottom: 1px solid var(--line);
+  font: 500 14px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }
+.spec-nav a { padding: 6px 12px; border-radius: 999px; color: var(--fg); text-decoration: none; }
+.spec-nav a:hover { background: rgba(127,127,127,.12); }
+.spec-nav a.up { color: var(--muted); margin-right: 8px; }
+.spec-nav a[aria-current="page"] { background: var(--accent); color: var(--bg); }
+.spec-nav .spec-status { margin-left: auto; }
+.spec-status { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; white-space: nowrap; }
+.spec-status.exploring { color: var(--muted); background: var(--code); }
+.spec-status.proposed { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.spec-status.applying { color: var(--partial); background: var(--partial-bg); }
+.spec-status.paused { color: var(--no); background: var(--no-bg); }
+.spec-status.applied { color: var(--go); background: var(--go-bg); }
+
+pre.mermaid { font-size: .85rem; }
+pre.mermaid[data-processed] { background: none; border: 0; padding: 0; text-align: center; }
+pre.mermaid svg { max-width: 100%; height: auto; }
+
+.spec-index td a { margin-right: 10px; }
+.spec-index td a:last-child { margin-right: 0; }
+.spec-index td.pages { min-width: 16ch; }
+.spec-index td.dir code { white-space: nowrap; }
+@media (max-width: 640px) {
+  .spec-index thead { display: none; }
+  .spec-index tr { display: block; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .spec-index tr:last-child { border-bottom: 0; }
+  .spec-index td { display: flex; gap: 12px; border: 0; padding: 3px 12px; text-align: left; white-space: normal; }
+  .spec-index td::before { content: attr(data-label); flex: none; width: 6.5em; color: var(--muted); font-size: .85em; }
+  .spec-index td.pages { display: block; padding-left: calc(12px + 6.5em + 12px); text-indent: calc(-6.5em - 12px); }
+  .spec-index td.pages::before { display: inline-block; margin-right: 12px; text-indent: 0; }
+}
+/* Plan checkboxes: GFM renders them disabled (greyed); keep done vs. open steps easy to tell apart. */
+.contains-task-list input[type="checkbox"] { accent-color: var(--accent); opacity: 1; width: 1em; height: 1em; vertical-align: -0.1em; }
+.task-list-item:has(input:checked) { color: var(--muted); }

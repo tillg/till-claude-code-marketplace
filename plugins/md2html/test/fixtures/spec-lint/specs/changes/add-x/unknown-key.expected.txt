@@ -1,0 +1,2 @@
+specs/changes/add-x/unknown-key.md:5:1  error  unknown frontmatter key "artifact". Allowed: feature, title, status, order, created, edited  [spec-frontmatter]
+specs/changes/add-x/unknown-key.md:6:1  error  unknown frontmatter key "statu". Did you mean "status"?  [spec-frontmatter]

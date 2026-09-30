@@ -14,6 +14,9 @@ The `.md` is the source of truth. The `.html` next to it is generated,
 committed, and never edited by hand. Each project can bring its own
 `theme.css` on top of a fixed template and a versioned class/token contract.
 
+With a `specs` key in `reports.json` it also renders spec files (the spec
+plugin's changes) as local, gitignored pages: see [Spec profile](#spec-profile).
+
 ## Install
 
 ```
@@ -48,7 +51,7 @@ node md2html.mjs <command> [options] [paths]
 | `new <path> [--title "…"]` | Skeleton report in canonical form: frontmatter (`created` = `edited` = today, `status: research`), a `:::tldr`, and sections Context, Findings, Recommendation, Sources. Title defaults to the file name minus `-report.md`, with `-`/`_` → spaces and the first letter capitalised (`browser-only-report.md` → `Browser only`). Refuses to overwrite. Warns (exit 0) when the path is not matched by `sources`. | the new `.md` |
 | `fmt [--check] [paths]` | Rewrite into canonical form. `--check` writes nothing and fails on any diff. | the `.md`, only if bytes changed |
 | `lint [--format json] [paths]` | Messages as `path:line:col  severity  message  [rule-id]`, or JSON. Without paths it also lints the theme and the `reports.json` menu entries; `lint <paths>` checks only those reports. | nothing |
-| `build [--check] [--watch] [paths]` | Render `.md` → `.html`. `--check` fails on stale or missing HTML and, without paths, on orphaned generated HTML whose `.md` was deleted. `--watch` rebuilds on change, reloads `reports.json` and the theme, and picks up new reports. | the `.html`, only if bytes changed |
+| `build [--check] [--watch] [--specs] [paths]` | Render `.md` → `.html`. `--check` fails on stale or missing HTML and, without paths, on orphaned generated HTML whose `.md` was deleted. `--watch` rebuilds on change, reloads `reports.json` and the theme, and picks up new reports (and spec files); it prints `watching N report(s) and M spec file(s)`. `--specs` builds only spec files and the index, never report HTML (also with `--watch`). | the `.html`, only if bytes changed |
 | `check` | CI gate: `fmt --check` + `lint` + `build --check` over all sources (theme, menu entries and orphaned HTML included). Runs all three and exits with the worst code. | nothing |
 | `syntax [--json]` | Cheat sheet (Markdown) or registry data for editor insert menus. | stdout |
 
@@ -98,6 +101,51 @@ paths. URLs (`https://…`, `//host`) are allowed only for `reports[].path` and
 | `brand` | `{name, icon?}` | no | `{name: "Reports"}` | Menu bar brand and the header app icon (`icon` is an image path). |
 | `lang` | string | no | `"en"` | `<html lang>` |
 | `theme` | string | no | none | Path to the theme CSS, e.g. `reports/theme.css` |
+| `specs` | object | no | none | Turns on the [spec profile](#spec-profile). `{}` uses the defaults below. |
+
+`specs` has its own closed schema; all keys are optional:
+
+| Key | Default | Meaning |
+|---|---|---|
+| `sources` | `["specs/**/*.md"]` | Which `.md` files are spec files |
+| `index` | `"index.html"` | Path of the generated project index. Must end in `.html`, stay inside the root, and not collide with a report or spec page (config error otherwise). |
+| `mermaid` | pinned jsDelivr URL of `mermaid.esm.min.mjs` | Mermaid ES module loaded by spec pages that have a diagram |
+
+**Reports win over spec globs:** a file matching `sources` (report globs,
+default `specs/**/*-report.md` included) is a report, even when
+`specs.sources` matches it too. Only the rest of `specs.sources` is spec.
+
+## Spec profile
+
+With a `specs` key, spec files (e.g. `specs/changes/<feature>/proposal.md`
+from the spec plugin) render as a second kind of page. `/spec:view` sets
+this up and starts a watcher. What differs from reports:
+
+| | Reports | Spec files |
+|---|---|---|
+| Frontmatter | report schema | spec schema: `feature`, `title`, `status` (`exploring` · `proposed` · `applying` · `paused` · `applied`), `order`, `created`, `edited` |
+| `fmt` | canonical rewrite | never applied |
+| Section numbers, hoisted TL;DR, TOC | yes | no |
+| Navigation | `reports` menu bar | per directory: an up link to the index, one link per file of the directory (sorted by `order`, then name), the page's status pill |
+| Index | none | `specs.index`: one row per directory (feature, status, title, newest `edited`, pages) |
+| Mermaid fences | stay code | drawn in the browser by the `specs.mermaid` module script (offline: shown as code) |
+| Output | committed, `check`ed | gitignored; `check` / `build --check` skip it |
+| Hook | lint → fmt → lint | lint only, never builds |
+| Who builds | `build` | the watcher (`build --specs --watch`) or `build --specs` |
+
+**Lint rules:** `spec-frontmatter` (errors: missing or unknown key, bad
+`status`, non-integer `order`, non-ISO date, `edited` < `created`, `feature`
+≠ change directory; warnings: no frontmatter, key order) and
+`spec-consistency` (only when linting all sources: files of one directory
+disagreeing on `feature` or `status`). A directory's status is the value most
+of its files carry; on a tie, the one of the tied file with the lowest
+`order`. The index shows that value.
+
+**Nothing hand-written is overwritten.** The index is written only if the
+target is missing or was generated by md2html; otherwise `build` exits 2 and
+asks to set `specs.index` (e.g. `specs/index.html`). A hand-written `.html`
+next to a spec `.md` is left alone with a warning. Generated spec HTML whose
+`.md` was deleted is removed on the next spec build.
 
 ## Source format
 
@@ -248,6 +296,9 @@ it, then formats it:
   through `additionalContext` (`md2html fmt rewrote <file> into canonical form; Read it again before the next Edit.`),
   so the next Edit doesn't fail on a stale copy.
 - **Lint warnings only:** exit 0, warnings in `additionalContext`.
+
+For a spec file (see [Spec profile](#spec-profile)) the hook only lints:
+errors → exit 2, warnings → `additionalContext`, never `fmt`.
 
 The hook never runs `build`, so edits stay fast and HTML is regenerated on
 purpose.

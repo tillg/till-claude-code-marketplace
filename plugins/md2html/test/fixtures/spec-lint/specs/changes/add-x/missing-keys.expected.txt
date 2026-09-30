@@ -1,0 +1,3 @@
+specs/changes/add-x/missing-keys.md:1:1  error  missing required frontmatter key "feature"  [spec-frontmatter]
+specs/changes/add-x/missing-keys.md:1:1  error  missing required frontmatter key "status"  [spec-frontmatter]
+specs/changes/add-x/missing-keys.md:1:1  error  missing required frontmatter key "title"  [spec-frontmatter]

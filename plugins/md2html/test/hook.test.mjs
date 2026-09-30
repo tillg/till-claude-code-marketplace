@@ -81,3 +81,16 @@ test('a directory named *.md exits 0 without crashing', () => {
   const r = hook(path.join(root, 'specs/dir-report.md'));
   assert.deepEqual([r.code, r.stderr], [0, '']);
 });
+
+test('spec files: hook lints frontmatter only, never formats or builds', () => {
+  const good = '---\nfeature: add-x\ntitle: "Plan"\nstatus: proposed\ncreated: 2026-09-30\nedited: 2026-09-30\n---\n\n# Plan\n\n* [ ] step\n';
+  const root = tempProject({ 'reports.json': JSON.stringify({ specs: {} }), 'specs/changes/add-x/plan.md': good });
+  let r = hook(path.join(root, 'specs/changes/add-x/plan.md'));
+  assert.equal(r.code, 0, r.stderr);
+  assert.equal(fs.readFileSync(path.join(root, 'specs/changes/add-x/plan.md'), 'utf8'), good, 'not reformatted');
+  assert.equal(fs.existsSync(path.join(root, 'specs/changes/add-x/plan.html')), false, 'no build');
+  fs.writeFileSync(path.join(root, 'specs/changes/add-x/plan.md'), good.replace('status: proposed', 'status: done'));
+  r = hook(path.join(root, 'specs/changes/add-x/plan.md'));
+  assert.equal(r.code, 2);
+  assert.match(r.stderr, /status/);
+});

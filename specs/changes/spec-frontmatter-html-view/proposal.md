@@ -1,7 +1,8 @@
 ---
 feature: spec-frontmatter-html-view
 title: "Proposal: spec frontmatter and an HTML view of changes"
-status: proposed
+status: applied
+order: 1
 created: 2026-09-30
 edited: 2026-09-30
 ---

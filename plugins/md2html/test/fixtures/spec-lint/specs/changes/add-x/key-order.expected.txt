@@ -1,0 +1,2 @@
+specs/changes/add-x/key-order.md:3:1  warning  "feature" should come before "title" (order: feature, title, status, order, created, edited)  [spec-frontmatter]
+specs/changes/add-x/key-order.md:6:1  warning  "created" should come before "edited" (order: feature, title, status, order, created, edited)  [spec-frontmatter]

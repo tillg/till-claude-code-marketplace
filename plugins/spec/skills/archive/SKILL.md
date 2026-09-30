@@ -70,6 +70,13 @@ changes.
    relationships. Update existing diagrams in the system description if this
    change alters them.
 
+   **Frontmatter:** change files carry spec frontmatter (`feature`, `title`,
+   `status`, `order`, `created`, `edited`). When carrying content into
+   `specs/system/`, never copy the keys `feature`, `status` or `order` — system
+   docs keep only `title`, `created`, `edited`. On every system file you touch,
+   set `edited` to today; a new system file gets `created` = `edited` = today;
+   a system file without frontmatter gets it now.
+
    The goal: after archiving, the system description fully reflects the current
    state of the system including this change. Don't leave knowledge only in the
    archived change artifacts.
@@ -126,3 +133,5 @@ changes.
 - The first commit includes all implementation work and system description
   updates; the second commit only removes the change directory
 - Use Mermaid as the preferred format for all diagrams in the system description
+- Edit spec files with the Edit/Write tools, not sed/python in Bash, so the
+  md2html lint hook sees every change

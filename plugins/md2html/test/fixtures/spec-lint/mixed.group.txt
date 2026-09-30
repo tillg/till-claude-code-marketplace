@@ -1,0 +1,2 @@
+specs/changes/mixed/plan.md:2:1  error  feature "mixd" differs from the rest of specs/changes/mixed/ ("mixed")  [spec-consistency]
+specs/changes/mixed/plan.md:4:1  error  status "proposed" differs from the rest of specs/changes/mixed/ ("applying")  [spec-consistency]

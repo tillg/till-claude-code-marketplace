@@ -21,6 +21,8 @@ ambiguous you MUST prompt for available changes.
    - Auto-select if only one active change exists in `specs/changes/`
    - If ambiguous, list the directories in `specs/changes/` (excluding `archive/`)
      and use the **AskUserQuestion tool** to let the user select
+   - If running unattended (no user to answer), make a sensible choice, note
+     it, and continue
 
    Always announce: "Using change: <name>" and how to override (e.g.,
    `/spec:apply <other>`).
@@ -51,14 +53,29 @@ ambiguous you MUST prompt for available changes.
    - Show which step is being worked on
    - Make the code changes required
    - Keep changes minimal and focused
-   - Mark step complete in plan.md: `- [ ]` → `- [x]`
+   - Mark step complete in plan.md: `- [ ]` → `- [x]` (bump plan.md's
+     `edited` to today)
+   - After the **first** completed step, if the status is not yet `applying`,
+     set `status: applying` in the frontmatter of **every** `.md` in the change
+     directory (a status change alone does not bump `edited`)
    - Continue to next step
+
+   When every plan step is `[x]`, set `status: applied` on every file of the
+   change. If the user asks to park the change, set `status: paused` on all
+   files; resuming sets `applying` again.
+
+   Frontmatter schema: see `/spec:propose` (`feature`, `title`, `status`,
+   `order`, `created`, `edited`). Files that lack it get it now, with the
+   current status.
 
    **Pause if:**
    - Step is unclear → ask for clarification
    - Implementation reveals an architectural issue → suggest updating artifacts
    - Error or blocker encountered → report and wait for guidance
    - User interrupts
+
+   If running unattended (no user to answer), make a sensible choice, note it,
+   and continue instead of pausing.
 
 5. **On completion or pause, show status**
 
@@ -125,7 +142,13 @@ What would you like to do?
 - If implementation reveals issues, pause and suggest artifact updates
 - Keep code changes minimal and scoped to each step
 - Update step checkbox immediately after completing each step
+- Keep `status` identical in all files of the change (`applying` while in
+  progress, `applied` when done)
 - Pause on errors, blockers, or unclear requirements — don't guess
+- Edit spec files with the Edit/Write tools, not sed/python in Bash, so the
+  md2html lint hook sees every change
+- Don't call the spec HTML stale: if the `/spec:view` watcher is running it
+  rebuilds the HTML automatically
 
 **Fluid Workflow Integration**
 

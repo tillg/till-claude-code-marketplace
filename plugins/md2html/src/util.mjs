@@ -57,4 +57,7 @@ export function relHref(fromFile, toFile) {
   return rel === '' ? path.posix.basename(toFile) : rel;
 }
 
+/** Percent-encode each segment of a relative path (`a#b.html` → `a%23b.html`); `..` and `/` stay. */
+export const encodePath = (p) => p.split('/').map((s) => (s === '..' ? s : encodeURIComponent(s))).join('/');
+
 export const toPosix = (p) => p.split(path.sep).join('/');

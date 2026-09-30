@@ -1,7 +1,8 @@
 ---
 feature: spec-frontmatter-html-view
 title: "Architecture: spec frontmatter and HTML view"
-status: proposed
+status: applied
+order: 3
 created: 2026-09-30
 edited: 2026-09-30
 ---
@@ -63,9 +64,12 @@ the profile on. Without a `specs` key nothing changes for existing projects.
 
 ### Profile selection (`src/profile.mjs`)
 
-`profileOf(relPath, config)` → `'spec'` if it matches `specs.sources`, else `'report'` if it
-matches `sources`, else `null`. Spec wins when both match, so a project whose report glob is
-`specs/**/*.md` doesn't render proposals as reports. The CLI, hook and watcher all call it.
+`profileOf(relPath, config)` → `'report'` if it matches `sources`, else `'spec'` if it
+matches `specs.sources`, else `null`. Report wins when both match, so reports under `specs/`
+(the default `specs/**/*-report.md`, karpathy.app-style `specs/NN_x/*-report.md`) stay reports
+and keep their committed HTML; a project whose report glob is as broad as `specs/**/*.md` must
+narrow it. Stale spec-HTML removal only ever considers files whose `.md` is spec-profile, and
+never the index. The CLI, hook and watcher all call it.
 
 | Command | report files | spec files |
 |---|---|---|
@@ -74,6 +78,7 @@ matches `sources`, else `null`. Spec wins when both match, so a project whose re
 | `build` | report page | spec page + its group's siblings (nav) + project index |
 | `build --check` / `check` | stale = error | **skipped** (HTML is gitignored) |
 | `build --watch` | rebuild | rebuild page; a file added/removed in a group rebuilds the whole group; always the index |
+| `build --specs` (also `--watch`) | **skipped** | spec pages + index only (what `/spec:view` runs) |
 | hook | lint → fmt → lint | lint only (frontmatter errors → exit 2); **never builds** |
 
 Why only the watcher builds spec HTML: it sees every edit, Claude's included, so a hook build
@@ -116,7 +121,7 @@ missing or contains md2html's generator meta; otherwise `build` errors (exit 2) 
 
 ### Lint (`src/lint/spec-frontmatter.mjs`)
 
-Closed schema from domain.md. Errors: missing/unknown key, bad `artifact`/`status` value,
+Closed schema from domain.md. Errors: missing/unknown key, bad `status` value, non-integer `order`,
 non-ISO date, `edited < created`, `feature` ≠ directory name. Cross-file (CLI `lint` over all
 sources only): files of one group disagreeing on `status` or `feature` → error at each odd one
 out.
@@ -148,6 +153,7 @@ in the spec plugin works without it.
 | Groups discovered per directory, `order` key | hard-wired artifact list | user decision; new files (risks.md, decisions.md) join the nav with no code change |
 | Watcher builds, hook only lints | both build | user decision; the watcher already sees Claude's edits |
 | Index at project root, overwrite guard | `specs/index.html` | user decision; the guard protects web projects that own `index.html` |
+| Report wins when both globs match | spec wins | reports under `specs/` (default `*-report.md`) are committed HTML; rendering them as gitignored spec pages broke them (review X1) |
 | Render via md2html profile | separate renderer in spec plugin | one pipeline, one theme, the hook and watcher already exist |
 | HTML gitignored | committed | user decision; no diff noise, no staleness checks |
 | Client-side Mermaid, pinned CDN | inline 3 MB, mermaid-cli | user decision; instant rebuilds, no Chromium |
@@ -158,9 +164,9 @@ in the spec plugin works without it.
 
 - **CDN availability / version drift**: exact version pin; offline shows code. Accepted.
 - **Legacy changes** without frontmatter: warning + overview fallback. Accepted.
-- **Glob overlap** with report sources: spec wins (profile table). Tested. Default spec glob
-  `specs/**/*.md` also matches karpathy.app-style `specs/NN_x/*-report.md`: set `specs.sources`
-  narrower there (`/spec:view` proposes `specs/changes/**/*.md` + `specs/system/*.md` when
-  report sources exist).
+- **Glob overlap** with report sources: report wins (profile selection). Tested. Default spec
+  glob `specs/**/*.md` also matches karpathy.app-style `specs/NN_x/*-report.md`; those stay
+  reports because the report glob wins. A report glob as broad as `specs/**/*.md` swallows the
+  specs: narrow it.
 - **Stale HTML when the watcher isn't running**: accepted; `/spec:view` builds once on start.
 - **Watcher left running**: `/spec:view` prints the PIDs and how to stop them.

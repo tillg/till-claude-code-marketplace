@@ -1,3 +1,12 @@
+---
+feature: add-md2html-plugin
+title: "Domain: md2html"
+status: applied
+order: 2
+created: 2026-09-30
+edited: 2026-09-30
+---
+
 # Domain: md2html
 
 ## New concepts

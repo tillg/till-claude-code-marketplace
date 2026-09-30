@@ -241,11 +241,11 @@ var require_identity = __commonJS({
     var SCALAR = /* @__PURE__ */ Symbol.for("yaml.scalar");
     var SEQ = /* @__PURE__ */ Symbol.for("yaml.seq");
     var NODE_TYPE = /* @__PURE__ */ Symbol.for("yaml.node.type");
-    var isAlias2 = (node2) => !!node2 && typeof node2 === "object" && node2[NODE_TYPE] === ALIAS;
+    var isAlias3 = (node2) => !!node2 && typeof node2 === "object" && node2[NODE_TYPE] === ALIAS;
     var isDocument = (node2) => !!node2 && typeof node2 === "object" && node2[NODE_TYPE] === DOC;
-    var isMap3 = (node2) => !!node2 && typeof node2 === "object" && node2[NODE_TYPE] === MAP2;
+    var isMap4 = (node2) => !!node2 && typeof node2 === "object" && node2[NODE_TYPE] === MAP2;
     var isPair = (node2) => !!node2 && typeof node2 === "object" && node2[NODE_TYPE] === PAIR;
-    var isScalar3 = (node2) => !!node2 && typeof node2 === "object" && node2[NODE_TYPE] === SCALAR;
+    var isScalar4 = (node2) => !!node2 && typeof node2 === "object" && node2[NODE_TYPE] === SCALAR;
     var isSeq = (node2) => !!node2 && typeof node2 === "object" && node2[NODE_TYPE] === SEQ;
     function isCollection(node2) {
       if (node2 && typeof node2 === "object")
@@ -267,7 +267,7 @@ var require_identity = __commonJS({
         }
       return false;
     }
-    var hasAnchor = (node2) => (isScalar3(node2) || isCollection(node2)) && !!node2.anchor;
+    var hasAnchor = (node2) => (isScalar4(node2) || isCollection(node2)) && !!node2.anchor;
     exports.ALIAS = ALIAS;
     exports.DOC = DOC;
     exports.MAP = MAP2;
@@ -276,13 +276,13 @@ var require_identity = __commonJS({
     exports.SCALAR = SCALAR;
     exports.SEQ = SEQ;
     exports.hasAnchor = hasAnchor;
-    exports.isAlias = isAlias2;
+    exports.isAlias = isAlias3;
     exports.isCollection = isCollection;
     exports.isDocument = isDocument;
-    exports.isMap = isMap3;
+    exports.isMap = isMap4;
     exports.isNode = isNode;
     exports.isPair = isPair;
-    exports.isScalar = isScalar3;
+    exports.isScalar = isScalar4;
     exports.isSeq = isSeq;
   }
 });
@@ -307,17 +307,17 @@ var require_visit = __commonJS({
     visit2.BREAK = BREAK;
     visit2.SKIP = SKIP2;
     visit2.REMOVE = REMOVE;
-    function visit_(key2, node2, visitor, path12) {
-      const ctrl = callVisitor(key2, node2, visitor, path12);
+    function visit_(key2, node2, visitor, path14) {
+      const ctrl = callVisitor(key2, node2, visitor, path14);
       if (identity.isNode(ctrl) || identity.isPair(ctrl)) {
-        replaceNode(key2, path12, ctrl);
-        return visit_(key2, ctrl, visitor, path12);
+        replaceNode(key2, path14, ctrl);
+        return visit_(key2, ctrl, visitor, path14);
       }
       if (typeof ctrl !== "symbol") {
         if (identity.isCollection(node2)) {
-          path12 = Object.freeze(path12.concat(node2));
+          path14 = Object.freeze(path14.concat(node2));
           for (let i = 0; i < node2.items.length; ++i) {
-            const ci = visit_(i, node2.items[i], visitor, path12);
+            const ci = visit_(i, node2.items[i], visitor, path14);
             if (typeof ci === "number")
               i = ci - 1;
             else if (ci === BREAK)
@@ -328,13 +328,13 @@ var require_visit = __commonJS({
             }
           }
         } else if (identity.isPair(node2)) {
-          path12 = Object.freeze(path12.concat(node2));
-          const ck = visit_("key", node2.key, visitor, path12);
+          path14 = Object.freeze(path14.concat(node2));
+          const ck = visit_("key", node2.key, visitor, path14);
           if (ck === BREAK)
             return BREAK;
           else if (ck === REMOVE)
             node2.key = null;
-          const cv = visit_("value", node2.value, visitor, path12);
+          const cv = visit_("value", node2.value, visitor, path14);
           if (cv === BREAK)
             return BREAK;
           else if (cv === REMOVE)
@@ -355,17 +355,17 @@ var require_visit = __commonJS({
     visitAsync.BREAK = BREAK;
     visitAsync.SKIP = SKIP2;
     visitAsync.REMOVE = REMOVE;
-    async function visitAsync_(key2, node2, visitor, path12) {
-      const ctrl = await callVisitor(key2, node2, visitor, path12);
+    async function visitAsync_(key2, node2, visitor, path14) {
+      const ctrl = await callVisitor(key2, node2, visitor, path14);
       if (identity.isNode(ctrl) || identity.isPair(ctrl)) {
-        replaceNode(key2, path12, ctrl);
-        return visitAsync_(key2, ctrl, visitor, path12);
+        replaceNode(key2, path14, ctrl);
+        return visitAsync_(key2, ctrl, visitor, path14);
       }
       if (typeof ctrl !== "symbol") {
         if (identity.isCollection(node2)) {
-          path12 = Object.freeze(path12.concat(node2));
+          path14 = Object.freeze(path14.concat(node2));
           for (let i = 0; i < node2.items.length; ++i) {
-            const ci = await visitAsync_(i, node2.items[i], visitor, path12);
+            const ci = await visitAsync_(i, node2.items[i], visitor, path14);
             if (typeof ci === "number")
               i = ci - 1;
             else if (ci === BREAK)
@@ -376,13 +376,13 @@ var require_visit = __commonJS({
             }
           }
         } else if (identity.isPair(node2)) {
-          path12 = Object.freeze(path12.concat(node2));
-          const ck = await visitAsync_("key", node2.key, visitor, path12);
+          path14 = Object.freeze(path14.concat(node2));
+          const ck = await visitAsync_("key", node2.key, visitor, path14);
           if (ck === BREAK)
             return BREAK;
           else if (ck === REMOVE)
             node2.key = null;
-          const cv = await visitAsync_("value", node2.value, visitor, path12);
+          const cv = await visitAsync_("value", node2.value, visitor, path14);
           if (cv === BREAK)
             return BREAK;
           else if (cv === REMOVE)
@@ -409,23 +409,23 @@ var require_visit = __commonJS({
       }
       return visitor;
     }
-    function callVisitor(key2, node2, visitor, path12) {
+    function callVisitor(key2, node2, visitor, path14) {
       if (typeof visitor === "function")
-        return visitor(key2, node2, path12);
+        return visitor(key2, node2, path14);
       if (identity.isMap(node2))
-        return visitor.Map?.(key2, node2, path12);
+        return visitor.Map?.(key2, node2, path14);
       if (identity.isSeq(node2))
-        return visitor.Seq?.(key2, node2, path12);
+        return visitor.Seq?.(key2, node2, path14);
       if (identity.isPair(node2))
-        return visitor.Pair?.(key2, node2, path12);
+        return visitor.Pair?.(key2, node2, path14);
       if (identity.isScalar(node2))
-        return visitor.Scalar?.(key2, node2, path12);
+        return visitor.Scalar?.(key2, node2, path14);
       if (identity.isAlias(node2))
-        return visitor.Alias?.(key2, node2, path12);
+        return visitor.Alias?.(key2, node2, path14);
       return void 0;
     }
-    function replaceNode(key2, path12, node2) {
-      const parent = path12[path12.length - 1];
+    function replaceNode(key2, path14, node2) {
+      const parent = path14[path14.length - 1];
       if (identity.isCollection(parent)) {
         parent.items[key2] = node2;
       } else if (identity.isPair(parent)) {
@@ -522,13 +522,13 @@ var require_directives = __commonJS({
               onError(0, "%YAML directive should contain exactly one part");
               return false;
             }
-            const [version2] = parts;
-            if (version2 === "1.1" || version2 === "1.2") {
-              this.yaml.version = version2;
+            const [version3] = parts;
+            if (version3 === "1.1" || version3 === "1.2") {
+              this.yaml.version = version3;
               return true;
             } else {
-              const isValid = /^\d+\.\d+$/.test(version2);
-              onError(6, `Unsupported YAML version ${version2}`, isValid);
+              const isValid = /^\d+\.\d+$/.test(version3);
+              onError(6, `Unsupported YAML version ${version3}`, isValid);
               return false;
             }
           }
@@ -908,8 +908,8 @@ var require_Alias = __commonJS({
         return anchor ? anchor.count * anchor.aliasCount : 0;
       } else if (identity.isCollection(node2)) {
         let count = 0;
-        for (const item of node2.items) {
-          const c = getAliasCount(doc, item, anchors2);
+        for (const item2 of node2.items) {
+          const c = getAliasCount(doc, item2, anchors2);
           if (c > count)
             count = c;
         }
@@ -1037,10 +1037,10 @@ var require_Collection = __commonJS({
     var createNode = require_createNode();
     var identity = require_identity();
     var Node = require_Node();
-    function collectionFromPath(schema, path12, value2) {
+    function collectionFromPath(schema, path14, value2) {
       let v = value2;
-      for (let i = path12.length - 1; i >= 0; --i) {
-        const k = path12[i];
+      for (let i = path14.length - 1; i >= 0; --i) {
+        const k = path14[i];
         if (typeof k === "number" && Number.isInteger(k) && k >= 0) {
           const a = [];
           a[k] = v;
@@ -1059,7 +1059,7 @@ var require_Collection = __commonJS({
         sourceObjects: /* @__PURE__ */ new Map()
       });
     }
-    var isEmptyPath = (path12) => path12 == null || typeof path12 === "object" && !!path12[Symbol.iterator]().next().done;
+    var isEmptyPath = (path14) => path14 == null || typeof path14 === "object" && !!path14[Symbol.iterator]().next().done;
     var Collection = class extends Node.NodeBase {
       constructor(type, schema) {
         super(type);
@@ -1089,11 +1089,11 @@ var require_Collection = __commonJS({
        * be a Pair instance or a `{ key, value }` object, which may not have a key
        * that already exists in the map.
        */
-      addIn(path12, value2) {
-        if (isEmptyPath(path12))
+      addIn(path14, value2) {
+        if (isEmptyPath(path14))
           this.add(value2);
         else {
-          const [key2, ...rest] = path12;
+          const [key2, ...rest] = path14;
           const node2 = this.get(key2, true);
           if (identity.isCollection(node2))
             node2.addIn(rest, value2);
@@ -1107,8 +1107,8 @@ var require_Collection = __commonJS({
        * Removes a value from the collection.
        * @returns `true` if the item was found and removed.
        */
-      deleteIn(path12) {
-        const [key2, ...rest] = path12;
+      deleteIn(path14) {
+        const [key2, ...rest] = path14;
         if (rest.length === 0)
           return this.delete(key2);
         const node2 = this.get(key2, true);
@@ -1122,8 +1122,8 @@ var require_Collection = __commonJS({
        * scalar values from their surrounding node; to disable set `keepScalar` to
        * `true` (collections are always returned intact).
        */
-      getIn(path12, keepScalar) {
-        const [key2, ...rest] = path12;
+      getIn(path14, keepScalar) {
+        const [key2, ...rest] = path14;
         const node2 = this.get(key2, true);
         if (rest.length === 0)
           return !keepScalar && identity.isScalar(node2) ? node2.value : node2;
@@ -1141,8 +1141,8 @@ var require_Collection = __commonJS({
       /**
        * Checks if the collection includes a value with the key `key`.
        */
-      hasIn(path12) {
-        const [key2, ...rest] = path12;
+      hasIn(path14) {
+        const [key2, ...rest] = path14;
         if (rest.length === 0)
           return this.has(key2);
         const node2 = this.get(key2, true);
@@ -1152,8 +1152,8 @@ var require_Collection = __commonJS({
        * Sets a value in this collection. For `!!set`, `value` needs to be a
        * boolean to add/remove the item from the set.
        */
-      setIn(path12, value2) {
-        const [key2, ...rest] = path12;
+      setIn(path14, value2) {
+        const [key2, ...rest] = path14;
         if (rest.length === 0) {
           this.set(key2, value2);
         } else {
@@ -1542,22 +1542,22 @@ ${indent2}${body3}`;
       return `|${header}
 ${indent2}${start}${value2}${end}`;
     }
-    function plainString(item, ctx, onComment, onChompKeep) {
-      const { type, value: value2 } = item;
+    function plainString(item2, ctx, onComment, onChompKeep) {
+      const { type, value: value2 } = item2;
       const { actualString, implicitKey, indent: indent2, indentStep, inFlow } = ctx;
       if (implicitKey && value2.includes("\n") || inFlow && /[[\]{},]/.test(value2)) {
         return quotedString(value2, ctx);
       }
       if (/^[\n\t ,[\]{}#&*!|>'"%@`]|^[?-]$|^[?-][ \t]|[\n:][ \t]|[ \t]\n|[\n\t ]#|[\n\t :]$/.test(value2)) {
-        return implicitKey || inFlow || !value2.includes("\n") ? quotedString(value2, ctx) : blockString(item, ctx, onComment, onChompKeep);
+        return implicitKey || inFlow || !value2.includes("\n") ? quotedString(value2, ctx) : blockString(item2, ctx, onComment, onChompKeep);
       }
       if (!implicitKey && !inFlow && type !== Scalar.Scalar.PLAIN && value2.includes("\n")) {
-        return blockString(item, ctx, onComment, onChompKeep);
+        return blockString(item2, ctx, onComment, onChompKeep);
       }
       if (containsDocumentMarker(value2)) {
         if (indent2 === "") {
           ctx.forceBlockIndent = true;
-          return blockString(item, ctx, onComment, onChompKeep);
+          return blockString(item2, ctx, onComment, onChompKeep);
         } else if (implicitKey && indent2 === indentStep) {
           return quotedString(value2, ctx);
         }
@@ -1572,10 +1572,10 @@ ${indent2}`);
       }
       return implicitKey ? str : foldFlowLines.foldFlowLines(str, indent2, foldFlowLines.FOLD_FLOW, getFoldOptions(ctx, false));
     }
-    function stringifyString(item, ctx, onComment, onChompKeep) {
+    function stringifyString(item2, ctx, onComment, onChompKeep) {
       const { implicitKey, inFlow } = ctx;
-      const ss = typeof item.value === "string" ? item : Object.assign({}, item, { value: String(item.value) });
-      let { type } = item;
+      const ss = typeof item2.value === "string" ? item2 : Object.assign({}, item2, { value: String(item2.value) });
+      let { type } = item2;
       if (type !== Scalar.Scalar.QUOTE_DOUBLE) {
         if (/[\x00-\x08\x0b-\x1f\x7f-\x9f\u{D800}-\u{DFFF}]/u.test(ss.value))
           type = Scalar.Scalar.QUOTE_DOUBLE;
@@ -1659,25 +1659,25 @@ var require_stringify = __commonJS({
         options: opt
       };
     }
-    function getTagObject(tags, item) {
-      if (item.tag) {
-        const match = tags.filter((t) => t.tag === item.tag);
+    function getTagObject(tags, item2) {
+      if (item2.tag) {
+        const match = tags.filter((t) => t.tag === item2.tag);
         if (match.length > 0)
-          return match.find((t) => t.format === item.format) ?? match[0];
+          return match.find((t) => t.format === item2.format) ?? match[0];
       }
       let tagObj = void 0;
       let obj;
-      if (identity.isScalar(item)) {
-        obj = item.value;
+      if (identity.isScalar(item2)) {
+        obj = item2.value;
         let match = tags.filter((t) => t.identify?.(obj));
         if (match.length > 1) {
           const testMatch = match.filter((t) => t.test);
           if (testMatch.length > 0)
             match = testMatch;
         }
-        tagObj = match.find((t) => t.format === item.format) ?? match.find((t) => !t.format);
+        tagObj = match.find((t) => t.format === item2.format) ?? match.find((t) => !t.format);
       } else {
-        obj = item;
+        obj = item2;
         tagObj = tags.find((t) => t.nodeClass && obj instanceof t.nodeClass);
       }
       if (!tagObj) {
@@ -1700,24 +1700,24 @@ var require_stringify = __commonJS({
         props.push(doc.directives.tagString(tag));
       return props.join(" ");
     }
-    function stringify4(item, ctx, onComment, onChompKeep) {
-      if (identity.isPair(item))
-        return item.toString(ctx, onComment, onChompKeep);
-      if (identity.isAlias(item)) {
+    function stringify4(item2, ctx, onComment, onChompKeep) {
+      if (identity.isPair(item2))
+        return item2.toString(ctx, onComment, onChompKeep);
+      if (identity.isAlias(item2)) {
         if (ctx.doc.directives)
-          return item.toString(ctx);
-        if (ctx.resolvedAliases?.has(item)) {
+          return item2.toString(ctx);
+        if (ctx.resolvedAliases?.has(item2)) {
           throw new TypeError(`Cannot stringify circular structure without alias nodes`);
         } else {
           if (ctx.resolvedAliases)
-            ctx.resolvedAliases.add(item);
+            ctx.resolvedAliases.add(item2);
           else
-            ctx.resolvedAliases = /* @__PURE__ */ new Set([item]);
-          item = item.resolve(ctx.doc);
+            ctx.resolvedAliases = /* @__PURE__ */ new Set([item2]);
+          item2 = item2.resolve(ctx.doc);
         }
       }
       let tagObj = void 0;
-      const node2 = identity.isNode(item) ? item : ctx.doc.createNode(item, { onTagObj: (o) => tagObj = o });
+      const node2 = identity.isNode(item2) ? item2 : ctx.doc.createNode(item2, { onTagObj: (o) => tagObj = o });
       tagObj ?? (tagObj = getTagObject(ctx.doc.schema.tags, node2));
       const props = stringifyProps(node2, tagObj, ctx);
       if (props.length > 0)
@@ -2070,16 +2070,16 @@ var require_stringifyCollection = __commonJS({
       let chompKeep = false;
       const lines = [];
       for (let i = 0; i < items.length; ++i) {
-        const item = items[i];
+        const item2 = items[i];
         let comment3 = null;
-        if (identity.isNode(item)) {
-          if (!chompKeep && item.spaceBefore)
+        if (identity.isNode(item2)) {
+          if (!chompKeep && item2.spaceBefore)
             lines.push("");
-          addCommentBefore(ctx, lines, item.commentBefore, chompKeep);
-          if (item.comment)
-            comment3 = item.comment;
-        } else if (identity.isPair(item)) {
-          const ik = identity.isNode(item.key) ? item.key : null;
+          addCommentBefore(ctx, lines, item2.commentBefore, chompKeep);
+          if (item2.comment)
+            comment3 = item2.comment;
+        } else if (identity.isPair(item2)) {
+          const ik = identity.isNode(item2.key) ? item2.key : null;
           if (ik) {
             if (!chompKeep && ik.spaceBefore)
               lines.push("");
@@ -2087,7 +2087,7 @@ var require_stringifyCollection = __commonJS({
           }
         }
         chompKeep = false;
-        let str2 = stringify4.stringify(item, itemCtx, () => comment3 = null, () => chompKeep = true);
+        let str2 = stringify4.stringify(item2, itemCtx, () => comment3 = null, () => chompKeep = true);
         if (comment3)
           str2 += stringifyComment.lineComment(str2, itemIndent, commentString(comment3));
         if (chompKeep && comment3)
@@ -2125,16 +2125,16 @@ ${indent2}${line}` : "\n";
       let linesAtValue = 0;
       const lines = [];
       for (let i = 0; i < items.length; ++i) {
-        const item = items[i];
+        const item2 = items[i];
         let comment2 = null;
-        if (identity.isNode(item)) {
-          if (item.spaceBefore)
+        if (identity.isNode(item2)) {
+          if (item2.spaceBefore)
             lines.push("");
-          addCommentBefore(ctx, lines, item.commentBefore, false);
-          if (item.comment)
-            comment2 = item.comment;
-        } else if (identity.isPair(item)) {
-          const ik = identity.isNode(item.key) ? item.key : null;
+          addCommentBefore(ctx, lines, item2.commentBefore, false);
+          if (item2.comment)
+            comment2 = item2.comment;
+        } else if (identity.isPair(item2)) {
+          const ik = identity.isNode(item2.key) ? item2.key : null;
           if (ik) {
             if (ik.spaceBefore)
               lines.push("");
@@ -2142,19 +2142,19 @@ ${indent2}${line}` : "\n";
             if (ik.comment)
               reqNewline = true;
           }
-          const iv = identity.isNode(item.value) ? item.value : null;
+          const iv = identity.isNode(item2.value) ? item2.value : null;
           if (iv) {
             if (iv.comment)
               comment2 = iv.comment;
             if (iv.commentBefore)
               reqNewline = true;
-          } else if (item.value == null && ik?.comment) {
+          } else if (item2.value == null && ik?.comment) {
             comment2 = ik.comment;
           }
         }
         if (comment2)
           reqNewline = true;
-        let str = stringify4.stringify(item, itemCtx, () => comment2 = null);
+        let str = stringify4.stringify(item2, itemCtx, () => comment2 = null);
         reqNewline || (reqNewline = lines.length > linesAtValue || str.includes("\n"));
         if (i < items.length - 1) {
           str += ",";
@@ -2284,7 +2284,7 @@ var require_YAMLMap = __commonJS({
           else
             prev.value = _pair.value;
         } else if (sortEntries) {
-          const i = this.items.findIndex((item) => sortEntries(_pair, item) < 0);
+          const i = this.items.findIndex((item2) => sortEntries(_pair, item2) < 0);
           if (i === -1)
             this.items.push(_pair);
           else
@@ -2320,16 +2320,16 @@ var require_YAMLMap = __commonJS({
         const map4 = Type ? new Type() : ctx?.mapAsMap ? /* @__PURE__ */ new Map() : {};
         if (ctx?.onCreate)
           ctx.onCreate(map4);
-        for (const item of this.items)
-          addPairToJSMap.addPairToJSMap(ctx, map4, item);
+        for (const item2 of this.items)
+          addPairToJSMap.addPairToJSMap(ctx, map4, item2);
         return map4;
       }
       toString(ctx, onComment, onChompKeep) {
         if (!ctx)
           return JSON.stringify(this);
-        for (const item of this.items) {
-          if (!identity.isPair(item))
-            throw new Error(`Map items must all be pairs; found ${JSON.stringify(item)} instead`);
+        for (const item2 of this.items) {
+          if (!identity.isPair(item2))
+            throw new Error(`Map items must all be pairs; found ${JSON.stringify(item2)} instead`);
         }
         if (!ctx.allNullValues && this.hasAllNullValues(false))
           ctx = Object.assign({}, ctx, { allNullValues: true });
@@ -2444,8 +2444,8 @@ var require_YAMLSeq = __commonJS({
         if (ctx?.onCreate)
           ctx.onCreate(seq);
         let i = 0;
-        for (const item of this.items)
-          seq.push(toJS.toJS(item, String(i++), ctx));
+        for (const item2 of this.items)
+          seq.push(toJS.toJS(item2, String(i++), ctx));
         return seq;
       }
       toString(ctx, onComment, onChompKeep) {
@@ -2517,9 +2517,9 @@ var require_string = __commonJS({
       default: true,
       tag: "tag:yaml.org,2002:str",
       resolve: (str) => str,
-      stringify(item, ctx, onComment, onChompKeep) {
+      stringify(item2, ctx, onComment, onChompKeep) {
         ctx = Object.assign({ actualString: true }, ctx);
-        return stringifyString.stringifyString(item, ctx, onComment, onChompKeep);
+        return stringifyString.stringifyString(item2, ctx, onComment, onChompKeep);
       }
     };
     exports.string = string3;
@@ -2858,24 +2858,24 @@ var require_pairs = __commonJS({
     function resolvePairs(seq, onError) {
       if (identity.isSeq(seq)) {
         for (let i = 0; i < seq.items.length; ++i) {
-          let item = seq.items[i];
-          if (identity.isPair(item))
+          let item2 = seq.items[i];
+          if (identity.isPair(item2))
             continue;
-          else if (identity.isMap(item)) {
-            if (item.items.length > 1)
+          else if (identity.isMap(item2)) {
+            if (item2.items.length > 1)
               onError("Each pair must have its own sequence indicator");
-            const pair2 = item.items[0] || new Pair.Pair(new Scalar.Scalar(null));
-            if (item.commentBefore)
-              pair2.key.commentBefore = pair2.key.commentBefore ? `${item.commentBefore}
-${pair2.key.commentBefore}` : item.commentBefore;
-            if (item.comment) {
+            const pair2 = item2.items[0] || new Pair.Pair(new Scalar.Scalar(null));
+            if (item2.commentBefore)
+              pair2.key.commentBefore = pair2.key.commentBefore ? `${item2.commentBefore}
+${pair2.key.commentBefore}` : item2.commentBefore;
+            if (item2.comment) {
               const cn = pair2.value ?? pair2.key;
-              cn.comment = cn.comment ? `${item.comment}
-${cn.comment}` : item.comment;
+              cn.comment = cn.comment ? `${item2.comment}
+${cn.comment}` : item2.comment;
             }
-            item = pair2;
+            item2 = pair2;
           }
-          seq.items[i] = identity.isPair(item) ? item : new Pair.Pair(item);
+          seq.items[i] = identity.isPair(item2) ? item2 : new Pair.Pair(item2);
         }
       } else
         onError("Expected a sequence for this tag");
@@ -3630,14 +3630,14 @@ var require_Document = __commonJS({
           version: "1.2"
         }, options);
         this.options = opt;
-        let { version: version2 } = opt;
+        let { version: version3 } = opt;
         if (options?._directives) {
           this.directives = options._directives.atDocument();
           if (this.directives.yaml.explicit)
-            version2 = this.directives.yaml.version;
+            version3 = this.directives.yaml.version;
         } else
-          this.directives = new directives2.Directives({ version: version2 });
-        this.setSchema(version2, options);
+          this.directives = new directives2.Directives({ version: version3 });
+        this.setSchema(version3, options);
         this.contents = value2 === void 0 ? null : this.createNode(value2, _replacer, options);
       }
       /**
@@ -3668,9 +3668,9 @@ var require_Document = __commonJS({
           this.contents.add(value2);
       }
       /** Adds a value to the document. */
-      addIn(path12, value2) {
+      addIn(path14, value2) {
         if (assertCollection(this.contents))
-          this.contents.addIn(path12, value2);
+          this.contents.addIn(path14, value2);
       }
       /**
        * Create a new `Alias` node, ensuring that the target `node` has the required anchor.
@@ -3745,14 +3745,14 @@ var require_Document = __commonJS({
        * Removes a value from the document.
        * @returns `true` if the item was found and removed.
        */
-      deleteIn(path12) {
-        if (Collection.isEmptyPath(path12)) {
+      deleteIn(path14) {
+        if (Collection.isEmptyPath(path14)) {
           if (this.contents == null)
             return false;
           this.contents = null;
           return true;
         }
-        return assertCollection(this.contents) ? this.contents.deleteIn(path12) : false;
+        return assertCollection(this.contents) ? this.contents.deleteIn(path14) : false;
       }
       /**
        * Returns item at `key`, or `undefined` if not found. By default unwraps
@@ -3767,10 +3767,10 @@ var require_Document = __commonJS({
        * scalar values from their surrounding node; to disable set `keepScalar` to
        * `true` (collections are always returned intact).
        */
-      getIn(path12, keepScalar) {
-        if (Collection.isEmptyPath(path12))
+      getIn(path14, keepScalar) {
+        if (Collection.isEmptyPath(path14))
           return !keepScalar && identity.isScalar(this.contents) ? this.contents.value : this.contents;
-        return identity.isCollection(this.contents) ? this.contents.getIn(path12, keepScalar) : void 0;
+        return identity.isCollection(this.contents) ? this.contents.getIn(path14, keepScalar) : void 0;
       }
       /**
        * Checks if the document includes a value with the key `key`.
@@ -3781,10 +3781,10 @@ var require_Document = __commonJS({
       /**
        * Checks if the document includes a value at `path`.
        */
-      hasIn(path12) {
-        if (Collection.isEmptyPath(path12))
+      hasIn(path14) {
+        if (Collection.isEmptyPath(path14))
           return this.contents !== void 0;
-        return identity.isCollection(this.contents) ? this.contents.hasIn(path12) : false;
+        return identity.isCollection(this.contents) ? this.contents.hasIn(path14) : false;
       }
       /**
        * Sets a value in this document. For `!!set`, `value` needs to be a
@@ -3801,13 +3801,13 @@ var require_Document = __commonJS({
        * Sets a value in this document. For `!!set`, `value` needs to be a
        * boolean to add/remove the item from the set.
        */
-      setIn(path12, value2) {
-        if (Collection.isEmptyPath(path12)) {
+      setIn(path14, value2) {
+        if (Collection.isEmptyPath(path14)) {
           this.contents = value2;
         } else if (this.contents == null) {
-          this.contents = Collection.collectionFromPath(this.schema, Array.from(path12), value2);
+          this.contents = Collection.collectionFromPath(this.schema, Array.from(path14), value2);
         } else if (assertCollection(this.contents)) {
-          this.contents.setIn(path12, value2);
+          this.contents.setIn(path14, value2);
         }
       }
       /**
@@ -3817,11 +3817,11 @@ var require_Document = __commonJS({
        *
        * Overrides all previously set schema options.
        */
-      setSchema(version2, options = {}) {
-        if (typeof version2 === "number")
-          version2 = String(version2);
+      setSchema(version3, options = {}) {
+        if (typeof version3 === "number")
+          version3 = String(version3);
         let opt;
-        switch (version2) {
+        switch (version3) {
           case "1.1":
             if (this.directives)
               this.directives.yaml.version = "1.1";
@@ -3832,9 +3832,9 @@ var require_Document = __commonJS({
           case "1.2":
           case "next":
             if (this.directives)
-              this.directives.yaml.version = version2;
+              this.directives.yaml.version = version3;
             else
-              this.directives = new directives2.Directives({ version: version2 });
+              this.directives = new directives2.Directives({ version: version3 });
             opt = { resolveKnownTags: true, schema: "core" };
             break;
           case null:
@@ -3843,7 +3843,7 @@ var require_Document = __commonJS({
             opt = null;
             break;
           default: {
-            const sv = JSON.stringify(version2);
+            const sv = JSON.stringify(version3);
             throw new Error(`Expected '1.1', '1.2' or null as first argument, but found: ${sv}`);
           }
         }
@@ -4391,9 +4391,9 @@ var require_resolve_flow_collection = __commonJS({
     var blockMsg = "Block collections are not allowed within flow collections";
     var isBlock = (token) => token && (token.type === "block-map" || token.type === "block-seq");
     function resolveFlowCollection({ composeNode, composeEmptyNode }, ctx, fc, onError, tag) {
-      const isMap3 = fc.start.source === "{";
-      const fcName = isMap3 ? "flow map" : "flow sequence";
-      const NodeClass = tag?.nodeClass ?? (isMap3 ? YAMLMap.YAMLMap : YAMLSeq.YAMLSeq);
+      const isMap4 = fc.start.source === "{";
+      const fcName = isMap4 ? "flow map" : "flow sequence";
+      const NodeClass = tag?.nodeClass ?? (isMap4 ? YAMLMap.YAMLMap : YAMLSeq.YAMLSeq);
       const coll = new NodeClass(ctx.schema);
       coll.flow = true;
       const atRoot = ctx.atRoot;
@@ -4429,7 +4429,7 @@ var require_resolve_flow_collection = __commonJS({
             offset = props.end;
             continue;
           }
-          if (!isMap3 && ctx.options.strict && utilContainsNewline.containsNewline(key2))
+          if (!isMap4 && ctx.options.strict && utilContainsNewline.containsNewline(key2))
             onError(
               key2,
               // checked by containsNewline()
@@ -4469,7 +4469,7 @@ var require_resolve_flow_collection = __commonJS({
             }
           }
         }
-        if (!isMap3 && !sep && !props.found) {
+        if (!isMap4 && !sep && !props.found) {
           const valueNode = value2 ? composeNode(ctx, value2, props, onError) : composeEmptyNode(ctx, props.end, sep, null, props, onError);
           coll.items.push(valueNode);
           offset = valueNode.range[2];
@@ -4492,7 +4492,7 @@ var require_resolve_flow_collection = __commonJS({
             startOnNewline: false
           });
           if (valueProps.found) {
-            if (!isMap3 && !props.found && ctx.options.strict) {
+            if (!isMap4 && !props.found && ctx.options.strict) {
               if (sep)
                 for (const st of sep) {
                   if (st === valueProps.found)
@@ -4524,7 +4524,7 @@ var require_resolve_flow_collection = __commonJS({
           const pair2 = new Pair.Pair(keyNode, valueNode);
           if (ctx.options.keepSourceTokens)
             pair2.srcToken = collItem;
-          if (isMap3) {
+          if (isMap4) {
             const map4 = coll;
             if (utilMapIncludes.mapIncludes(ctx, map4.items, keyNode))
               onError(keyStart, "DUPLICATE_KEY", "Map keys must be unique");
@@ -4540,7 +4540,7 @@ var require_resolve_flow_collection = __commonJS({
           offset = valueNode ? valueNode.range[2] : valueProps.end;
         }
       }
-      const expectedEnd = isMap3 ? "}" : "]";
+      const expectedEnd = isMap4 ? "}" : "]";
       const [ce, ...ee] = fc.end;
       let cePos = offset;
       if (ce?.source === expectedEnd)
@@ -4806,9 +4806,9 @@ var require_resolve_block_scalar = __commonJS({
     }
     function splitLines(source) {
       const split = source.split(/\n( *)/);
-      const first = split[0];
-      const m = first.match(/^( *)/);
-      const line0 = m?.[1] ? [m[1], first.slice(m[1].length)] : ["", first];
+      const first2 = split[0];
+      const m = first2.match(/^( *)/);
+      const line0 = m?.[1] ? [m[1], first2.slice(m[1].length)] : ["", first2];
       const lines = [line0];
       for (let i = 1; i < split.length; i += 2)
         lines.push([split[i], split[i + 1]]);
@@ -5708,14 +5708,14 @@ var require_cst_stringify = __commonJS({
         case "block-map":
         case "block-seq": {
           let res = "";
-          for (const item of token.items)
-            res += stringifyItem(item);
+          for (const item2 of token.items)
+            res += stringifyItem(item2);
           return res;
         }
         case "flow-collection": {
           let res = token.start.source;
-          for (const item of token.items)
-            res += stringifyItem(item);
+          for (const item2 of token.items)
+            res += stringifyItem(item2);
           for (const st of token.end)
             res += st.source;
           return res;
@@ -5768,34 +5768,34 @@ var require_cst_visit = __commonJS({
     visit2.BREAK = BREAK;
     visit2.SKIP = SKIP2;
     visit2.REMOVE = REMOVE;
-    visit2.itemAtPath = (cst, path12) => {
-      let item = cst;
-      for (const [field, index2] of path12) {
-        const tok = item?.[field];
+    visit2.itemAtPath = (cst, path14) => {
+      let item2 = cst;
+      for (const [field, index2] of path14) {
+        const tok = item2?.[field];
         if (tok && "items" in tok) {
-          item = tok.items[index2];
+          item2 = tok.items[index2];
         } else
           return void 0;
       }
-      return item;
+      return item2;
     };
-    visit2.parentCollection = (cst, path12) => {
-      const parent = visit2.itemAtPath(cst, path12.slice(0, -1));
-      const field = path12[path12.length - 1][0];
+    visit2.parentCollection = (cst, path14) => {
+      const parent = visit2.itemAtPath(cst, path14.slice(0, -1));
+      const field = path14[path14.length - 1][0];
       const coll = parent?.[field];
       if (coll && "items" in coll)
         return coll;
       throw new Error("Parent collection not found");
     };
-    function _visit(path12, item, visitor) {
-      let ctrl = visitor(item, path12);
+    function _visit(path14, item2, visitor) {
+      let ctrl = visitor(item2, path14);
       if (typeof ctrl === "symbol")
         return ctrl;
       for (const field of ["key", "value"]) {
-        const token = item[field];
+        const token = item2[field];
         if (token && "items" in token) {
           for (let i = 0; i < token.items.length; ++i) {
-            const ci = _visit(Object.freeze(path12.concat([[field, i]])), token.items[i], visitor);
+            const ci = _visit(Object.freeze(path14.concat([[field, i]])), token.items[i], visitor);
             if (typeof ci === "number")
               i = ci - 1;
             else if (ci === BREAK)
@@ -5806,10 +5806,10 @@ var require_cst_visit = __commonJS({
             }
           }
           if (typeof ctrl === "function" && field === "key")
-            ctrl = ctrl(item, path12);
+            ctrl = ctrl(item2, path14);
         }
       }
-      return typeof ctrl === "function" ? ctrl(item, path12) : ctrl;
+      return typeof ctrl === "function" ? ctrl(item2, path14) : ctrl;
     }
     exports.visit = visit2;
   }
@@ -5827,7 +5827,7 @@ var require_cst = __commonJS({
     var FLOW_END = "";
     var SCALAR = "";
     var isCollection = (token) => !!token && "items" in token;
-    var isScalar3 = (token) => !!token && (token.type === "scalar" || token.type === "single-quoted-scalar" || token.type === "double-quoted-scalar" || token.type === "block-scalar");
+    var isScalar4 = (token) => !!token && (token.type === "scalar" || token.type === "single-quoted-scalar" || token.type === "double-quoted-scalar" || token.type === "block-scalar");
     function prettyToken(token) {
       switch (token) {
         case BOM:
@@ -5911,7 +5911,7 @@ var require_cst = __commonJS({
     exports.FLOW_END = FLOW_END;
     exports.SCALAR = SCALAR;
     exports.isCollection = isCollection;
-    exports.isScalar = isScalar3;
+    exports.isScalar = isScalar4;
     exports.prettyToken = prettyToken;
     exports.tokenType = tokenType;
   }
@@ -7441,7 +7441,7 @@ var require_public_api = __commonJS({
         return docs;
       return Object.assign([], { empty: true }, composer$1.streamInfo());
     }
-    function parseDocument3(source, options = {}) {
+    function parseDocument4(source, options = {}) {
       const { lineCounter: lineCounter2, prettyErrors } = parseOptions(options);
       const parser$1 = new parser2.Parser(lineCounter2?.addNewLine);
       const composer$1 = new composer.Composer(options);
@@ -7467,7 +7467,7 @@ var require_public_api = __commonJS({
       } else if (options === void 0 && reviver && typeof reviver === "object") {
         options = reviver;
       }
-      const doc = parseDocument3(src, options);
+      const doc = parseDocument4(src, options);
       if (!doc)
         return null;
       doc.warnings.forEach((warning) => log.warn(doc.options.logLevel, warning));
@@ -7503,7 +7503,7 @@ var require_public_api = __commonJS({
     }
     exports.parse = parse3;
     exports.parseAllDocuments = parseAllDocuments;
-    exports.parseDocument = parseDocument3;
+    exports.parseDocument = parseDocument4;
     exports.stringify = stringify4;
   }
 });
@@ -7566,19 +7566,25 @@ import { fileURLToPath as fileURLToPath2 } from "node:url";
 
 // src/cli.mjs
 import fs3 from "node:fs";
-import path11 from "node:path";
+import path13 from "node:path";
 
 // src/config.mjs
 import fs from "node:fs";
 import path from "node:path";
 var CONFIG_NAME = "reports.json";
 var DEFAULT_SOURCES = ["specs/**/*-report.md"];
+var DEFAULT_SPECS = {
+  sources: ["specs/**/*.md"],
+  index: "index.html",
+  mermaid: "https://cdn.jsdelivr.net/npm/mermaid@12.0.0/dist/mermaid.esm.min.mjs"
+};
 var ConfigError = class extends Error {
 };
 function findRoot(fromDir) {
   let dir = path.resolve(fromDir);
   for (; ; ) {
     if (fs.existsSync(path.join(dir, CONFIG_NAME))) return dir;
+    if (fs.existsSync(path.join(dir, ".git"))) return null;
     const up = path.dirname(dir);
     if (up === dir) return null;
     dir = up;
@@ -7592,7 +7598,7 @@ function validateConfig(raw2) {
     throw new ConfigError(`${CONFIG_NAME}: ${msg}`);
   };
   if (!raw2 || typeof raw2 !== "object" || Array.isArray(raw2)) fail("must be a JSON object");
-  const known = ["sources", "reports", "brand", "lang", "theme"];
+  const known = ["sources", "reports", "brand", "lang", "theme", "specs"];
   for (const key2 of Object.keys(raw2)) if (!known.includes(key2)) fail(`unknown key "${key2}". Allowed: ${known.join(", ")}`);
   const sources = raw2.sources ?? DEFAULT_SOURCES;
   if (!Array.isArray(sources) || !sources.every(isStr)) fail('"sources" must be an array of glob strings');
@@ -7617,7 +7623,23 @@ function validateConfig(raw2) {
   reports.forEach((r, i) => relative(r.path, `"reports[${i}].path"`, { url: true }));
   if (brand.icon) relative(brand.icon, '"brand.icon"', { url: true });
   if (raw2.theme) relative(raw2.theme, '"theme"');
-  return { sources, reports, brand, lang, theme: raw2.theme ?? null };
+  const specs = "specs" in raw2 ? validateSpecs(raw2.specs, fail, relative) : null;
+  return { sources, reports, brand, lang, theme: raw2.theme ?? null, specs };
+}
+function validateSpecs(raw2, fail, relative) {
+  if (!raw2 || typeof raw2 !== "object" || Array.isArray(raw2)) fail('"specs" must be an object');
+  const known = Object.keys(DEFAULT_SPECS);
+  for (const key2 of Object.keys(raw2)) if (!known.includes(key2)) fail(`"specs" has unknown key "${key2}". Allowed: ${known.join(", ")}`);
+  const specs = { ...DEFAULT_SPECS, sources: [...DEFAULT_SPECS.sources], ...raw2 };
+  if (!Array.isArray(specs.sources) || !specs.sources.every(isStr)) fail('"specs.sources" must be an array of glob strings');
+  specs.sources.forEach((g, i) => relative(g, `"specs.sources[${i}]"`));
+  if (!isStr(specs.index)) fail('"specs.index" must be a path string');
+  relative(specs.index, '"specs.index"');
+  if (!specs.index.endsWith(".html")) fail(`"specs.index" "${specs.index}" must end in .html`);
+  if (specs.index.split(/[\\/]/).includes("..")) fail(`"specs.index" "${specs.index}" must stay inside the project root (no ".." segments)`);
+  specs.index = path.posix.normalize(specs.index);
+  if (!isStr(specs.mermaid) || !/^https:\/\/[^/\s]+\/\S*$/.test(specs.mermaid)) fail(`"specs.mermaid" must be an https URL`);
+  return specs;
 }
 function loadConfig(root4) {
   const file = path.join(root4, CONFIG_NAME);
@@ -7627,7 +7649,11 @@ function loadConfig(root4) {
   } catch (e) {
     throw new ConfigError(`${CONFIG_NAME}: ${e.message}`);
   }
-  return validateConfig(raw2);
+  const config = validateConfig(raw2);
+  if (config.specs && fs.statSync(path.join(root4, config.specs.index), { throwIfNoEntry: false })?.isDirectory()) {
+    throw new ConfigError(`${CONFIG_NAME}: "specs.index" "${config.specs.index}" is a directory; point it at an .html file`);
+  }
+  return config;
 }
 
 // src/glob.mjs
@@ -7675,17 +7701,17 @@ function slugger() {
   };
 }
 function levenshtein(a, b) {
-  const row = Array.from({ length: b.length + 1 }, (_, i) => i);
+  const row2 = Array.from({ length: b.length + 1 }, (_, i) => i);
   for (let i = 1; i <= a.length; i++) {
-    let prev = row[0];
-    row[0] = i;
+    let prev = row2[0];
+    row2[0] = i;
     for (let j = 1; j <= b.length; j++) {
-      const tmp = row[j];
-      row[j] = Math.min(row[j] + 1, row[j - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1));
+      const tmp = row2[j];
+      row2[j] = Math.min(row2[j] + 1, row2[j - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1));
       prev = tmp;
     }
   }
-  return row[b.length];
+  return row2[b.length];
 }
 function suggest(word, candidates2) {
   let best;
@@ -7710,6 +7736,7 @@ function relHref(fromFile, toFile) {
   const rel = [...from.slice(i).map(() => ".."), ...to.slice(i)].join("/");
   return rel === "" ? path2.posix.basename(toFile) : rel;
 }
+var encodePath = (p2) => p2.split("/").map((s) => s === ".." ? s : encodeURIComponent(s)).join("/");
 var toPosix = (p2) => p2.split(path2.sep).join("/");
 
 // src/fmt.mjs
@@ -8173,13 +8200,13 @@ var VFile = class {
    * @returns {undefined}
    *   Nothing.
    */
-  set path(path12) {
-    if (isUrl2(path12)) {
-      path12 = fileURLToPath(path12);
+  set path(path14) {
+    if (isUrl2(path14)) {
+      path14 = fileURLToPath(path14);
     }
-    assertNonEmpty(path12, "path");
-    if (this.path !== path12) {
-      this.history.push(path12);
+    assertNonEmpty(path14, "path");
+    if (this.path !== path14) {
+      this.history.push(path14);
     }
   }
   /**
@@ -8446,8 +8473,8 @@ function assertNonEmpty(part, name) {
     throw new Error("`" + name + "` cannot be empty");
   }
 }
-function assertPath(path12, name) {
-  if (!path12) {
+function assertPath(path14, name) {
+  if (!path14) {
     throw new Error("Setting `" + name + "` requires `path` to be set too");
   }
 }
@@ -9541,7 +9568,7 @@ function transformGfmAutolinkLiterals(tree) {
     { ignore: ["link", "linkReference"] }
   );
 }
-function findUrl(_, protocol, domain2, path12, match) {
+function findUrl(_, protocol, domain2, path14, match) {
   let prefix = "";
   if (!previous(match)) {
     return false;
@@ -9554,7 +9581,7 @@ function findUrl(_, protocol, domain2, path12, match) {
   if (!isCorrectDomain(domain2)) {
     return false;
   }
-  const parts = splitUrl(domain2 + path12);
+  const parts = splitUrl(domain2 + path14);
   if (!parts[0]) return false;
   const result = {
     type: "link",
@@ -9803,7 +9830,7 @@ function markdownTable(table2, options) {
   let mostCellsPerRow = 0;
   let rowIndex = -1;
   while (++rowIndex < table2.length) {
-    const row2 = [];
+    const row3 = [];
     const sizes2 = [];
     let columnIndex2 = -1;
     if (table2[rowIndex].length > mostCellsPerRow) {
@@ -9818,9 +9845,9 @@ function markdownTable(table2, options) {
           longestCellByColumn[columnIndex2] = size;
         }
       }
-      row2.push(cell);
+      row3.push(cell);
     }
-    cellMatrix[rowIndex] = row2;
+    cellMatrix[rowIndex] = row3;
     sizeMatrix[rowIndex] = sizes2;
   }
   let columnIndex = -1;
@@ -9835,7 +9862,7 @@ function markdownTable(table2, options) {
     }
   }
   columnIndex = -1;
-  const row = [];
+  const row2 = [];
   const sizes = [];
   while (++columnIndex < mostCellsPerRow) {
     const code5 = alignments[columnIndex];
@@ -9861,19 +9888,19 @@ function markdownTable(table2, options) {
       }
       sizes[columnIndex] = size;
     }
-    row[columnIndex] = cell;
+    row2[columnIndex] = cell;
   }
-  cellMatrix.splice(1, 0, row);
+  cellMatrix.splice(1, 0, row2);
   sizeMatrix.splice(1, 0, sizes);
   rowIndex = -1;
   const lines = [];
   while (++rowIndex < cellMatrix.length) {
-    const row2 = cellMatrix[rowIndex];
+    const row3 = cellMatrix[rowIndex];
     const sizes2 = sizeMatrix[rowIndex];
     columnIndex = -1;
     const line = [];
     while (++columnIndex < mostCellsPerRow) {
-      const cell = row2[columnIndex] || "";
+      const cell = row3[columnIndex] || "";
       let before = "";
       let after = "";
       if (settings.alignDelimiters !== false) {
@@ -10740,8 +10767,8 @@ function list2(node2, parent, state, info) {
     if (checkRule(state) === bullet && firstListItem) {
       let index2 = -1;
       while (++index2 < node2.children.length) {
-        const item = node2.children[index2];
-        if (item && item.type === "listItem" && item.children && item.children[0] && item.children[0].type === "thematicBreak") {
+        const item2 = node2.children[index2];
+        if (item2 && item2.type === "listItem" && item2.children && item2.children[0] && item2.children[0].type === "thematicBreak") {
           useDifferentMarker = true;
           break;
         }
@@ -13676,10 +13703,10 @@ function render(items, chosen, before, after) {
   let previous4 = lastCharacter(before);
   let index2 = -1;
   while (++index2 < items.length) {
-    const item = items[index2];
-    if (typeof item === "string") {
-      const token = { value: item, attention: void 0 };
-      if (encodeAfter && encodeAfter === firstCharacter(item)) {
+    const item2 = items[index2];
+    if (typeof item2 === "string") {
+      const token = { value: item2, attention: void 0 };
+      if (encodeAfter && encodeAfter === firstCharacter(item2)) {
         encode([token], true);
       }
       encodeAfter = void 0;
@@ -13687,14 +13714,14 @@ function render(items, chosen, before, after) {
       if (token.value) previous4 = lastCharacter(token.value);
       continue;
     }
-    const sequence = chosen.get(item) || item.sequences[0];
+    const sequence = chosen.get(item2) || item2.sequences[0];
     const marker = sequence.charAt(0);
     const next = items[index2 + 1];
     const outsideBefore = previous4;
     const outsideAfter = firstCharacter(
       next === void 0 ? after : typeof next === "string" ? next : chosen.get(next) || next.sequences[0]
     );
-    const inside = render(item.children, chosen, sequence, sequence);
+    const inside = render(item2.children, chosen, sequence, sequence);
     const head2 = inside.length > 0 ? inside[0].value : "";
     const open = encodeInfo(
       outsideBefore.charCodeAt(outsideBefore.length - 1),
@@ -13713,9 +13740,9 @@ function render(items, chosen, before, after) {
       encode(tokens, false);
     }
     if (close2.outside) encodeAfter = outsideAfter;
-    tokens.push({ value: sequence, attention: item }, ...inside, {
+    tokens.push({ value: sequence, attention: item2 }, ...inside, {
       value: sequence,
-      attention: item
+      attention: item2
     });
     previous4 = sequence.charAt(sequence.length - 1);
   }
@@ -14117,8 +14144,8 @@ function gfmTableToMarkdown(options) {
     return serializeData(handleTableAsData(node2, state, info), node2.align);
   }
   function handleTableRow(node2, _, state, info) {
-    const row = handleTableRowAsData(node2, state, info);
-    const value2 = serializeData([row]);
+    const row2 = handleTableRowAsData(node2, state, info);
+    const value2 = serializeData([row2]);
     return value2.slice(0, value2.indexOf("\n"));
   }
   function handleTableCell(node2, _, state, info) {
@@ -15645,9 +15672,9 @@ var SpliceBuffer = class {
    * @returns {undefined}
    *   Nothing.
    */
-  push(item) {
+  push(item2) {
     this.setCursor(Number.POSITIVE_INFINITY);
-    this.left.push(item);
+    this.left.push(item2);
   }
   /**
    * Inserts many items to the high-numbered side of the array.
@@ -15671,9 +15698,9 @@ var SpliceBuffer = class {
    * @returns {undefined}
    *   Nothing.
    */
-  unshift(item) {
+  unshift(item2) {
     this.setCursor(0);
-    this.right.push(item);
+    this.right.push(item2);
   }
   /**
    * Inserts many items to the low-numbered side of the array;
@@ -19455,12 +19482,12 @@ function charactersToExpressionCached(subset) {
   return cached;
 }
 function charactersToExpression(subset) {
-  const groups = [];
+  const groups2 = [];
   let index2 = -1;
   while (++index2 < subset.length) {
-    groups.push(subset[index2].replace(regexEscapeRegex, "\\$&"));
+    groups2.push(subset[index2].replace(regexEscapeRegex, "\\$&"));
   }
-  return new RegExp("(?:" + groups.join("|") + ")", "g");
+  return new RegExp("(?:" + groups2.join("|") + ")", "g");
 }
 
 // node_modules/stringify-entities/lib/util/to-hexadecimal.js
@@ -20764,9 +20791,9 @@ function initializeDocument(effects) {
   return start;
   function start(code5) {
     if (continued < stack.length) {
-      const item = stack[continued];
-      self2.containerState = item[1];
-      return effects.attempt(item[0].continuation, documentContinue, checkNewContainers)(code5);
+      const item2 = stack[continued];
+      self2.containerState = item2[1];
+      return effects.attempt(item2[0].continuation, documentContinue, checkNewContainers)(code5);
     }
     return checkNewContainers(code5);
   }
@@ -21023,8 +21050,8 @@ function initializeFactory(field) {
       let index2 = -1;
       if (list5) {
         while (++index2 < list5.length) {
-          const item = list5[index2];
-          if (!item.previous || item.previous.call(self2, self2.previous)) {
+          const item2 = list5[index2];
+          if (!item2.previous || item2.previous.call(self2, self2.previous)) {
             return true;
           }
         }
@@ -21875,15 +21902,15 @@ function compiler(options) {
           length++;
         }
         if (event[1].type === "listItemPrefix") {
-          const item = {
+          const item2 = {
             type: "listItem",
             _spread: false,
             start: Object.assign({}, event[1].start),
             // @ts-expect-error: we’ll add `end` in a second.
             end: void 0
           };
-          listItem4 = item;
-          events.splice(index2, 0, ["enter", item, event[2]]);
+          listItem4 = item2;
+          events.splice(index2, 0, ["enter", item2, event[2]]);
           index2++;
           length++;
           firstBlankLineIndex = void 0;
@@ -24027,9 +24054,9 @@ function prefixPatterns(ancestors) {
 }
 function sourceText(node2, ancestors, source) {
   const patterns = prefixPatterns(ancestors);
-  const [first, ...rest] = source.slice(node2.position.start.offset, node2.position.end.offset).split("\n");
+  const [first2, ...rest] = source.slice(node2.position.start.offset, node2.position.end.offset).split("\n");
   const lines = rest.map((line) => patterns.reduce((l, re2) => l.replace(re2, ""), line));
-  return [first, ...lines].join("\n").replace(/[ \t\n]+$/, "");
+  return [first2, ...lines].join("\n").replace(/[ \t\n]+$/, "");
 }
 function literal(node2, ancestors, source) {
   const parent = ancestors[ancestors.length - 1];
@@ -24247,8 +24274,8 @@ function sectionNumber(text7, more) {
 }
 var headingNumber = lintRule("md2html:heading-number", (tree, file) => {
   visit(tree, "heading", (node2) => {
-    const first = node2.children[0];
-    const number2 = node2.depth === 2 && first?.type === "text" && sectionNumber(first.value, node2.children.length > 1);
+    const first2 = node2.children[0];
+    const number2 = node2.depth === 2 && first2?.type === "text" && sectionNumber(first2.value, node2.children.length > 1);
     if (number2) file.message(`section numbers are added by the build; remove "${number2}"`, node2);
   });
 });
@@ -24273,9 +24300,9 @@ var noRawHtml = lintRule("md2html:no-raw-html", (tree, file) => {
 var CALLOUT2 = /^\[!tldr\](?![-+])/i;
 var calloutAlias = lintRule("md2html:callout-alias", (tree, file) => {
   visit(tree, "blockquote", (node2) => {
-    const first = node2.children[0]?.type === "paragraph" && node2.children[0].children[0];
-    if (first?.type === "text" && CALLOUT2.test(first.value)) {
-      file.message(`"> ${CALLOUT2.exec(first.value)[0]}" found. Use ":::tldr" (fmt converts it)`, node2);
+    const first2 = node2.children[0]?.type === "paragraph" && node2.children[0].children[0];
+    if (first2?.type === "text" && CALLOUT2.test(first2.value)) {
+      file.message(`"> ${CALLOUT2.exec(first2.value)[0]}" found. Use ":::tldr" (fmt converts it)`, node2);
     }
   });
 });
@@ -24314,6 +24341,162 @@ function themeTokens(css) {
   return messages2;
 }
 
+// src/lint/spec-frontmatter.mjs
+var import_yaml4 = __toESM(require_dist(), 1);
+var SPEC_KEYS = ["feature", "title", "status", "order", "created", "edited"];
+var SPEC_STATUSES = ["exploring", "proposed", "applying", "paused", "applied"];
+var ALWAYS = ["title", "created", "edited"];
+var CHANGE_ONLY = ["feature", "status"];
+var DATE_KEYS2 = ["created", "edited"];
+function isIsoDate2(value2) {
+  if (typeof value2 !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value2)) return false;
+  const d = /* @__PURE__ */ new Date(`${value2}T00:00:00Z`);
+  return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value2;
+}
+function changeDir(file) {
+  return /(?:^|\/)specs\/changes\/(?:archive\/)?([^/]+)\/./.exec(String(file).replace(/\\/g, "/"))?.[1] ?? null;
+}
+function readYaml(node2) {
+  const at = (offset) => {
+    const before = node2.value.slice(0, offset);
+    const nl = before.lastIndexOf("\n");
+    return { line: node2.position.start.line + 1 + (before.match(/\n/g)?.length ?? 0), column: offset - nl };
+  };
+  const doc = (0, import_yaml4.parseDocument)(node2.value, { schema: "core", prettyErrors: false, logLevel: "error" });
+  if (doc.errors.length) {
+    const err = doc.errors[0];
+    return { error: err.message.split("\n")[0], errorAt: err.pos ? at(err.pos[0]) : node2.position.start, pairs: [] };
+  }
+  if (doc.contents === null && !node2.value.trim()) return { empty: true, pairs: [] };
+  if (!(0, import_yaml4.isMap)(doc.contents)) return { notMap: true, pairs: [] };
+  const pairs = doc.contents.items.map((pair2) => {
+    const key2 = (0, import_yaml4.isScalar)(pair2.key) ? String(pair2.key.value) : String(pair2.key);
+    const keyAt = pair2.key?.range ? at(pair2.key.range[0]) : node2.position.start;
+    const mark2 = (0, import_yaml4.isAlias)(pair2.value) ? ["*", "an alias"] : pair2.value?.anchor ? ["&", "an anchor"] : null;
+    let value2 = null;
+    if (!mark2) {
+      try {
+        value2 = (0, import_yaml4.isScalar)(pair2.value) ? pair2.value.value : pair2.value?.toJSON?.() ?? null;
+      } catch {
+        value2 = null;
+      }
+    }
+    return { key: key2, value: value2, keyAt, valueAt: pair2.value?.range ? at(pair2.value.range[0]) : keyAt, mark: mark2 };
+  });
+  return { pairs };
+}
+var yamlNode = (tree) => tree.children.find((n) => n.type === "yaml");
+var specFrontmatter = lintRule("md2html:spec-frontmatter", (tree, file, options) => {
+  const node2 = yamlNode(tree);
+  if (!node2) return;
+  const dir = changeDir(reportPath(options, file));
+  const required = dir ? [...CHANGE_ONLY, ...ALWAYS] : ALWAYS;
+  const y = readYaml(node2);
+  if (y.error) {
+    const line = node2.value.split("\n")[y.errorAt.line - node2.position.start.line - 1];
+    const colon = line && /^([\w-]+):[ \t]+[^\s"'].*:\s/.exec(line);
+    const hint = colon ? ` (line ${y.errorAt.line}). Quote values that contain ": ", e.g. ${colon[1]}: "…"` : "";
+    return void file.message(`frontmatter is not valid YAML: ${y.error}${hint}`, y.errorAt);
+  }
+  if (y.empty) return void file.message(`frontmatter is empty. Required keys: ${required.join(", ")}`, node2);
+  if (y.notMap) return void file.message("frontmatter must be a YAML mapping of keys to values", node2);
+  const values = {};
+  const places = {};
+  for (const p2 of y.pairs) {
+    if (!SPEC_KEYS.includes(p2.key)) {
+      const near = suggest(p2.key, SPEC_KEYS);
+      file.message(`unknown frontmatter key "${p2.key}".${near ? ` Did you mean "${near}"?` : ` Allowed: ${SPEC_KEYS.join(", ")}`}`, p2.keyAt);
+      continue;
+    }
+    if (p2.mark) {
+      file.message(`"${p2.key}" starts with "${p2.mark[0]}", which YAML reads as ${p2.mark[1]}; quote the value`, p2.valueAt);
+      places[p2.key] = p2.valueAt;
+      continue;
+    }
+    values[p2.key] = p2.value;
+    places[p2.key] = p2.valueAt;
+  }
+  for (const key2 of required) {
+    if (!(key2 in places)) file.message(`missing required frontmatter key "${key2}"`, node2.position.start);
+  }
+  if ("title" in values && (typeof values.title !== "string" || !values.title.trim())) {
+    file.message('"title" must be a non-empty string', places.title);
+  }
+  if ("feature" in values) {
+    if (typeof values.feature !== "string" || !values.feature.trim()) file.message('"feature" must be a non-empty string', places.feature);
+    else if (dir && values.feature !== dir) file.message(`feature "${values.feature}" must equal the change directory name "${dir}"`, places.feature);
+  }
+  if ("status" in values && !SPEC_STATUSES.includes(values.status)) {
+    file.message(`status "${values.status ?? ""}" is not allowed. Use ${SPEC_STATUSES.join(" | ")}`, places.status);
+  }
+  if ("order" in values && !(Number.isInteger(values.order) && values.order >= 0)) {
+    file.message(`"order" must be an integer ≥ 0, got "${values.order ?? ""}"`, places.order);
+  }
+  for (const key2 of DATE_KEYS2) {
+    if (key2 in values && !isIsoDate2(values[key2])) {
+      file.message(`"${key2}" must be an ISO date (YYYY-MM-DD), got "${values[key2] ?? ""}"`, places[key2]);
+    }
+  }
+  if (isIsoDate2(values.created) && isIsoDate2(values.edited) && values.edited < values.created) {
+    file.message(`"edited" (${values.edited}) is before "created" (${values.created})`, places.edited);
+  }
+});
+var specFrontmatterHints = lintRule("md2html:spec-frontmatter", (tree, file) => {
+  const node2 = yamlNode(tree);
+  if (!node2) return void file.message("add spec frontmatter (feature, title, status, created, edited)", { line: 1, column: 1 });
+  const known = readYaml(node2).pairs.filter((p2) => SPEC_KEYS.includes(p2.key));
+  for (let i = 1; i < known.length; i++) {
+    const prev = known[i - 1];
+    if (SPEC_KEYS.indexOf(known[i].key) < SPEC_KEYS.indexOf(prev.key)) {
+      file.message(`"${known[i].key}" should come before "${prev.key}" (order: ${SPEC_KEYS.join(", ")})`, known[i].keyAt);
+    }
+  }
+});
+function specFrontmatterData(tree) {
+  const node2 = yamlNode(tree);
+  if (!node2) return null;
+  const y = readYaml(node2);
+  if (y.error || y.empty || y.notMap) return null;
+  const data = { lines: {} };
+  for (const p2 of y.pairs) {
+    if (!SPEC_KEYS.includes(p2.key) || p2.key in data.lines) continue;
+    if (!p2.mark) data[p2.key] = p2.value;
+    data.lines[p2.key] = p2.keyAt.line;
+  }
+  return data;
+}
+function majority(entries) {
+  const counts = /* @__PURE__ */ new Map();
+  for (const e of entries) counts.set(e.value, (counts.get(e.value) ?? 0) + 1);
+  const top = Math.max(...counts.values());
+  const tied = new Set([...counts].filter(([, n]) => n === top).map(([v]) => v));
+  const rank = (e) => Number.isInteger(e.item.order) ? e.item.order : Infinity;
+  const first2 = entries.map((e, i) => ({ e, i })).filter(({ e }) => tied.has(e.value)).sort((a, b) => rank(a.e) - rank(b.e) || a.i - b.i)[0];
+  return first2.e.value;
+}
+function specGroupMessages(items) {
+  const out = [];
+  for (const key2 of ["feature", "status"]) {
+    const entries = items.filter((item2) => item2[key2] !== void 0 && item2[key2] !== null).map((item2) => ({ item: item2, value: item2[key2] }));
+    if (new Set(entries.map((e) => e.value)).size < 2) continue;
+    const common = majority(entries);
+    for (const { item: item2, value: value2 } of entries) {
+      if (value2 === common) continue;
+      const slash = item2.file.lastIndexOf("/");
+      const dir = slash < 0 ? "./" : item2.file.slice(0, slash + 1);
+      out.push({
+        file: item2.file,
+        line: item2.lines?.[key2] ?? item2.line ?? 1,
+        column: 1,
+        severity: "error",
+        message: `${key2} "${value2}" differs from the rest of ${dir} ("${common}")`,
+        ruleId: "spec-consistency"
+      });
+    }
+  }
+  return out.sort((a, b) => (a.file < b.file ? -1 : a.file > b.file ? 1 : 0) || a.line - b.line || a.column - b.column);
+}
+
 // src/lint.mjs
 var RULES = [
   { plugin: directiveKnown, severity: "error" },
@@ -24346,6 +24529,24 @@ function lint(source, { file = "", root: root4 = ".", config, readFile, exists, 
   const vfile2 = new VFile({ path: file || void 0, value: normalizeInput(source) });
   processor.runSync(processor.parse(vfile2), vfile2);
   return toMessages(vfile2.messages);
+}
+var SPEC_SKIPPED = /* @__PURE__ */ new Set([frontmatter2, headingNumber]);
+function lintSpec(source, { file = "", root: root4 = ".", config, readFile, exists, cache } = {}) {
+  const access = { ...fsAccess(root4), ...readFile && { readFile }, ...exists && { exists } };
+  const processor = parser();
+  for (const r of RULES) {
+    if (!SPEC_SKIPPED.has(r.plugin)) processor.use(r.plugin, ["warn", r.files ? { file, config, cache, ...access } : void 0]);
+  }
+  processor.use(specFrontmatter, ["error", { file }]).use(specFrontmatterHints, "warn");
+  const vfile2 = new VFile({ path: file || void 0, value: normalizeInput(source) });
+  processor.runSync(processor.parse(vfile2), vfile2);
+  return toMessages(vfile2.messages);
+}
+function specData(source) {
+  return specFrontmatterData(parser().parse(normalizeInput(source)));
+}
+function lintSpecGroup(items) {
+  return specGroupMessages(items);
 }
 function lintTheme(cssText) {
   return themeTokens(normalizeInput(cssText)).sort(order2);
@@ -26056,13 +26257,13 @@ function rehypeStringify(options) {
 
 // assets:./assets.mjs
 var baseCss = ':root {\n  --bg: #fbfbfa; --fg: #1d1d1f; --muted: #5f6368; --line: #e3e3e0; --card: #ffffff;\n  --accent: #1f5bd6; --go: #1e7b3a; --go-bg: #e6f4ea; --partial: #8a5a00; --partial-bg: #fdf1d6;\n  --no: #b3261e; --no-bg: #fce8e6; --code: #f2f2ef; --figure-bg: #ffffff;\n  color-scheme: light;\n}\n@media (prefers-color-scheme: dark) {\n  :root:not([data-theme="light"]) {\n    --bg: #16171a; --fg: #e8e8ea; --muted: #a0a3a8; --line: #2c2e33; --card: #1e2024;\n    --accent: #8ab4ff; --go: #7fd49a; --go-bg: #173524; --partial: #f0c36a; --partial-bg: #3a2e12;\n    --no: #ff9b91; --no-bg: #3d1a17; --code: #26282d; --figure-bg: #ffffff; color-scheme: dark;\n  }\n}\n:root[data-theme="dark"] {\n  --bg: #16171a; --fg: #e8e8ea; --muted: #a0a3a8; --line: #2c2e33; --card: #1e2024;\n  --accent: #8ab4ff; --go: #7fd49a; --go-bg: #173524; --partial: #f0c36a; --partial-bg: #3a2e12;\n  --no: #ff9b91; --no-bg: #3d1a17; --code: #26282d; --figure-bg: #ffffff; color-scheme: dark;\n}\n* { box-sizing: border-box; }\nbody { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; overflow-wrap: break-word; }\nmain { max-width: 980px; margin: 0 auto; padding: 32px 16px 80px; }\n.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }\n.appicon { flex: none; width: 48px; height: 48px; border-radius: 11px; box-shadow: 0 1px 3px rgba(0,0,0,.15); }\nh1 { font-size: 2rem; line-height: 1.2; margin: 0 0 8px; }\nh2 { font-size: 1.4rem; margin: 48px 0 12px; padding-top: 12px; border-top: 1px solid var(--line); }\nh3 { font-size: 1.1rem; margin: 28px 0 8px; }\np, li { max-width: 72ch; }\na { color: var(--accent); }\ncode { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: .88em; }\npre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 12px 0; overflow-x: auto; line-height: 1.45; }\npre code { background: none; padding: 0; border-radius: 0; font-size: .85rem; }\nblockquote { margin: 12px 0; padding: 0 0 0 16px; border-left: 3px solid var(--line); color: var(--muted); }\nimg { max-width: 100%; height: auto; }\nhr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }\nhr + h2 { border-top: 0; padding-top: 0; margin-top: 0; }\n.sub { color: var(--muted); margin: 0 0 24px; }\n.sub img { height: 1.2em; width: auto; vertical-align: middle; }\n.tldr { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; }\n.tldr p:first-child { margin-top: 0; }\n.tldr > :last-child { margin-bottom: 0; }\nnav.toc { columns: 2; column-gap: 32px; font-size: .95rem; margin-top: 20px; }\nnav.toc a { display: block; padding: 2px 0; }\n@media (max-width: 640px) { nav.toc { columns: 1; } }\n.tbl { overflow-x: auto; margin: 12px 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }\ntable { border-collapse: collapse; width: 100%; font-size: .9rem; }\nth, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }\nth { font-weight: 600; background: var(--code); }\ntr:last-child td { border-bottom: 0; }\nth[align="center"], td[align="center"] { text-align: center; }\nth[align="right"], td[align="right"] { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }\ntd.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }\n.v { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: .8rem; font-weight: 600; }\ntd .v { white-space: nowrap; }\n.go { color: var(--go); background: var(--go-bg); }\n.partial { color: var(--partial); background: var(--partial-bg); }\n.no { color: var(--no); background: var(--no-bg); }\nfigure { margin: 16px 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }\nfigure img { display: block; max-width: 100%; height: auto; margin: 0 auto; background: var(--figure-bg); border-radius: 6px; }\nfigcaption { color: var(--muted); font-size: .85rem; margin-top: 8px; text-align: center; }\nfigcaption a.mmd-src { white-space: nowrap; }\n.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px; margin: 12px 0; }\n.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; min-width: 0; }\n.card h4 { margin: 0 0 6px; font-size: 1rem; }\n.card p { margin: 6px 0; font-size: .93rem; }\n.contains-task-list { list-style: none; padding-left: 20px; }\n.footnotes { margin-top: 48px; padding-top: 12px; border-top: 1px solid var(--line); font-size: .9rem; color: var(--muted); }\n.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }\n\n.reports-nav { display: flex; align-items: center; gap: 4px;\n  padding: 8px 16px; overflow-x: auto; white-space: nowrap; scrollbar-width: none;\n  background: var(--card); border-bottom: 1px solid var(--line);\n  font: 500 14px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }\n.reports-nav::-webkit-scrollbar { display: none; }\n.reports-nav .brand { display: flex; align-items: center; gap: 8px; margin-right: 8px; color: var(--muted); }\n.reports-nav .brand img { width: 20px; height: 20px; border-radius: 5px; }\n.reports-nav a.item { padding: 6px 12px; border-radius: 999px; color: var(--fg); text-decoration: none; }\n.reports-nav a.item:hover { background: rgba(127,127,127,.12); }\n.reports-nav a.item[aria-current="page"] { background: var(--accent); color: var(--bg); }\n\n.report-meta { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 4px 0 16px; padding: 0; font-size: .88rem; }\n.report-meta div { display: flex; align-items: baseline; gap: 6px; }\n.report-meta dt { color: var(--muted); }\n.report-meta dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }\n.report-status { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; }\n.report-status.research { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }\n.report-status.ongoing { color: var(--partial); background: var(--partial-bg); }\n.report-status.implemented { color: var(--go); background: var(--go-bg); }\n';
-var version = "0.1.0";
+var version = "0.2.0";
 
 // src/transforms/frontmatter.mjs
-var import_yaml4 = __toESM(require_dist(), 1);
+var import_yaml5 = __toESM(require_dist(), 1);
 function parseFrontmatter(value2) {
   try {
-    const data = import_yaml4.default.parse(value2, { schema: "core", logLevel: "error" });
+    const data = import_yaml5.default.parse(value2, { schema: "core", logLevel: "error" });
     if (data && typeof data === "object" && !Array.isArray(data)) return { data, error: null };
     return { data: {}, error: data == null ? null : new Error("frontmatter must be a mapping") };
   } catch (error) {
@@ -26252,7 +26453,7 @@ function renderToc(entries) {
 ${entries.map((e) => `<a href="#${esc(e.id)}">${esc(e.label)}</a>
 `).join("")}</nav>`;
 }
-function renderPage({ file, config, title, description, created, edited, status, subtitleHtml, tldrHtml, toc, bodyHtml, baseCss: baseCss2, themeCss, version: version2 }) {
+function renderPage({ file, config, title, description, created, edited, status, subtitleHtml, tldrHtml, toc, bodyHtml, baseCss: baseCss3, themeCss, version: version3 }) {
   const icon = config.brand.icon ? `<img class="appicon" src="${esc(relHref(file, config.brand.icon))}" alt="${esc(config.brand.name)}" width="48" height="48">` : "";
   const lines = [
     "<!doctype html>",
@@ -26262,11 +26463,11 @@ function renderPage({ file, config, title, description, created, edited, status,
     '<meta name="viewport" content="width=device-width, initial-scale=1">',
     `<title>${esc(title)}</title>`,
     description ? `<meta name="description" content="${esc(description)}">` : null,
-    `<meta name="generator" content="md2html ${esc(version2)}">`,
+    `<meta name="generator" content="md2html ${esc(version3)}">`,
     "<style>",
     "@layer base, theme;",
     "@layer base {",
-    safeCss(baseCss2).trimEnd(),
+    safeCss(baseCss3).trimEnd(),
     "}",
     "@layer theme {",
     themeCss.trim() ? safeCss(themeCss).trimEnd() : null,
@@ -26356,6 +26557,188 @@ function build(source, { file, root: root4, config, themeCss = "", exists = () =
   });
 }
 
+// src/profile.mjs
+function profileOf(relPath, config) {
+  if (!relPath.endsWith(".md")) return null;
+  if (matchesAny(relPath, config.sources)) return "report";
+  if (config.specs && matchesAny(relPath, config.specs.sources)) return "spec";
+  return null;
+}
+
+// src/spec/groups.mjs
+import path11 from "node:path";
+function labelOf(file) {
+  const name = path11.posix.basename(file).replace(/\.md$/, "").replace(/[-_]+/g, " ").trim();
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
+var cmp = (a, b) => a < b ? -1 : a > b ? 1 : 0;
+var byOrder = (a, b) => (a.order ?? Infinity) - (b.order ?? Infinity) || cmp(path11.posix.basename(a.file), path11.posix.basename(b.file));
+function item(file, data) {
+  const label4 = labelOf(file);
+  const order3 = Number.isInteger(data.order) ? data.order : null;
+  const str = (key2) => fmString(data, key2) ?? null;
+  return { file, label: label4, order: order3, title: str("title") ?? label4, feature: str("feature"), status: str("status"), edited: str("edited") };
+}
+function groups(files, readFrontmatter) {
+  const byDir = /* @__PURE__ */ new Map();
+  for (const file of [...new Set(files)]) {
+    const dir = path11.posix.dirname(file);
+    if (!byDir.has(dir)) byDir.set(dir, []);
+    byDir.get(dir).push(item(file, readFrontmatter(file) ?? {}));
+  }
+  return [...byDir.keys()].sort(cmp).map((dir) => ({ dir, items: byDir.get(dir).sort(byOrder) }));
+}
+function groupStatus(items) {
+  const withStatus = items.filter((it) => it.status != null);
+  if (!withStatus.length) return null;
+  const counts = /* @__PURE__ */ new Map();
+  for (const it of withStatus) counts.set(it.status, (counts.get(it.status) ?? 0) + 1);
+  const top = Math.max(...counts.values());
+  return [...withStatus].sort(byOrder).find((it) => counts.get(it.status) === top).status;
+}
+
+// src/spec/build.mjs
+import path12 from "node:path";
+
+// assets:../assets.mjs
+var baseCss2 = ':root {\n  --bg: #fbfbfa; --fg: #1d1d1f; --muted: #5f6368; --line: #e3e3e0; --card: #ffffff;\n  --accent: #1f5bd6; --go: #1e7b3a; --go-bg: #e6f4ea; --partial: #8a5a00; --partial-bg: #fdf1d6;\n  --no: #b3261e; --no-bg: #fce8e6; --code: #f2f2ef; --figure-bg: #ffffff;\n  color-scheme: light;\n}\n@media (prefers-color-scheme: dark) {\n  :root:not([data-theme="light"]) {\n    --bg: #16171a; --fg: #e8e8ea; --muted: #a0a3a8; --line: #2c2e33; --card: #1e2024;\n    --accent: #8ab4ff; --go: #7fd49a; --go-bg: #173524; --partial: #f0c36a; --partial-bg: #3a2e12;\n    --no: #ff9b91; --no-bg: #3d1a17; --code: #26282d; --figure-bg: #ffffff; color-scheme: dark;\n  }\n}\n:root[data-theme="dark"] {\n  --bg: #16171a; --fg: #e8e8ea; --muted: #a0a3a8; --line: #2c2e33; --card: #1e2024;\n  --accent: #8ab4ff; --go: #7fd49a; --go-bg: #173524; --partial: #f0c36a; --partial-bg: #3a2e12;\n  --no: #ff9b91; --no-bg: #3d1a17; --code: #26282d; --figure-bg: #ffffff; color-scheme: dark;\n}\n* { box-sizing: border-box; }\nbody { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; overflow-wrap: break-word; }\nmain { max-width: 980px; margin: 0 auto; padding: 32px 16px 80px; }\n.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }\n.appicon { flex: none; width: 48px; height: 48px; border-radius: 11px; box-shadow: 0 1px 3px rgba(0,0,0,.15); }\nh1 { font-size: 2rem; line-height: 1.2; margin: 0 0 8px; }\nh2 { font-size: 1.4rem; margin: 48px 0 12px; padding-top: 12px; border-top: 1px solid var(--line); }\nh3 { font-size: 1.1rem; margin: 28px 0 8px; }\np, li { max-width: 72ch; }\na { color: var(--accent); }\ncode { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: .88em; }\npre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 12px 0; overflow-x: auto; line-height: 1.45; }\npre code { background: none; padding: 0; border-radius: 0; font-size: .85rem; }\nblockquote { margin: 12px 0; padding: 0 0 0 16px; border-left: 3px solid var(--line); color: var(--muted); }\nimg { max-width: 100%; height: auto; }\nhr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }\nhr + h2 { border-top: 0; padding-top: 0; margin-top: 0; }\n.sub { color: var(--muted); margin: 0 0 24px; }\n.sub img { height: 1.2em; width: auto; vertical-align: middle; }\n.tldr { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; }\n.tldr p:first-child { margin-top: 0; }\n.tldr > :last-child { margin-bottom: 0; }\nnav.toc { columns: 2; column-gap: 32px; font-size: .95rem; margin-top: 20px; }\nnav.toc a { display: block; padding: 2px 0; }\n@media (max-width: 640px) { nav.toc { columns: 1; } }\n.tbl { overflow-x: auto; margin: 12px 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }\ntable { border-collapse: collapse; width: 100%; font-size: .9rem; }\nth, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }\nth { font-weight: 600; background: var(--code); }\ntr:last-child td { border-bottom: 0; }\nth[align="center"], td[align="center"] { text-align: center; }\nth[align="right"], td[align="right"] { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }\ntd.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }\n.v { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: .8rem; font-weight: 600; }\ntd .v { white-space: nowrap; }\n.go { color: var(--go); background: var(--go-bg); }\n.partial { color: var(--partial); background: var(--partial-bg); }\n.no { color: var(--no); background: var(--no-bg); }\nfigure { margin: 16px 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }\nfigure img { display: block; max-width: 100%; height: auto; margin: 0 auto; background: var(--figure-bg); border-radius: 6px; }\nfigcaption { color: var(--muted); font-size: .85rem; margin-top: 8px; text-align: center; }\nfigcaption a.mmd-src { white-space: nowrap; }\n.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px; margin: 12px 0; }\n.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; min-width: 0; }\n.card h4 { margin: 0 0 6px; font-size: 1rem; }\n.card p { margin: 6px 0; font-size: .93rem; }\n.contains-task-list { list-style: none; padding-left: 20px; }\n.footnotes { margin-top: 48px; padding-top: 12px; border-top: 1px solid var(--line); font-size: .9rem; color: var(--muted); }\n.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }\n\n.reports-nav { display: flex; align-items: center; gap: 4px;\n  padding: 8px 16px; overflow-x: auto; white-space: nowrap; scrollbar-width: none;\n  background: var(--card); border-bottom: 1px solid var(--line);\n  font: 500 14px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }\n.reports-nav::-webkit-scrollbar { display: none; }\n.reports-nav .brand { display: flex; align-items: center; gap: 8px; margin-right: 8px; color: var(--muted); }\n.reports-nav .brand img { width: 20px; height: 20px; border-radius: 5px; }\n.reports-nav a.item { padding: 6px 12px; border-radius: 999px; color: var(--fg); text-decoration: none; }\n.reports-nav a.item:hover { background: rgba(127,127,127,.12); }\n.reports-nav a.item[aria-current="page"] { background: var(--accent); color: var(--bg); }\n\n.report-meta { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 4px 0 16px; padding: 0; font-size: .88rem; }\n.report-meta div { display: flex; align-items: baseline; gap: 6px; }\n.report-meta dt { color: var(--muted); }\n.report-meta dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }\n.report-status { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; }\n.report-status.research { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }\n.report-status.ongoing { color: var(--partial); background: var(--partial-bg); }\n.report-status.implemented { color: var(--go); background: var(--go-bg); }\n';
+var specCss = '\n.spec-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px;\n  padding: 8px 16px; background: var(--card); border-bottom: 1px solid var(--line);\n  font: 500 14px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }\n.spec-nav a { padding: 6px 12px; border-radius: 999px; color: var(--fg); text-decoration: none; }\n.spec-nav a:hover { background: rgba(127,127,127,.12); }\n.spec-nav a.up { color: var(--muted); margin-right: 8px; }\n.spec-nav a[aria-current="page"] { background: var(--accent); color: var(--bg); }\n.spec-nav .spec-status { margin-left: auto; }\n.spec-status { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; white-space: nowrap; }\n.spec-status.exploring { color: var(--muted); background: var(--code); }\n.spec-status.proposed { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }\n.spec-status.applying { color: var(--partial); background: var(--partial-bg); }\n.spec-status.paused { color: var(--no); background: var(--no-bg); }\n.spec-status.applied { color: var(--go); background: var(--go-bg); }\n\npre.mermaid { font-size: .85rem; }\npre.mermaid[data-processed] { background: none; border: 0; padding: 0; text-align: center; }\npre.mermaid svg { max-width: 100%; height: auto; }\n\n.spec-index td a { margin-right: 10px; }\n.spec-index td a:last-child { margin-right: 0; }\n.spec-index td.pages { min-width: 16ch; }\n.spec-index td.dir code { white-space: nowrap; }\n@media (max-width: 640px) {\n  .spec-index thead { display: none; }\n  .spec-index tr { display: block; padding: 8px 0; border-bottom: 1px solid var(--line); }\n  .spec-index tr:last-child { border-bottom: 0; }\n  .spec-index td { display: flex; gap: 12px; border: 0; padding: 3px 12px; text-align: left; white-space: normal; }\n  .spec-index td::before { content: attr(data-label); flex: none; width: 6.5em; color: var(--muted); font-size: .85em; }\n  .spec-index td.pages { display: block; padding-left: calc(12px + 6.5em + 12px); text-indent: calc(-6.5em - 12px); }\n  .spec-index td.pages::before { display: inline-block; margin-right: 12px; text-indent: 0; }\n}\n/* Plan checkboxes: GFM renders them disabled (greyed); keep done vs. open steps easy to tell apart. */\n.contains-task-list input[type="checkbox"] { accent-color: var(--accent); opacity: 1; width: 1em; height: 1em; vertical-align: -0.1em; }\n.task-list-item:has(input:checked) { color: var(--muted); }\n';
+var version2 = "0.2.0";
+
+// src/spec/build.mjs
+var capitalise2 = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+var toHtml2 = (file) => file.replace(/\.md$/, ".html");
+function mermaidBlocks(tree) {
+  let count = 0;
+  const walk2 = (parent) => {
+    if (!parent.children) return;
+    parent.children = parent.children.map((node2) => {
+      const code5 = node2.type === "element" && node2.tagName === "pre" && node2.children.length === 1 ? node2.children[0] : null;
+      if (code5?.tagName === "code" && code5.properties.className?.includes("language-mermaid")) {
+        count++;
+        const text7 = code5.children.map((c) => c.value ?? "").join("").replace(/\n$/, "");
+        return { type: "element", tagName: "pre", properties: { className: ["mermaid"] }, children: [{ type: "text", value: text7 }] };
+      }
+      walk2(node2);
+      return node2;
+    });
+  };
+  walk2(tree);
+  return count;
+}
+function renderSpecNav({ file, config, group, status }) {
+  const up = `<a class="up" href="${esc(encodePath(relHref(file, config.specs.index)))}">↑ Index</a>`;
+  const items = (group?.items ?? []).map((it) => {
+    const current = it.file === file ? ' aria-current="page"' : "";
+    return `<a class="item" href="${esc(encodePath(relHref(file, toHtml2(it.file))))}"${current}>${esc(it.label)}</a>`;
+  });
+  const pill = status ? `<span class="spec-status ${esc(status)}">${esc(capitalise2(status))}</span>` : "";
+  return `<nav class="spec-nav" aria-label="Spec pages">${up}${items.join("")}${pill}</nav>`;
+}
+var jsString = (s) => JSON.stringify(s).replace(/</g, "\\u003c");
+function mermaidScript(url) {
+  return [
+    '<script type="module">',
+    `import mermaid from ${jsString(url)};`,
+    "mermaid.initialize({ startOnLoad: false, theme: matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default' });",
+    "await mermaid.run({ querySelector: 'pre.mermaid' });",
+    "</script>"
+  ].join("\n");
+}
+function specPage({ config, title, nav, body: body3, script = "", themeCss = "" }) {
+  const theme = normalizeInput(themeCss);
+  const lines = [
+    "<!doctype html>",
+    `<html lang="${esc(config.lang)}">`,
+    "<head>",
+    '<meta charset="utf-8">',
+    '<meta name="viewport" content="width=device-width, initial-scale=1">',
+    `<title>${esc(title)}</title>`,
+    `<meta name="generator" content="md2html ${esc(version2)}">`,
+    "<style>",
+    "@layer base, theme;",
+    "@layer base {",
+    safeCss(baseCss2).trimEnd(),
+    safeCss(specCss).trim(),
+    "}",
+    "@layer theme {",
+    theme.trim() ? safeCss(theme).trimEnd() : null,
+    "}",
+    "</style>",
+    "</head>",
+    "<body>",
+    nav || null,
+    "<main>",
+    body3.trim() || null,
+    "</main>",
+    script || null,
+    "</body>",
+    "</html>"
+  ];
+  return lines.filter((l) => l !== null).join("\n") + "\n";
+}
+function buildSpec(source, { file, config, group, themeCss = "" }) {
+  const src = normalizeInput(source);
+  const tree = parse2(src);
+  const { data } = extractFrontmatter(tree);
+  calloutsToTldr(tree);
+  literalizeInvalid(tree, src);
+  const headings = assignHeadingIds(tree);
+  const h1 = headings.find((h2) => h2.depth === 1);
+  const title = fmString(data, "title") ?? h1?.text ?? path12.posix.basename(file).replace(/\.md$/, "");
+  const hast = toHast3.runSync(tree);
+  dropUnsafeUrls(hast);
+  figures(hast, { file, exists: () => false });
+  tables(hast);
+  links2(hast, { file, sources: [...config.specs.sources, ...config.sources] });
+  const diagrams = mermaidBlocks(hast);
+  const body3 = (h1 ? "" : `<h1>${esc(title)}</h1>
+`) + stringify3(hast.children);
+  return specPage({
+    config,
+    title,
+    themeCss,
+    body: body3,
+    nav: renderSpecNav({ file, config, group, status: fmString(data, "status") }),
+    script: diagrams ? mermaidScript(config.specs.mermaid) : ""
+  });
+}
+
+// src/spec/index.mjs
+var DASH = "—";
+var capitalise3 = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+var first = (items, key2) => items.find((it) => it[key2] != null)?.[key2] ?? null;
+function row(group, at) {
+  const { items } = group;
+  const href = (it) => esc(encodePath(relHref(at, it.file.replace(/\.md$/, ".html"))));
+  const feature = first(items, "feature");
+  const status = groupStatus(items);
+  const edited = items.map((it) => it.edited).filter((e) => e != null).sort().at(-1) ?? null;
+  const cells2 = [
+    `<td class="dir" data-label="Directory"><code>${esc(group.dir)}/</code></td>`,
+    `<td data-label="Feature">${feature == null ? DASH : esc(feature)}</td>`,
+    `<td data-label="Status">${status == null ? DASH : `<span class="spec-status ${esc(status)}">${esc(capitalise3(status))}</span>`}</td>`,
+    `<td data-label="Title"><a href="${href(items[0])}">${esc(items[0].title)}</a></td>`,
+    `<td class="num" data-label="Edited">${edited == null ? DASH : esc(edited)}</td>`,
+    `<td class="pages" data-label="Pages">${items.map((it) => `<a href="${href(it)}">${esc(it.label)}</a>`).join(" ")}</td>`
+  ];
+  return `<tr>${cells2.join("")}</tr>`;
+}
+function buildIndex(allGroups, { config, themeCss = "" }) {
+  const at = config.specs.index;
+  const nonEmpty = allGroups.filter((g) => g.items.length);
+  const table2 = nonEmpty.length ? [
+    '<div class="tbl"><table class="spec-index">',
+    "<thead><tr><th>Directory</th><th>Feature</th><th>Status</th><th>Title</th><th>Edited</th><th>Pages</th></tr></thead>",
+    `<tbody>
+${nonEmpty.map((g) => row(g, at)).join("\n")}
+</tbody>`,
+    "</table></div>"
+  ].join("\n") : "<p>No spec files yet.</p>";
+  return specPage({ config, title: "Specs", themeCss, nav: "", body: `<h1>Specs</h1>
+${table2}` });
+}
+
 // src/syntax.mjs
 var plainSnippet = (s) => s.replace(/\$\{\d+\|([^,|]*)[^}]*\}/g, "$1").replace(/\$\{\d+:?([^}]*)\}/g, "$1");
 function attrText(d) {
@@ -26426,13 +26809,13 @@ function syntaxMarkdown() {
 }
 
 // src/cli.mjs
-var import_yaml5 = __toESM(require_dist(), 1);
+var import_yaml6 = __toESM(require_dist(), 1);
 var USAGE = `md2html ${version}
 Usage:
   md2html new <path> [--title "…"]     write a report skeleton
   md2html fmt [--check] [paths…]       rewrite reports into canonical form
   md2html lint [--format json] [paths…]
-  md2html build [--check] [--watch] [paths…]
+  md2html build [--check] [--watch] [--specs] [paths…]   --specs: spec pages + index only
   md2html check                        fmt --check + lint + build --check over all sources
   md2html syntax [--json]              the cheat sheet
 Exit codes: 0 clean, 1 lint errors / stale / non-canonical, 2 usage or config error.`;
@@ -26440,12 +26823,21 @@ var UsageError = class extends Error {
 };
 var SKIP_DIRS = /* @__PURE__ */ new Set(["node_modules", ".git", ".worktrees"]);
 function listSources(root4, config) {
-  return listFiles(root4, (rel) => rel.endsWith(".md") && matchesAny(rel, config.sources));
+  return listFiles(root4, (rel) => profileOf(rel, config) !== null);
+}
+function byProfile(files, config) {
+  const specs = files.filter((f) => profileOf(f, config) === "spec");
+  return { reports: files.filter((f) => !specs.includes(f)), specs };
+}
+var GENERATED = /<meta name="generator" content="md2html /;
+function frontmatterOf(source) {
+  const m = /^---\n([\s\S]*?)\n---(?:\n|$)/.exec(normalizeInput(source ?? ""));
+  return m ? parseFrontmatter(m[1]).data : {};
 }
 function listFiles(root4, keep) {
   const out = [];
   const walk2 = (dir) => {
-    for (const entry of fs3.readdirSync(path11.join(root4, dir), { withFileTypes: true })) {
+    for (const entry of fs3.readdirSync(path13.join(root4, dir), { withFileTypes: true })) {
       if (entry.name.startsWith(".") || SKIP_DIRS.has(entry.name)) continue;
       const rel = dir ? `${dir}/${entry.name}` : entry.name;
       if (entry.isDirectory()) walk2(rel);
@@ -26480,7 +26872,7 @@ function today() {
 function skeleton(title, date) {
   let plain;
   try {
-    plain = import_yaml5.default.parse(`title: ${title}
+    plain = import_yaml6.default.parse(`title: ${title}
 `, { schema: "core" })?.title;
   } catch {
     plain = void 0;
@@ -26515,14 +26907,14 @@ What we should do next, and why.
 `;
 }
 function titleFromPath(file) {
-  const base = path11.basename(file).replace(/-report\.md$/, "").replace(/\.md$/, "").replace(/[-_]+/g, " ").trim();
+  const base = path13.basename(file).replace(/-report\.md$/, "").replace(/\.md$/, "").replace(/[-_]+/g, " ").trim();
   return base ? base[0].toUpperCase() + base.slice(1) : "Report";
 }
 function project(cwd) {
   const root4 = findRoot(cwd);
   if (!root4) throw new ConfigError(`no reports.json found in ${cwd} or any parent directory (run /md2html:setup)`);
   const config = loadConfig(root4);
-  const abs = (rel) => path11.join(root4, rel);
+  const abs = (rel) => path13.join(root4, rel);
   const readFile = (rel) => {
     try {
       return fs3.readFileSync(abs(rel), "utf8");
@@ -26531,15 +26923,15 @@ function project(cwd) {
     }
   };
   const exists = (rel) => fs3.existsSync(abs(rel));
-  const display2 = (rel) => toPosix(path11.relative(cwd, abs(rel))) || rel;
+  const display2 = (rel) => toPosix(path13.relative(cwd, abs(rel))) || rel;
   const realRoot = fs3.realpathSync(root4);
   const files = (positional) => {
     if (!positional.length) return listSources(root4, config);
     return positional.flatMap((p2) => {
-      const target = path11.resolve(cwd, p2);
+      const target = path13.resolve(cwd, p2);
       if (!fs3.existsSync(target)) throw new UsageError(`${p2}: no such file`);
-      const rel = toPosix(path11.relative(realRoot, fs3.realpathSync(target)));
-      if (rel.startsWith("..") || path11.isAbsolute(rel)) throw new UsageError(`${p2} is outside the project root ${root4}`);
+      const rel = toPosix(path13.relative(realRoot, fs3.realpathSync(target)));
+      if (rel.startsWith("..") || path13.isAbsolute(rel)) throw new UsageError(`${p2} is outside the project root ${root4}`);
       if (fs3.statSync(target).isDirectory()) {
         const prefix = rel ? `${rel}/` : "";
         return listSources(root4, config).filter((f) => f.startsWith(prefix));
@@ -26558,14 +26950,14 @@ function project(cwd) {
 }
 function runFmt(ctx, files, { check: check2 }, out) {
   let dirty = 0;
-  for (const f of files) {
+  for (const f of byProfile(files, ctx.config).reports) {
     const src = ctx.readFile(f);
     const formatted = format(src);
     if (formatted === src) continue;
     dirty++;
     if (check2) out.err(`${ctx.display(f)}: not in canonical form (run md2html fmt)`);
     else {
-      fs3.writeFileSync(path11.join(ctx.root, f), formatted);
+      fs3.writeFileSync(path13.join(ctx.root, f), formatted);
       out.log(`formatted ${ctx.display(f)}`);
     }
   }
@@ -26581,8 +26973,23 @@ function runLint(ctx, files, { format: fmtName = "text" }, out, { theme = true }
     else if (messages2.length) out.log(formatMessages(messages2, displayPath, { format: "text" }));
   };
   const cache = /* @__PURE__ */ new Map();
+  const { reports, specs } = byProfile(files, ctx.config);
+  const opts = (f) => ({ file: f, root: ctx.root, config: ctx.config, readFile: ctx.readFile, exists: ctx.exists, cache });
+  const perFile = /* @__PURE__ */ new Map();
+  for (const f of reports) perFile.set(f, lint(ctx.readFile(f), opts(f)));
+  for (const f of specs) perFile.set(f, lintSpec(ctx.readFile(f), opts(f)));
+  if (theme && ctx.config.specs) {
+    for (const group of groupsOf(ctx, specs)) {
+      const items = group.items.map(({ file }) => ({ file, ...specData(ctx.readFile(file)) }));
+      for (const m of lintSpecGroup(items)) {
+        const { file, ...message } = m;
+        if (perFile.has(file)) perFile.get(file).push(message);
+      }
+    }
+  }
   for (const f of files) {
-    report(lint(ctx.readFile(f), { file: f, root: ctx.root, config: ctx.config, readFile: ctx.readFile, exists: ctx.exists, cache }), ctx.display(f));
+    const messages2 = perFile.get(f).sort((a, b) => a.line - b.line || a.column - b.column || a.ruleId.localeCompare(b.ruleId));
+    report(messages2, ctx.display(f));
   }
   if (theme && ctx.config.theme) {
     const css = ctx.readFile(ctx.config.theme);
@@ -26613,14 +27020,53 @@ function lintMenu(ctx) {
   return messages2;
 }
 function orphans(ctx) {
-  const candidates2 = listFiles(ctx.root, (rel) => rel.endsWith(".html") && matchesAny(rel.replace(/\.html$/, ".md"), ctx.config.sources));
-  return candidates2.filter((f) => !ctx.exists(f.replace(/\.html$/, ".md")) && /<meta name="generator" content="md2html /.test(ctx.readFile(f) ?? ""));
+  const candidates2 = listFiles(ctx.root, (rel) => rel.endsWith(".html") && profileOf(rel.replace(/\.html$/, ".md"), ctx.config) === "report");
+  return candidates2.filter((f) => !ctx.exists(f.replace(/\.html$/, ".md")) && GENERATED.test(ctx.readFile(f) ?? ""));
+}
+function groupsOf(ctx, files = listSources(ctx.root, ctx.config).filter((f) => profileOf(f, ctx.config) === "spec")) {
+  return groups(files, (f) => frontmatterOf(ctx.readFile(f)));
+}
+var writeIfChanged = (ctx, rel, html8, out) => {
+  if (ctx.readFile(rel) === html8) return;
+  fs3.mkdirSync(path13.dirname(path13.join(ctx.root, rel)), { recursive: true });
+  fs3.writeFileSync(path13.join(ctx.root, rel), html8);
+  out.log(`wrote ${ctx.display(rel)}`);
+};
+var notGenerated = (html8) => html8 !== null && !GENERATED.test(html8);
+function buildSpecs(ctx, themeCss, out) {
+  const { index: index2 } = ctx.config.specs;
+  const clash = listSources(ctx.root, ctx.config).find((f) => htmlPathFor(f) === index2);
+  if (clash) throw new ConfigError(`reports.json: "specs.index" ${index2} is also the page of ${clash}; choose another path`);
+  const all3 = groupsOf(ctx);
+  for (const group of all3) {
+    for (const { file } of group.items) {
+      const target = htmlPathFor(file);
+      if (notGenerated(ctx.readFile(target))) {
+        out.err(`warning: ${ctx.display(target)} exists and was not generated by md2html; not overwriting`);
+        continue;
+      }
+      writeIfChanged(ctx, target, buildSpec(ctx.readFile(file), { file, config: ctx.config, group, themeCss }), out);
+    }
+  }
+  const stale = listFiles(ctx.root, (rel) => rel !== index2 && rel.endsWith(".html") && profileOf(rel.replace(/\.html$/, ".md"), ctx.config) === "spec");
+  for (const f of stale) {
+    if (!ctx.exists(f.replace(/\.html$/, ".md")) && GENERATED.test(ctx.readFile(f) ?? "")) {
+      fs3.unlinkSync(path13.join(ctx.root, f));
+      out.log(`removed ${ctx.display(f)}`);
+    }
+  }
+  if (notGenerated(ctx.readFile(index2))) {
+    throw new ConfigError(`${index2} exists and was not generated by md2html; set "specs.index" in reports.json (e.g. "specs/index.html") so it is not overwritten`);
+  }
+  writeIfChanged(ctx, index2, buildIndex(all3, { config: ctx.config, themeCss }), out);
 }
 function buildOne(ctx, f, themeCss) {
   return build(ctx.readFile(f), { file: f, root: ctx.root, config: ctx.config, themeCss, exists: ctx.exists });
 }
-function runBuild(ctx, files, { check: check2 }, out, { orphanCheck = false } = {}) {
+function runBuild(ctx, allFiles, { check: check2 }, out, { orphanCheck = false, specs: specsTouched = false, specsOnly = false } = {}) {
   const themeCss = ctx.themeCss();
+  const { reports, specs } = byProfile(allFiles, ctx.config);
+  const files = specsOnly ? [] : reports;
   let stale = 0;
   if (check2 && orphanCheck) {
     for (const f of orphans(ctx)) {
@@ -26636,23 +27082,33 @@ function runBuild(ctx, files, { check: check2 }, out, { orphanCheck = false } = 
     stale++;
     if (check2) out.err(`${ctx.display(target)}: stale (run md2html build)`);
     else {
-      fs3.writeFileSync(path11.join(ctx.root, target), html8);
+      fs3.writeFileSync(path13.join(ctx.root, target), html8);
       out.log(`wrote ${ctx.display(target)}`);
     }
   }
+  if (!check2 && ctx.config.specs && (specs.length || specsTouched || specsOnly)) buildSpecs(ctx, themeCss, out);
   return check2 && stale ? 1 : 0;
 }
-function watch(cwd, positional, out) {
+function specRelevant(ctx, rel) {
+  if (!ctx.config.specs || rel.endsWith(".html")) return false;
+  if (rel.split("/").some((s) => s.startsWith(".") || SKIP_DIRS.has(s))) return false;
+  const stat = fs3.statSync(path13.join(ctx.root, rel), { throwIfNoEntry: false });
+  return !stat || stat.isDirectory();
+}
+function watch(cwd, positional, out, { specsOnly = false } = {}) {
   let ctx = project(cwd);
   let timer = null;
   let all3 = false;
+  let specsDirty = false;
   const pending = /* @__PURE__ */ new Set();
-  out.log(`watching ${ctx.files(positional).length} report(s); Ctrl-C to stop`);
+  const { reports, specs } = byProfile(ctx.files(positional), ctx.config);
+  out.log(`watching ${specsOnly ? 0 : reports.length} report(s) and ${specs.length} spec file(s); Ctrl-C to stop`);
   fs3.watch(ctx.root, { recursive: true }, (_event, name) => {
     if (!name) return;
     const rel = toPosix(name);
     if (rel === "reports.json" || rel === ctx.config.theme) all3 = true;
     else if (rel.endsWith(".md")) pending.add(rel);
+    else if (specRelevant(ctx, rel)) specsDirty = true;
     else return;
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -26660,9 +27116,18 @@ function watch(cwd, positional, out) {
         ctx = project(cwd);
         const files = ctx.files(positional);
         const batch = all3 ? files : files.filter((f) => pending.has(f));
+        const changedSpecs = [...pending].filter((f) => profileOf(f, ctx.config) === "spec");
+        const specs2 = all3 || specsDirty || changedSpecs.length > 0;
         pending.clear();
         all3 = false;
-        runBuild(ctx, batch, {}, out);
+        specsDirty = false;
+        runBuild(ctx, batch, {}, out, { specs: specs2, specsOnly });
+        for (const f of changedSpecs) {
+          const source = ctx.readFile(f);
+          if (source === null) continue;
+          const errors = lintSpec(source, { file: f, root: ctx.root, config: ctx.config, readFile: ctx.readFile, exists: ctx.exists }).filter((m) => m.severity === "error");
+          if (errors.length) out.err(formatMessages(errors, ctx.display(f), { format: "text" }));
+        }
       } catch (e) {
         out.err(e.message);
       }
@@ -26683,15 +27148,15 @@ async function main(argv, { cwd = process.cwd(), out = { log: console.log, err: 
       case "new": {
         allowFlags(flags, ["title"], cmd);
         if (positional.length !== 1) throw new UsageError("new needs exactly one <path>");
-        const target = path11.resolve(cwd, positional[0]);
+        const target = path13.resolve(cwd, positional[0]);
         if (!target.endsWith(".md")) throw new UsageError(`${positional[0]}: a report path must end in .md`);
         if (fs3.existsSync(target)) throw new UsageError(`${positional[0]} already exists; not overwriting`);
-        fs3.mkdirSync(path11.dirname(target), { recursive: true });
+        fs3.mkdirSync(path13.dirname(target), { recursive: true });
         fs3.writeFileSync(target, format(skeleton(flags.title ?? titleFromPath(target), today())));
         out.log(`created ${positional[0]}`);
-        const root4 = findRoot(path11.dirname(target));
+        const root4 = findRoot(path13.dirname(target));
         if (root4) {
-          const rel = toPosix(path11.relative(root4, target));
+          const rel = toPosix(path13.relative(root4, target));
           if (!matchesAny(rel, loadConfig(root4).sources)) out.err(`warning: ${positional[0]} is not matched by "sources" in reports.json, so build and check will skip it`);
         }
         return 0;
@@ -26709,12 +27174,15 @@ async function main(argv, { cwd = process.cwd(), out = { log: console.log, err: 
           return runLint(ctx, ctx.files(positional), flags, out, { theme: !positional.length });
         }
       case "build": {
-        allowFlags(flags, ["check", "watch"], cmd);
+        allowFlags(flags, ["check", "watch", "specs"], cmd);
         if (flags.check && flags.watch) throw new UsageError("--check and --watch cannot be combined");
+        if (flags.check && flags.specs) throw new UsageError("--check and --specs cannot be combined (spec HTML is never checked)");
         const ctx = project(cwd);
+        if (flags.specs && !ctx.config.specs) throw new ConfigError('reports.json has no "specs" key; add "specs": {} to build spec pages');
+        const specsOnly = Boolean(flags.specs);
         const files = ctx.files(positional);
-        const code5 = runBuild(ctx, files, flags, out, { orphanCheck: !positional.length });
-        return flags.watch ? watch(cwd, positional, out) : code5;
+        const code5 = runBuild(ctx, files, flags, out, { orphanCheck: !positional.length, specsOnly });
+        return flags.watch ? watch(cwd, positional, out, { specsOnly }) : code5;
       }
       case "check": {
         allowFlags(flags, [], cmd);
@@ -26781,15 +27249,21 @@ if (isMain) {
 export {
   ConfigError,
   build,
+  buildIndex,
+  buildSpec,
   findRoot,
   format,
   formatMessages,
   lint,
+  lintSpec,
+  lintSpecGroup,
   lintTheme,
   loadConfig,
   main,
   matchesAny,
   preset,
+  profileOf,
+  specData,
   syntaxJson,
   syntaxMarkdown,
   validateConfig,

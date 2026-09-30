@@ -67,7 +67,10 @@ safe.
    `.md` paths are rewritten to `.html`), `brand` (`{name, icon?}`), `lang`,
    `theme`. Paths are relative to `$ROOT` (absolute paths are a config error);
    `reports[].path` and `brand.icon` may also be URLs. Set `theme` only if the
-   file exists or is created in step 5.
+   file exists or is created in step 5. An optional `specs` key turns on the
+   spec profile (set up by `/spec:view`, not here): `.md` files under
+   `specs.sources` that no report glob matches render as spec pages, not
+   reports. Keep an existing `specs` key as is.
 
 5. **Theme stub** (only if asked): `reports/theme.css`. It holds **only
    token overrides**, all commented out, so the page still uses the house

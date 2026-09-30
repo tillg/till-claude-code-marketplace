@@ -1,0 +1,1 @@
+specs/changes/add-x/invalid-yaml.md:3:8  error  frontmatter is not valid YAML: Nested mappings are not allowed in compact mappings (line 3). Quote values that contain ": ", e.g. title: "…"  [spec-frontmatter]

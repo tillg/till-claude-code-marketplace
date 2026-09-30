@@ -14,7 +14,7 @@ A Claude Code plugin marketplace — a registry of plugins that can be installed
 
 ## Current Plugins
 
-- **spec** (`plugins/spec/`) — spec workflow plugin for spec-driven change management. Provides skills like `/spec:explore`, `/spec:propose`, `/spec:apply`, `/spec:archive`.
+- **spec** (`plugins/spec/`) — spec workflow plugin for spec-driven change management. Provides skills like `/spec:explore`, `/spec:propose`, `/spec:apply`, `/spec:archive`, and `/spec:view` (HTML view of specs via md2html). Spec files carry YAML frontmatter (`feature`, `title`, `status`, `order`, `created`, `edited`).
 - **md2pdf** (`plugins/md2pdf/`) — Markdown to PDF converter with code highlighting, tables, mermaid diagrams, and images.
 - **transform** (`plugins/transform/`) — document to Markdown converter for DOCX, PDF, and MSG files. Skills: `/transform:doc2md`, `/transform:batch`.
 - **md2html** (`plugins/md2html/`) — deterministic Markdown → HTML reports (`new`, `fmt`, `lint`, `build`, `check`, `syntax`), a `PostToolUse` fmt+lint hook, and per-project CSS themes. Skills: `/md2html:write`, `/md2html:build`, `/md2html:setup`. Source in `src/`, committed bundle in `dist/` (`npm test`, `npm run bundle`).

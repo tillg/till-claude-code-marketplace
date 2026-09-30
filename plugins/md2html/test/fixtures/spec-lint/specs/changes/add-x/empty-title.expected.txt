@@ -1,0 +1,1 @@
+specs/changes/add-x/empty-title.md:3:8  error  "title" must be a non-empty string  [spec-frontmatter]

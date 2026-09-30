@@ -1,3 +1,9 @@
+---
+title: "Domain: Claude Code Plugin Marketplace"
+created: 2026-04-15
+edited: 2026-04-15
+---
+
 # Domain: Claude Code Plugin Marketplace
 
 ## Core Concepts

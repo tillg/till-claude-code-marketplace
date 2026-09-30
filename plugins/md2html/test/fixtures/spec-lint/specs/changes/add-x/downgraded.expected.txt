@@ -1,0 +1,3 @@
+specs/changes/add-x/downgraded.md:14:1  warning  unknown directive ":::tdlr". Did you mean ":::tldr"?  [directive-known]
+specs/changes/add-x/downgraded.md:18:1  warning  raw HTML is not rendered; it shows as escaped text  [no-raw-html]
+specs/changes/add-x/downgraded.md:20:5  warning  link target "nowhere.md" does not exist  [links]

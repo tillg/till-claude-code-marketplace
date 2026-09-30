@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architecture: add X</title>
+<meta name="generator" content="md2html 0.2.0">
+<style>
+@layer base, theme;
+@layer base {
+:root {
+  --bg: #fbfbfa; --fg: #1d1d1f; --muted: #5f6368; --line: #e3e3e0; --card: #ffffff;
+  --accent: #1f5bd6; --go: #1e7b3a; --go-bg: #e6f4ea; --partial: #8a5a00; --partial-bg: #fdf1d6;
+  --no: #b3261e; --no-bg: #fce8e6; --code: #f2f2ef; --figure-bg: #ffffff;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16171a; --fg: #e8e8ea; --muted: #a0a3a8; --line: #2c2e33; --card: #1e2024;
+    --accent: #8ab4ff; --go: #7fd49a; --go-bg: #173524; --partial: #f0c36a; --partial-bg: #3a2e12;
+    --no: #ff9b91; --no-bg: #3d1a17; --code: #26282d; --figure-bg: #ffffff; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #16171a; --fg: #e8e8ea; --muted: #a0a3a8; --line: #2c2e33; --card: #1e2024;
+  --accent: #8ab4ff; --go: #7fd49a; --go-bg: #173524; --partial: #f0c36a; --partial-bg: #3a2e12;
+  --no: #ff9b91; --no-bg: #3d1a17; --code: #26282d; --figure-bg: #ffffff; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; overflow-wrap: break-word; }
+main { max-width: 980px; margin: 0 auto; padding: 32px 16px 80px; }
+.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.appicon { flex: none; width: 48px; height: 48px; border-radius: 11px; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 1.4rem; margin: 48px 0 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+h3 { font-size: 1.1rem; margin: 28px 0 8px; }
+p, li { max-width: 72ch; }
+a { color: var(--accent); }
+code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: .88em; }
+pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 12px 0; overflow-x: auto; line-height: 1.45; }
+pre code { background: none; padding: 0; border-radius: 0; font-size: .85rem; }
+blockquote { margin: 12px 0; padding: 0 0 0 16px; border-left: 3px solid var(--line); color: var(--muted); }
+img { max-width: 100%; height: auto; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }
+hr + h2 { border-top: 0; padding-top: 0; margin-top: 0; }
+.sub { color: var(--muted); margin: 0 0 24px; }
+.sub img { height: 1.2em; width: auto; vertical-align: middle; }
+.tldr { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; }
+.tldr p:first-child { margin-top: 0; }
+.tldr > :last-child { margin-bottom: 0; }
+nav.toc { columns: 2; column-gap: 32px; font-size: .95rem; margin-top: 20px; }
+nav.toc a { display: block; padding: 2px 0; }
+@media (max-width: 640px) { nav.toc { columns: 1; } }
+.tbl { overflow-x: auto; margin: 12px 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+th { font-weight: 600; background: var(--code); }
+tr:last-child td { border-bottom: 0; }
+th[align="center"], td[align="center"] { text-align: center; }
+th[align="right"], td[align="right"] { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+td.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.v { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: .8rem; font-weight: 600; }
+td .v { white-space: nowrap; }
+.go { color: var(--go); background: var(--go-bg); }
+.partial { color: var(--partial); background: var(--partial-bg); }
+.no { color: var(--no); background: var(--no-bg); }
+figure { margin: 16px 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+figure img { display: block; max-width: 100%; height: auto; margin: 0 auto; background: var(--figure-bg); border-radius: 6px; }
+figcaption { color: var(--muted); font-size: .85rem; margin-top: 8px; text-align: center; }
+figcaption a.mmd-src { white-space: nowrap; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px; margin: 12px 0; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; min-width: 0; }
+.card h4 { margin: 0 0 6px; font-size: 1rem; }
+.card p { margin: 6px 0; font-size: .93rem; }
+.contains-task-list { list-style: none; padding-left: 20px; }
+.footnotes { margin-top: 48px; padding-top: 12px; border-top: 1px solid var(--line); font-size: .9rem; color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+.reports-nav { display: flex; align-items: center; gap: 4px;
+  padding: 8px 16px; overflow-x: auto; white-space: nowrap; scrollbar-width: none;
+  background: var(--card); border-bottom: 1px solid var(--line);
+  font: 500 14px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }
+.reports-nav::-webkit-scrollbar { display: none; }
+.reports-nav .brand { display: flex; align-items: center; gap: 8px; margin-right: 8px; color: var(--muted); }
+.reports-nav .brand img { width: 20px; height: 20px; border-radius: 5px; }
+.reports-nav a.item { padding: 6px 12px; border-radius: 999px; color: var(--fg); text-decoration: none; }
+.reports-nav a.item:hover { background: rgba(127,127,127,.12); }
+.reports-nav a.item[aria-current="page"] { background: var(--accent); color: var(--bg); }
+
+.report-meta { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 4px 0 16px; padding: 0; font-size: .88rem; }
+.report-meta div { display: flex; align-items: baseline; gap: 6px; }
+.report-meta dt { color: var(--muted); }
+.report-meta dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+.report-status { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; }
+.report-status.research { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.report-status.ongoing { color: var(--partial); background: var(--partial-bg); }
+.report-status.implemented { color: var(--go); background: var(--go-bg); }
+.spec-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
+  padding: 8px 16px; background: var(--card); border-bottom: 1px solid var(--line);
+  font: 500 14px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }
+.spec-nav a { padding: 6px 12px; border-radius: 999px; color: var(--fg); text-decoration: none; }
+.spec-nav a:hover { background: rgba(127,127,127,.12); }
+.spec-nav a.up { color: var(--muted); margin-right: 8px; }
+.spec-nav a[aria-current="page"] { background: var(--accent); color: var(--bg); }
+.spec-nav .spec-status { margin-left: auto; }
+.spec-status { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; white-space: nowrap; }
+.spec-status.exploring { color: var(--muted); background: var(--code); }
+.spec-status.proposed { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.spec-status.applying { color: var(--partial); background: var(--partial-bg); }
+.spec-status.paused { color: var(--no); background: var(--no-bg); }
+.spec-status.applied { color: var(--go); background: var(--go-bg); }
+
+pre.mermaid { font-size: .85rem; }
+pre.mermaid[data-processed] { background: none; border: 0; padding: 0; text-align: center; }
+pre.mermaid svg { max-width: 100%; height: auto; }
+
+.spec-index td a { margin-right: 10px; }
+.spec-index td a:last-child { margin-right: 0; }
+.spec-index td.pages { min-width: 16ch; }
+.spec-index td.dir code { white-space: nowrap; }
+@media (max-width: 640px) {
+  .spec-index thead { display: none; }
+  .spec-index tr { display: block; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .spec-index tr:last-child { border-bottom: 0; }
+  .spec-index td { display: flex; gap: 12px; border: 0; padding: 3px 12px; text-align: left; white-space: normal; }
+  .spec-index td::before { content: attr(data-label); flex: none; width: 6.5em; color: var(--muted); font-size: .85em; }
+  .spec-index td.pages { display: block; padding-left: calc(12px + 6.5em + 12px); text-indent: calc(-6.5em - 12px); }
+  .spec-index td.pages::before { display: inline-block; margin-right: 12px; text-indent: 0; }
+}
+/* Plan checkboxes: GFM renders them disabled (greyed); keep done vs. open steps easy to tell apart. */
+.contains-task-list input[type="checkbox"] { accent-color: var(--accent); opacity: 1; width: 1em; height: 1em; vertical-align: -0.1em; }
+.task-list-item:has(input:checked) { color: var(--muted); }
+}
+@layer theme {
+}
+</style>
+</head>
+<body>
+<nav class="spec-nav" aria-label="Spec pages"><a class="up" href="../../../index.html">↑ Index</a><a class="item" href="proposal.html">Proposal</a><a class="item" href="domain.html">Domain</a><a class="item" href="architecture.html" aria-current="page">Architecture</a><a class="item" href="plan.html">Plan</a><a class="item" href="open_questions.html">Open questions</a><a class="item" href="risks.html">Risks</a><span class="spec-status applying">Applying</span></nav>
+<main>
+<h1 id="architecture-add-x">Architecture: add X</h1>
+<h2 id="components">Components</h2>
+<pre class="mermaid">graph LR
+  A["Client&#x3C;br/>browser"] --> B{"X &#x26; Y?"}
+  B -- "yes" --> C[X]
+  B -- "no" --> D[Y]</pre>
+<h2 id="flow">Flow</h2>
+<pre class="mermaid">sequenceDiagram
+  participant U as User
+  participant X
+  U->>X: request &#x3C;id>
+  X-->>U: "ok"</pre>
+<pre><code class="language-js">const notMermaid = '&#x3C;b>';
+</code></pre>
+</main>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@12.0.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({ startOnLoad: false, theme: matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default' });
+await mermaid.run({ querySelector: 'pre.mermaid' });
+</script>
+</body>
+</html>

@@ -13,7 +13,7 @@ function menuTarget(p) {
 }
 const capitalise = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 // A theme must not be able to end the <style> element early.
-const safeCss = (css) => css.replace(/<\/(style)/gi, '<\\/$1');
+export const safeCss = (css) => css.replace(/<\/(style)/gi, '<\\/$1');
 
 /** `<nav class="reports-nav">` for report `file` (root-relative). */
 export function renderNav(config, file) {

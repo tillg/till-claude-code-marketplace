@@ -4,7 +4,10 @@ import { fileURLToPath } from 'node:url';
 import { main } from './cli.mjs';
 
 export { format } from './fmt.mjs';
-export { lint, lintTheme, formatMessages } from './lint.mjs';
+export { lint, lintTheme, formatMessages, lintSpec, lintSpecGroup, specData } from './lint.mjs';
+export { profileOf } from './profile.mjs';
+export { buildSpec } from './spec/build.mjs';
+export { buildIndex } from './spec/index.mjs';
 export { build } from './build.mjs';
 export { preset } from './preset.mjs';
 export { findRoot, loadConfig, validateConfig, ConfigError } from './config.mjs';

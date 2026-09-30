@@ -1,0 +1,2 @@
+specs/changes/add-x/bad-date.md:5:10  error  "created" must be an ISO date (YYYY-MM-DD), got "2026-13-01"  [spec-frontmatter]
+specs/changes/add-x/bad-date.md:6:9  error  "edited" must be an ISO date (YYYY-MM-DD), got "30.09.2026"  [spec-frontmatter]

@@ -9,6 +9,7 @@ import { headingNumber, headingId } from './lint/headings.mjs';
 import { noRawHtml, calloutAlias } from './lint/markdown.mjs';
 import { themeTokens } from './lint/theme.mjs';
 import { fsAccess } from './lint/fs.mjs';
+import { specFrontmatter, specFrontmatterHints, specFrontmatterData, specGroupMessages } from './lint/spec-frontmatter.mjs';
 
 /** Every rule with its severity; `files: true` rules take `{file, config, cache, exists, readFile}`. */
 export const RULES = [
@@ -51,6 +52,40 @@ export function lint(source, { file = '', root = '.', config, readFile, exists, 
   const vfile = new VFile({ path: file || undefined, value: normalizeInput(source) });
   processor.runSync(processor.parse(vfile), vfile);
   return toMessages(vfile.messages);
+}
+
+// Spec profile: report-only rules (their frontmatter schema, section numbers) never run; every
+// other rule is advisory (warning); the spec frontmatter contract errors.
+const SPEC_SKIPPED = new Set([frontmatter, headingNumber]);
+
+/** Lint one spec file. Same options and Message shape as `lint`. */
+export function lintSpec(source, { file = '', root = '.', config, readFile, exists, cache } = {}) {
+  const access = { ...fsAccess(root), ...(readFile && { readFile }), ...(exists && { exists }) };
+  const processor = parser();
+  for (const r of RULES) {
+    if (!SPEC_SKIPPED.has(r.plugin)) processor.use(r.plugin, ['warn', r.files ? { file, config, cache, ...access } : undefined]);
+  }
+  processor.use(specFrontmatter, ['error', { file }]).use(specFrontmatterHints, 'warn');
+  const vfile = new VFile({ path: file || undefined, value: normalizeInput(source) });
+  processor.runSync(processor.parse(vfile), vfile);
+  return toMessages(vfile.messages);
+}
+
+/**
+ * Spec frontmatter of one source for `lintSpecGroup`: `{feature, title, status, order, created,
+ * edited, lines: {key: line}}` (present keys only), or null without readable frontmatter.
+ */
+export function specData(source) {
+  return specFrontmatterData(parser().parse(normalizeInput(source)));
+}
+
+/**
+ * Cross-file check for one group (one directory): items `[{file, feature, status, order?, lines?, line?}]`
+ * (e.g. `{file, ...specData(source)}`). → `[{file, line, column, severity, message, ruleId}]`,
+ * errors `[spec-consistency]` on each file whose `feature`/`status` differs from the majority.
+ */
+export function lintSpecGroup(items) {
+  return specGroupMessages(items);
 }
 
 /** Lint a theme stylesheet (custom properties outside the contract). */

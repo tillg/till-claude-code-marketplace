@@ -1,0 +1,1 @@
+specs/changes/add-x/wrong-feature.md:2:10  error  feature "add-y" must equal the change directory name "add-x"  [spec-frontmatter]

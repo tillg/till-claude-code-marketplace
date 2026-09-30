@@ -1,0 +1,4 @@
+{
+  "sources": ["**/*-report.md"],
+  "specs": {}
+}

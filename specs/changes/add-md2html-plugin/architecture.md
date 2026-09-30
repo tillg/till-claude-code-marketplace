@@ -1,3 +1,12 @@
+---
+feature: add-md2html-plugin
+title: "Architecture: md2html"
+status: applied
+order: 3
+created: 2026-09-30
+edited: 2026-09-30
+---
+
 # Architecture: md2html
 
 Follows the marketplace's **script + prompt** pattern (see `specs/system/architecture.md`). A

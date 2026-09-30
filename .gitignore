@@ -2,3 +2,8 @@
 tmp/
 node_modules/
 .venv/
+
+# md2html spec view (local only)
+specs/**/*.html
+/index.html
+.playwright-mcp/

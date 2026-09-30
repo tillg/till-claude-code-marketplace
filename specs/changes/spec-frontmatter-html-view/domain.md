@@ -1,7 +1,8 @@
 ---
 feature: spec-frontmatter-html-view
 title: "Domain: spec frontmatter and HTML view"
-status: proposed
+status: applied
+order: 2
 created: 2026-09-30
 edited: 2026-09-30
 ---

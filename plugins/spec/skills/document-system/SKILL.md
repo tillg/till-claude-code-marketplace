@@ -36,6 +36,22 @@ The system description lives in `specs/system/` and captures what the system
    Read configuration files, entry points, key modules, data models, and any
    existing documentation (README, comments, etc.).
 
+   **Frontmatter:** every file in `specs/system/` starts with a short YAML
+   block — `title`, `created`, `edited` only (no `feature`, `status`, `order`;
+   system docs have no lifecycle):
+
+   ```yaml
+   ---
+   title: "Domain: <system name>"
+   created: YYYY-MM-DD
+   edited: YYYY-MM-DD
+   ---
+   ```
+
+   New files: `created` = `edited` = today. Updated files: keep `created`
+   (add it from the file's first git commit date if missing), set `edited` to
+   today only if the content changed. The body keeps its `# Title` heading.
+
 3. **Create or update `specs/system/domain.md`**
 
    Document the domain the system models:
@@ -111,6 +127,10 @@ The system description lives in `specs/system/` and captures what the system
    - Key findings about the system
    - Any areas where information was unclear or assumptions were made
 
+   If md2html ≥ 0.2.0 is available (lookup as in `/spec:view` step 1) and
+   `reports.json` has no `specs` key, add one line: "`/spec:view` turns on the
+   lint hook and the HTML view for spec files." Don't create any files.
+
 **Output**
 
 ```
@@ -144,3 +164,6 @@ The system description lives in `specs/system/` and captures what the system
 - Don't duplicate what's already in a README — reference it instead
 - When updating existing documentation, preserve information that's still
   accurate and note what changed
+- Every system doc has `title`/`created`/`edited` frontmatter
+- Edit spec files with the Edit/Write tools, not sed/python in Bash, so the
+  md2html lint hook sees every change

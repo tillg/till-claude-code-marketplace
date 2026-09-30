@@ -27,11 +27,11 @@ function directiveHandler(state, node) {
   return result;
 }
 
-const toHast = unified().use(remarkRehype, {
+export const toHast = unified().use(remarkRehype, {
   handlers: { containerDirective: directiveHandler, textDirective: directiveHandler, leafDirective: directiveHandler },
 });
 const html = unified().use(rehypeStringify);
-const stringify = (children) => html.stringify({ type: 'root', children });
+export const stringify = (children) => html.stringify({ type: 'root', children });
 
 /** mdast root → hast root with the hast-level layout rules applied (`figures: false` for the subtitle). */
 function render(tree, { file, config, exists }, { figures: withFigures = true } = {}) {

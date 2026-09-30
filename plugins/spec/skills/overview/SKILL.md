@@ -51,7 +51,33 @@ Show the spec workflow overview and assess current status.
    |--------|-------------|-------|-----------|
    | `<name>` | 1-line summary from `proposal.md` | Phase with progress | Suggested action |
 
-   The Phase column uses a compact format:
+   The Phase column comes from the spec frontmatter (schema in
+   `/spec:propose`). Read the `status` key of every `.md` in the change
+   directory:
+
+   | `status` | Phase |
+   |----------|-------|
+   | `exploring` | Exploring |
+   | `proposed` | Proposed (ready) |
+   | `applying` | Applying (N/M, from `plan.md` checkboxes) |
+   | `paused` | Paused (N/M) |
+   | `applied` | Applied (ready to archive) |
+
+   If the files disagree on `status` (or on `feature`, or `feature` ≠ the
+   directory name), use the value most files carry; on a tie, the value of
+   the tied file with the lowest `order` (the same rule md2html's lint and
+   index use). Add a warning under the table, e.g.
+   > ⚠ `add-x`: status mismatch — 3 files `applying`, plan.md `proposed`.
+   > Run `/spec:iterate` or fix the frontmatter.
+
+   Also warn if the status contradicts the checkboxes (e.g. `proposed` but
+   `plan.md` has `[x]`, or `applying` with every step done).
+
+   Count checkboxes mechanically, never by eye: N = `grep -c '^\s*- \[x\]' plan.md`,
+   M = `grep -c '^\s*- \[[ x]\]' plan.md`.
+
+   **Fallback** — if no file of the change has frontmatter (a legacy change),
+   infer the phase from the files, as before, and mark it `(inferred)`:
 
    | Signal | Phase |
    |--------|-------|
@@ -66,6 +92,7 @@ Show the spec workflow overview and assess current status.
    - Proposing → Continue with `/spec:propose`
    - Proposed → `/spec:apply` to start implementing
    - Applying → `/spec:apply` to continue
+   - Paused → `/spec:apply` to resume
    - Applied → `/spec:archive` to wrap up
 
    Then, for each change, show a **detail block** below the table:
@@ -148,6 +175,7 @@ Show the spec workflow overview and assess current status.
    | `/spec:iterate`         | Review artifacts, apply user annotations, and produce a clean consolidated version         |
    | `/spec:apply`           | Implement the plan from a change                                                          |
    | `/spec:archive`         | Archive a completed change                                                                |
+   | `/spec:view`            | Open the change as HTML in the browser (needs the md2html plugin)                         |
 
    ## Typical Flow
 
@@ -176,6 +204,10 @@ Show the spec workflow overview and assess current status.
    - **domain.md** — New domain concepts, vocabulary, processes
    - **architecture.md** — How
    - **plan.md** — Implementation steps (checkboxes)
+
+   Each file starts with spec frontmatter (`feature`, `title`, `status`,
+   `order`, `created`, `edited`); `status` runs
+   `exploring → proposed → applying → (paused) → applied`.
 
    ---
 

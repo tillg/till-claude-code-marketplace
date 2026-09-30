@@ -124,6 +124,26 @@ If the user mentions a change or you detect one is relevant:
 
 4. **The user decides** - Offer and move on. Don't pressure. Don't auto-capture.
 
+### Frontmatter when writing into a change dir
+
+If you create a file in `specs/changes/<name>/` (e.g. notes, a first
+`proposal.md`) for a change that has no status yet, start it with spec
+frontmatter and `status: exploring` (schema in `/spec:propose`):
+
+```yaml
+---
+feature: <name>
+title: "<Artifact>: <short title>"
+status: exploring
+created: YYYY-MM-DD
+edited: YYYY-MM-DD
+---
+```
+
+Add `order` 1–4 for proposal, domain, architecture, plan. When editing an
+existing file, keep its `status` (don't downgrade a change that is further
+along) and set `edited` to today. All files of a change share one `status`.
+
 ---
 
 ## What You Don't Have To Do
@@ -160,3 +180,4 @@ When things crystallize, you might offer a summary - but it's optional. Sometime
 - **Do visualize** - Use Mermaid diagrams liberally; a good diagram is worth many paragraphs
 - **Do explore the codebase** - Ground discussions in reality
 - **Do question assumptions** - Including the user's and your own
+- **Use Edit/Write for spec files** - Not sed/python in Bash, so the md2html lint hook sees every change

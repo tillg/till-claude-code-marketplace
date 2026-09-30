@@ -1,4 +1,4 @@
-// Bundle src/ into dist/md2html.mjs with base.css and the version inlined.
+// Bundle src/ into dist/md2html.mjs with base.css, spec.css and the version inlined.
 import fs from 'node:fs';
 import * as esbuild from 'esbuild';
 
@@ -9,8 +9,9 @@ const inlineAssets = {
     b.onResolve({ filter: /\/assets\.mjs$/ }, (args) => ({ path: args.path, namespace: 'assets' }));
     b.onLoad({ filter: /.*/, namespace: 'assets' }, () => {
       const css = fs.readFileSync(new URL('src/base.css', here), 'utf8');
+      const specCss = fs.readFileSync(new URL('src/spec.css', here), 'utf8');
       const { version } = JSON.parse(fs.readFileSync(new URL('package.json', here), 'utf8'));
-      return { contents: `export const baseCss = ${JSON.stringify(css)};\nexport const version = ${JSON.stringify(version)};\n`, loader: 'js' };
+      return { contents: `export const baseCss = ${JSON.stringify(css)};\nexport const specCss = ${JSON.stringify(specCss)};\nexport const version = ${JSON.stringify(version)};\n`, loader: 'js' };
     });
   },
 };
