@@ -1,0 +1,7 @@
+directive-known.md:8:1  error  unknown directive ":::tdlr". Did you mean ":::tldr"?  [directive-known]
+directive-known.md:12:1  error  unknown directive "::::crds". Did you mean "::::cards"?  [directive-known]
+directive-known.md:13:1  error  ":::card" must be inside "::::cards"  [directive-nesting]
+directive-known.md:18:1  error  unknown directive "::tldr". Did you mean ":::tldr"?  [directive-known]
+directive-known.md:20:1  error  unknown directive ":::foobar"  [directive-known]
+directive-known.md:24:16  error  unknown directive ":verdit". Did you mean ":verdict"?  [directive-known]
+directive-known.md:24:61  error  unknown directive ":x"  [directive-known]

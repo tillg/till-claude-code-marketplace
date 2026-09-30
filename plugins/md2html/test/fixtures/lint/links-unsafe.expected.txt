@@ -1,0 +1,8 @@
+links-unsafe.md:3:15  error  link target "missing.md" does not exist  [links]
+links-unsafe.md:3:58  error  unsafe URL scheme "javascript:"  [links]
+links-unsafe.md:9:1  error  unsafe URL scheme "javascript:"  [links]
+links-unsafe.md:9:28  error  unsafe URL scheme "javascript:"  [links]
+links-unsafe.md:9:54  error  unsafe URL scheme "vbscript:"  [links]
+links-unsafe.md:9:77  error  unsafe URL scheme "data:"  [links]
+links-unsafe.md:10:37  error  unsafe URL scheme "javascript:"  [links]
+links-unsafe.md:12:1  error  unsafe URL scheme "data:"  [links]

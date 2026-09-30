@@ -1,0 +1,2 @@
+directive-nesting.md:8:1  error  ":::card" must be inside "::::cards"  [directive-nesting]
+directive-nesting.md:13:1  error  "::::cards" may only contain ":::card"  [directive-nesting]

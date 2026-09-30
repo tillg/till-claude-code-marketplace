@@ -1,0 +1,1 @@
+directive-cards-colons.md:8:1  error  "::::cards" needs four colons when it holds cards (found ":::cards")  [directive-nesting]

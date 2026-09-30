@@ -1,0 +1,5 @@
+directive-attrs.md:8:11  error  ":verdict" tone="yes" is not allowed. Use go | partial | no  [directive-attrs]
+directive-attrs.md:8:37  error  ":verdict" needs tone="…". Use go | partial | no  [directive-attrs]
+directive-attrs.md:11:1  error  ":::card" has unknown attribute "titel". Did you mean "title"?  [directive-attrs]
+directive-attrs.md:15:1  error  ":::card" has unknown attribute "color". Allowed: title  [directive-attrs]
+directive-attrs.md:20:1  error  ":::tldr" takes no attributes, found "title"  [directive-attrs]

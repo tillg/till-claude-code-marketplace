@@ -1,0 +1,3 @@
+theme-tokens.css:4:3  warning  custom property "--acent" is not in the token contract. Did you mean "--accent"?  [theme-tokens]
+theme-tokens.css:5:3  warning  custom property "--brand-shadow" is not in the token contract. Themes may set only the contract tokens  [theme-tokens]
+theme-tokens.css:9:34  warning  custom property "--my-thing" is not in the token contract. Themes may set only the contract tokens  [theme-tokens]

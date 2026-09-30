@@ -1,0 +1,2 @@
+footnotes.md:10:1  error  id "#footnote-label" is reserved for footnotes  [heading-id]
+footnotes.md:13:57  error  "#user-content-fn-missing" not found in this report  [links]

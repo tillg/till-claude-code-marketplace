@@ -1,0 +1,1 @@
+heading-id.md:12:1  error  duplicate id "#dup" (first used at line 8)  [heading-id]

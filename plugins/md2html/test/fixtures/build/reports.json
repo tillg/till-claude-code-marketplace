@@ -1,0 +1,9 @@
+{
+  "sources": ["**/*-report.md"],
+  "brand": { "name": "Fixture Reports", "icon": "assets/icon.svg" },
+  "reports": [
+    { "path": "minimal-report.md", "label": "Minimal" },
+    { "path": "kitchen-sink-report.md", "label": "Kitchen sink" },
+    { "path": "docs/plan.html", "label": "Plan" }
+  ]
+}

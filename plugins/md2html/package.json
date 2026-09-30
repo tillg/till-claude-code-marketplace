@@ -1,0 +1,26 @@
+{
+  "name": "md2html",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Deterministic Markdown → HTML reports: new, fmt, lint, build, check, syntax",
+  "scripts": {
+    "test": "node --test \"test/**/*.test.mjs\"",
+    "bundle": "node scripts/bundle.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "rehype-stringify": "10.0.1",
+    "remark-directive": "4.0.0",
+    "remark-frontmatter": "5.0.0",
+    "remark-gfm": "4.0.1",
+    "remark-parse": "11.0.0",
+    "remark-rehype": "11.1.2",
+    "remark-stringify": "11.0.0",
+    "unified": "11.0.5",
+    "unified-lint-rule": "3.0.1",
+    "unist-util-visit": "5.1.0",
+    "vfile": "6.0.3",
+    "yaml": "2.9.1"
+  }
+}

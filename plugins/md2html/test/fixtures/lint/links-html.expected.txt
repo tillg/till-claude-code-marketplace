@@ -1,0 +1,2 @@
+links-html.md:9:1  error  "#finding" not found in "links-target.html". Did you mean "#findings"?  [links]
+links-html.md:9:66  error  link target "nothing.html" does not exist  [links]

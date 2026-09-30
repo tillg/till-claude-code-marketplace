@@ -1,0 +1,2 @@
+frontmatter-alias.md:6:11  error  "subtitle" starts with "*", which YAML reads as an alias; quote the value: subtitle: "*Draft*"  [frontmatter]
+frontmatter-alias.md:7:14  error  "description" starts with "&", which YAML reads as an anchor; quote the value: description: "&anchor Some text"  [frontmatter]

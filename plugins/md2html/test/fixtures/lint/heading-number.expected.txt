@@ -1,0 +1,8 @@
+heading-number.md:8:1  warning  section numbers are added by the build; remove "1. "  [heading-number]
+heading-number.md:10:1  warning  section numbers are added by the build; remove "2) "  [heading-number]
+heading-number.md:12:1  warning  section numbers are added by the build; remove "2.3 "  [heading-number]
+heading-number.md:26:1  warning  section numbers are added by the build; remove "1 "  [heading-number]
+heading-number.md:28:1  warning  section numbers are added by the build; remove "1."  [heading-number]
+heading-number.md:30:1  warning  section numbers are added by the build; remove "4)"  [heading-number]
+heading-number.md:34:1  warning  section numbers are added by the build; remove "10.2."  [heading-number]
+heading-number.md:38:1  warning  section numbers are added by the build; remove "1. "  [heading-number]

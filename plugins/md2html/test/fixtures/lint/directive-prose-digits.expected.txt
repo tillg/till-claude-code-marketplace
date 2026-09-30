@@ -1,0 +1,4 @@
+directive-prose-digits.md:8:24  error  ":30[…]" is read as a directive; write "10\:30[^1]" (escape the colon) to keep the time or ratio  [directive-known]
+directive-prose-digits.md:8:39  error  ":1[…]" is read as a directive; write "3\:1[^2]" (escape the colon) to keep the time or ratio  [directive-known]
+directive-prose-digits.md:8:54  error  ":1[…]" is read as a directive; write "3\:1[x]" (escape the colon) to keep the time or ratio  [directive-known]
+directive-prose-digits.md:8:67  error  ":05{…}" is read as a directive; write "9\:05{x=1}" (escape the colon) to keep the time or ratio  [directive-known]

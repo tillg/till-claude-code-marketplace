@@ -1,0 +1,5 @@
+links.md:10:29  error  "#local-sectin" not found in this report. Did you mean "#local-section"?  [links]
+links.md:11:1  error  "#finding" not found in "links-target.md". Did you mean "#findings"?  [links]
+links.md:12:32  error  link target "missing-report.md" does not exist  [links]
+links.md:12:62  error  link target "missing-report.md" does not exist  [links]
+links.md:16:1  error  link target "gone.md" does not exist  [links]

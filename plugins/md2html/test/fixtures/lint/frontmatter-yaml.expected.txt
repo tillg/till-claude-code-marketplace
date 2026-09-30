@@ -1,0 +1,1 @@
+frontmatter-yaml.md:4:1  error  frontmatter is not valid YAML: Flow sequence in block collection must be sufficiently indented and end with a ]  [frontmatter]

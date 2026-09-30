@@ -1,0 +1,1 @@
+frontmatter-order.md:4:9  error  "edited" (2026-09-01) is before "created" (2026-09-30)  [frontmatter]

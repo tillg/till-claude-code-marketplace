@@ -1,0 +1,2 @@
+directive-closed.md:9:1  error  ":::card" opened here is never closed (file ends at line 18)  [directive-closed]
+directive-closed.md:17:1  error  ":::tldr" opened here is never closed (file ends at line 18)  [directive-closed]

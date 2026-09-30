@@ -1,0 +1,4 @@
+frontmatter-values.md:2:8  error  "title" must be a non-empty string  [frontmatter]
+frontmatter-values.md:3:10  error  "created" must be an ISO date (YYYY-MM-DD), got "30.09.2026"  [frontmatter]
+frontmatter-values.md:4:9  error  "edited" must be an ISO date (YYYY-MM-DD), got "2026-02-30"  [frontmatter]
+frontmatter-values.md:5:9  error  status "done" is not allowed. Use research | ongoing | implemented  [frontmatter]

@@ -1,0 +1,1 @@
+frontmatter-missing.md:1:1  error  missing frontmatter. Required keys: title, created, edited, status  [frontmatter]

@@ -1,0 +1,4 @@
+directive-attrs-extra.md:8:8  error  ":verdict" has duplicate attribute "tone"  [directive-attrs]
+directive-attrs-extra.md:10:1  error  ":::tldr" takes no [label]  [directive-attrs]
+directive-attrs-extra.md:15:1  error  ":::card" takes no [label]  [directive-attrs]
+directive-attrs-extra.md:15:1  error  ":::card" has duplicate attribute "title"  [directive-attrs]

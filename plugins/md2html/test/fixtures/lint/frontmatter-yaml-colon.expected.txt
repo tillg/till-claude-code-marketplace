@@ -1,0 +1,1 @@
+frontmatter-yaml-colon.md:3:11  error  frontmatter is not valid YAML: Nested mappings are not allowed in compact mappings (line 3). Quote values that contain ": ", e.g. subtitle: "…"  [frontmatter]

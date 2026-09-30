@@ -1,0 +1,4 @@
+frontmatter-keys.md:1:1  error  missing required frontmatter key "title"  [frontmatter]
+frontmatter-keys.md:1:1  error  missing required frontmatter key "edited"  [frontmatter]
+frontmatter-keys.md:2:1  error  unknown frontmatter key "titel". Did you mean "title"?  [frontmatter]
+frontmatter-keys.md:5:1  error  unknown frontmatter key "author". Allowed: title, created, edited, status, subtitle, description  [frontmatter]

@@ -1,0 +1,3 @@
+figure.md:10:1  error  image "figure-diagram.svg" has no alt text; it is the figure caption  [figure]
+figure.md:12:1  warning  "figure-bare.svg" has no sibling "figure-bare.mmd" (its Mermaid source)  [figure]
+figure.md:14:42  error  image "ref" has no alt text; it is the figure caption  [figure]

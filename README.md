@@ -10,6 +10,7 @@ Register the marketplace, then install any plugin:
 /plugin marketplace add tillg/till-claude-code-marketplace
 /plugin install spec@till-claude-code-marketplace
 /plugin install md2pdf@till-claude-code-marketplace
+/plugin install md2html@till-claude-code-marketplace
 /plugin install transform@till-claude-code-marketplace
 /plugin install agent-bus@till-claude-code-marketplace
 ```
@@ -120,6 +121,40 @@ Converts Markdown files to beautifully formatted PDFs using
 ```
 /md2pdf:convert <file.md> [output.pdf]
 ```
+
+---
+
+### md2html — Deterministic Markdown → HTML reports
+
+Turns report Markdown (`*-report.md`) into styled, self-contained HTML pages
+with a fixed house layout (menu bar, header, TL;DR, TOC, numbered sections,
+figures) and per-project CSS themes. Built on
+[unified/remark](https://unifiedjs.com/). The same input always produces the
+same bytes, so the HTML is committed and checked in CI.
+
+**Features:**
+
+- CLI: `new`, `fmt` (canonical form), `lint` (`file:line:col` messages with
+  suggestions), `build`, `check` (CI gate, incl. orphaned HTML and menu
+  entries), `syntax` (cheat sheet)
+- Directives from one registry: `:::tldr`, `::::cards` / `:::card`,
+  `:verdict[label]{tone="go"}`
+- `PostToolUse` hook: lints every report Claude edits and feeds errors back
+  in the same turn; formats it only when lint-clean (silent outside projects
+  with `reports.json`)
+- Theming via `reports/theme.css` against a versioned class/token contract
+- Committed single-file bundle: needs only `node`, can be vendored for CI
+
+**Skills:**
+
+| Skill | Purpose |
+| --- | --- |
+| `/md2html:setup` | Set up a project: `reports.json`, theme stub, `.remarkrc.mjs`, `just` recipes, vendored tool |
+| `/md2html:write` | Write or edit a report (Claude also uses it on its own) |
+| `/md2html:build` | Build or check reports and open them over `http://localhost` |
+
+See [`plugins/md2html/README.md`](plugins/md2html/README.md) for the CLI,
+`reports.json` schema, directives, lint rules, theming contract, and CI setup.
 
 ---
 
