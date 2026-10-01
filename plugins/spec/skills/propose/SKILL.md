@@ -15,6 +15,8 @@ I'll create a change with artifacts:
 - architecture.md (how)
 - plan.md (implementation steps)
 
+Then I open the change as HTML in your browser (same as `/spec:view`).
+
 When ready to implement, run /spec:apply
 
 ---
@@ -94,9 +96,16 @@ sensible choice, note it, and continue.
    - What's ready: "All artifacts created! Ready for implementation."
    - Prompt: "Run `/spec:apply` to start implementing."
 
-   If md2html ≥ 0.2.0 is available (lookup as in `/spec:view` step 1) and
-   `reports.json` has no `specs` key, add one line: "`/spec:view` turns on the
-   lint hook and the HTML view for spec files." Don't create any files.
+1. **Open the HTML view (runs `/spec:view` for this change)**
+
+   Read `../view/SKILL.md` (next to this skill's directory) and follow all its
+   steps with the new change name as the argument. That builds the `.html`
+   files of the change and the project index, starts (or reuses) the watcher
+   and the local server, and opens the change's first page in the browser.
+
+   If md2html ≥ 0.2.0 isn't available (view step 1 stops), don't fail the
+   proposal: add one line to the summary saying the HTML view needs md2html
+   ≥ 0.2.0 and that `/spec:view` sets it up once it is installed.
 
 **Spec frontmatter**
 

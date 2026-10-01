@@ -68,7 +68,7 @@ you exactly where you are and what to do next.
 | `/spec:overview`        | Show workflow reference, current status, phase, maturity assessment, and version | Starting a session, checking where you left off                 |
 | `/spec:document-system` | Document the system as-is: domain, architecture, functional                      | Once at the start, or after major changes are archived          |
 | `/spec:explore`         | Open-ended thinking — investigate, compare approaches, question assumptions      | When you have an idea but aren't ready to commit to a plan      |
-| `/spec:propose`         | Create a change with all artifacts (proposal, domain, architecture, plan)        | When you know what you want to build                            |
+| `/spec:propose`         | Create a change with all artifacts (proposal, domain, architecture, plan), then open it as HTML (`/spec:view`) | When you know what you want to build                            |
 | `/spec:iterate`         | Review artifacts, apply user annotations, produce clean consolidated version     | After marking up artifacts with decisions, rejections, comments |
 | `/spec:ready-or-not`    | Audit artifacts for clarity, completeness, coherence, and consistency            | Before `/spec:apply` — verify the spec is actually ready        |
 | `/spec:apply`           | Implement the plan step by step, tracking progress                               | When artifacts are ready and it's time to code                  |
