@@ -109,6 +109,14 @@ test('index: hrefs relative to its location, dashes for missing values, no scrip
   assert.ok(out.includes(`<meta name="generator" content="md2html ${version}">`));
 });
 
+test('index: feature links to the group\'s first page', () => {
+  const items = [
+    { file: 'specs/f/proposal.md', label: 'Proposal', title: 'P', feature: 'f', status: 'proposed', edited: null },
+    { file: 'specs/f/plan.md', label: 'Plan', title: 'Q', feature: 'f', status: 'proposed', edited: null },
+  ];
+  assert.ok(buildIndex([{ dir: 'specs/f', items }], { config }).includes('<td data-label="Feature"><a href="specs/f/proposal.html">f</a></td>'));
+});
+
 test('index: newest edited wins; empty project says so', () => {
   const items = ['2026-09-02', null, '2026-10-01', '2026-01-31'].map((edited, i) => ({ file: `d/${i}.md`, label: String(i), title: 'T', feature: 'd', status: 'proposed', edited }));
   assert.match(buildIndex([{ dir: 'd', items }], { config }), /<td class="num" data-label="Edited">2026-10-01<\/td>/);

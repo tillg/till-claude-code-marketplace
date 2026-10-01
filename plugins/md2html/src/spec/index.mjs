@@ -16,7 +16,7 @@ function row(group, at) {
   const edited = items.map((it) => it.edited).filter((e) => e != null).sort().at(-1) ?? null;
   const cells = [
     `<td class="dir" data-label="Directory"><code>${esc(group.dir)}/</code></td>`,
-    `<td data-label="Feature">${feature == null ? DASH : esc(feature)}</td>`,
+    `<td data-label="Feature">${feature == null ? DASH : `<a href="${href(items[0])}">${esc(feature)}</a>`}</td>`,
     `<td data-label="Status">${status == null ? DASH : `<span class="spec-status ${esc(status)}">${esc(capitalise(status))}</span>`}</td>`,
     `<td data-label="Title"><a href="${href(items[0])}">${esc(items[0].title)}</a></td>`,
     `<td class="num" data-label="Edited">${edited == null ? DASH : esc(edited)}</td>`,

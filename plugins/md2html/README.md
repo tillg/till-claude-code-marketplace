@@ -128,7 +128,7 @@ this up and starts a watcher. What differs from reports:
 | `fmt` | canonical rewrite | never applied |
 | Section numbers, hoisted TL;DR, TOC | yes | no |
 | Navigation | `reports` menu bar | per directory: an up link to the index, one link per file of the directory (sorted by `order`, then name), the page's status pill |
-| Index | none | `specs.index`: one row per directory (feature, status, title, newest `edited`, pages) |
+| Index | none | `specs.index`: one row per directory (feature, linked to the first page; status, title, newest `edited`, pages) |
 | Mermaid fences | stay code | drawn in the browser by the `specs.mermaid` module script (offline: shown as code) |
 | Output | committed, `check`ed | gitignored; `check` / `build --check` skip it |
 | Hook | lint → fmt → lint | lint only, never builds |

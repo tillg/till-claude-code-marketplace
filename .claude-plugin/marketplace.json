@@ -56,7 +56,7 @@
       "name": "md2html",
       "source": "./plugins/md2html",
       "description": "Deterministic Markdown → HTML reports: directive registry, fmt, lint, PostToolUse hook, per-project CSS themes",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "author": {
         "name": "Till Gartner"
       },
