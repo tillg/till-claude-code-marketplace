@@ -88,24 +88,28 @@ If an artifact requires user input (unclear context), use **AskUserQuestion
 tool** to clarify, then continue. If running unattended (no user to answer), make a
 sensible choice, note it, and continue.
 
-1. **Show summary**
-
-   After completing all artifacts, summarize:
-   - Change name and location
-   - List of artifacts created with brief descriptions
-   - What's ready: "All artifacts created! Ready for implementation."
-   - Prompt: "Run `/spec:apply` to start implementing."
-
 1. **Open the HTML view (runs `/spec:view` for this change)**
 
-   Read `../view/SKILL.md` (next to this skill's directory) and follow all its
-   steps with the new change name as the argument. That builds the `.html`
-   files of the change and the project index, starts (or reuses) the watcher
-   and the local server, and opens the change's first page in the browser.
+   Read `../view/SKILL.md` (next to this skill's directory) and follow its
+   steps 1–6 with the new change name as the argument. That builds the `.html`
+   files of the change and the project index, reuses (or starts) the
+   project's watcher and server, and opens the change's first page in the
+   browser. Skip view's step 7 report: its details go into the summary below.
 
-   If md2html ≥ 0.2.0 isn't available (view step 1 stops), don't fail the
-   proposal: add one line to the summary saying the HTML view needs md2html
-   ≥ 0.2.0 and that `/spec:view` sets it up once it is installed.
+   If md2html ≥ 0.3.0 isn't available (view step 1 stops), don't fail the
+   proposal: the summary says the HTML view needs md2html ≥ 0.3.0 and that
+   `/spec:view` sets it up once it is installed.
+
+1. **Show summary** (always the last output)
+
+   After completing all artifacts and the HTML view, summarize:
+   - Change name and location
+   - List of artifacts created with brief descriptions
+   - HTML view: the URL that was opened, the watcher and server PIDs (marked
+     "reused" where they were) and the stop command — or the one line on why
+     there is no HTML view
+   - What's ready: "All artifacts created! Ready for implementation."
+   - Last line, always: "Run `/spec:apply` to start implementing."
 
 **Spec frontmatter**
 

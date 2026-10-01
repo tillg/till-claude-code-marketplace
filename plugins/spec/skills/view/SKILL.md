@@ -24,7 +24,7 @@ open that change; without one, open the project index.
    while [ ! -f "$ROOT/reports.json" ] && [ "$ROOT" != "${TOP:-/}" ] && [ "$ROOT" != / ]; do ROOT=$(dirname "$ROOT"); done
    [ -f "$ROOT/reports.json" ] || ROOT=${TOP:-$(pwd -P)}
    ok() { v=$(node "$1" --version 2>/dev/null) && case $v in [0-9]*.*) ;; *) false;; esac &&
-     [ "$(printf '0.2.0\n%s\n' "$v" | sort -V | head -1)" = 0.2.0 ] && echo "$v $1"; }
+     [ "$(printf '0.3.0\n%s\n' "$v" | sort -V | head -1)" = 0.3.0 ] && echo "$v $1"; }
    MD2HTML=$( [ -f "$ROOT/tools/md2html.mjs" ] && ok "$ROOT/tools/md2html.mjs" | cut -d' ' -f2- )
    [ -n "$MD2HTML" ] || MD2HTML=$(find ~/.claude/plugins/cache ~/.claude/plugins/marketplaces \
      -path '*/md2html/*dist/md2html.mjs' 2>/dev/null | while read -r c; do ok "$c"; done | sort -V | tail -1 | cut -d' ' -f2-)
@@ -37,14 +37,15 @@ open that change; without one, open the project index.
    `reports.json` is created there (outside git: the cwd). Never use an outer
    repo's `reports.json`.
 
-   The tool is the **highest version ≥ 0.2.0** among all candidates: the
+   The tool is the **highest version ≥ 0.3.0** among all candidates: the
    project's `tools/md2html.mjs`, the plugin cache
    (`~/.claude/plugins/cache/**/md2html/**/dist/md2html.mjs`) and marketplace
    checkouts (`~/.claude/plugins/marketplaces/**/plugins/md2html/dist/md2html.mjs`),
    each checked with `node <c> --version`. A vendored `tools/md2html.mjs`
-   wins only if it is ≥ 0.2.0 itself. Older copies don't know the `specs` key.
+   wins only if it is ≥ 0.3.0 itself. Older copies lack the `specs` key or
+   `md2html serve`.
 
-   **If `MD2HTML` is empty:** tell the user the viewer needs md2html ≥ 0.2.0
+   **If `MD2HTML` is empty:** tell the user the viewer needs md2html ≥ 0.3.0
    — run `/plugin marketplace update till-claude-code-marketplace`, then
    `/plugin install md2html@till-claude-code-marketplace` — and stop.
    Everything else in the spec plugin works without it.
@@ -104,14 +105,17 @@ open that change; without one, open the project index.
    Logs go to `$ROOT/tmp/` if that directory exists (and is gitignored),
    else `/tmp/`.
 
-   First look for a watcher already running **in this root** (a watcher of
-   another project must not be reused):
+   First look for a watcher and a server already running **in this root**
+   (one of another project must not be reused; reusing keeps one watcher and
+   one server per project, however often the viewer is opened):
 
    ```bash
    LOG=$( [ -d "$ROOT/tmp" ] && echo "$ROOT/tmp" || echo /tmp )
    REAL=$(cd "$ROOT" && pwd -P)
-   for p in $(pgrep -f "md2html.mjs build.*--watch"); do
-     [ "$(lsof -a -d cwd -p "$p" -Fn 2>/dev/null | sed -n 's/^n//p')" = "$REAL" ] && echo "WATCH_PID=$p (reused)"
+   inroot() { [ "$(lsof -a -d cwd -p "$1" -Fn 2>/dev/null | sed -n 's/^n//p')" = "$REAL" ]; }
+   for p in $(pgrep -f "md2html.mjs build.*--watch"); do inroot "$p" && echo "WATCH_PID=$p (reused)"; done
+   for p in $(pgrep -f "md2html.mjs serve"); do
+     inroot "$p" && echo "SERVER_PID=$p PORT=$(lsof -a -p "$p" -iTCP -sTCP:LISTEN -P -n -Fn | sed -n 's/^n.*://p' | head -1) (reused)"
    done
    ```
 
@@ -122,12 +126,16 @@ open that change; without one, open the project index.
    echo "WATCH_PID=$!"
    ```
 
-   Then the server:
+   If no server was found, start one. `md2html serve` binds to 127.0.0.1 and
+   hands out page files only (`.html`, images, `.css`): never `.env`, `.md`,
+   source code, dot-dirs, `node_modules` or anything outside the root. Don't
+   use `python3 -m http.server` — it would expose the whole project.
 
    ```bash
-   PORT=$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1])')
-   nohup python3 -m http.server "$PORT" --bind 127.0.0.1 --directory "$ROOT" > "$LOG/spec-view-server.log" 2>&1 &
-   echo "SERVER_PID=$! PORT=$PORT"
+   cd "$ROOT" && nohup node "$MD2HTML" serve > "$LOG/spec-view-server.log" 2>&1 &
+   SERVER_PID=$!
+   for i in $(seq 50); do PORT=$(sed -n 's|.*http://localhost:\([0-9]*\)/.*|\1|p' "$LOG/spec-view-server.log"); [ -n "$PORT" ] && break; sleep 0.1; done
+   echo "SERVER_PID=$SERVER_PID PORT=$PORT"
    ```
 
 6. **Wait, then open**
@@ -165,8 +173,8 @@ open that change; without one, open the project index.
    Stop: kill <watch-pid> <server-pid>
    ```
 
-   Also list what was set up this run (`reports.json` created/changed,
-   `.gitignore` lines added), if anything.
+   Mark reused processes as "(reused)". Also list what was set up this run
+   (`reports.json` created/changed, `.gitignore` lines added), if anything.
 
 **Guardrails**
 
@@ -178,3 +186,4 @@ open that change; without one, open the project index.
   purpose (`/md2html:build`), never by the viewer
 - Don't commit anything; the spec HTML stays gitignored
 - Always print the PIDs and the stop command — the processes keep running
+- At most one watcher and one server per project: reuse, never start a second

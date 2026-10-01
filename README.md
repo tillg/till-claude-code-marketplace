@@ -74,7 +74,7 @@ you exactly where you are and what to do next.
 | `/spec:apply`           | Implement the plan step by step, tracking progress                               | When artifacts are ready and it's time to code                  |
 | `/spec:adversarial-code-review` | Hostile-mindset review in three separate axes: Defects (bugs, regressions, edge cases), Standards (repo standards + code-smell baseline), Spec (matches the change?) | After implementation, before archiving; or `[fixed-point] [change]` for "review since X" |
 | `/spec:archive`         | Update system docs, commit, and clean up the change                              | When all steps are complete                                     |
-| `/spec:view`            | Open a change (or all specs) as HTML in the browser; a watcher keeps it current  | Reading a change with rendered Mermaid (needs the md2html plugin) |
+| `/spec:view`            | Open a change (or all specs) as HTML in the browser; a watcher keeps it current  | Reading a change with rendered Mermaid (needs md2html ≥ 0.3.0) |
 
 #### Artifacts
 

@@ -54,6 +54,7 @@ node md2html.mjs <command> [options] [paths]
 | `build [--check] [--watch] [--specs] [paths]` | Render `.md` → `.html`. `--check` fails on stale or missing HTML and, without paths, on orphaned generated HTML whose `.md` was deleted. `--watch` rebuilds on change, reloads `reports.json` and the theme, and picks up new reports (and spec files); it prints `watching N report(s) and M spec file(s)`. `--specs` builds only spec files and the index, never report HTML (also with `--watch`). | the `.html`, only if bytes changed |
 | `check` | CI gate: `fmt --check` + `lint` + `build --check` over all sources (theme, menu entries and orphaned HTML included). Runs all three and exits with the worst code. | nothing |
 | `syntax [--json]` | Cheat sheet (Markdown) or registry data for editor insert menus. | stdout |
+| `serve [--port N]` | Serve the generated pages on `127.0.0.1` (random port by default; `/` → the index). Only `.html`, images and `.css` are served — never `.md`, sources, configs, dot-dirs, `node_modules` or anything outside the root. Used by `/spec:view`. | nothing |
 
 Without paths, `fmt`, `lint`, `build` and `check` run over every file matching
 `sources`, sorted (dot-dirs, `node_modules` and `.worktrees` are skipped).

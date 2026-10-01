@@ -15,6 +15,7 @@ import { parseFrontmatter } from './transforms/frontmatter.mjs';
 import { normalizeInput } from './processor.mjs';
 import { syntaxMarkdown, syntaxJson } from './syntax.mjs';
 import { version } from './assets.mjs';
+import { serve } from './serve.mjs';
 import YAML from 'yaml';
 
 const USAGE = `md2html ${version}
@@ -25,6 +26,7 @@ Usage:
   md2html build [--check] [--watch] [--specs] [paths…]   --specs: spec pages + index only
   md2html check                        fmt --check + lint + build --check over all sources
   md2html syntax [--json]              the cheat sheet
+  md2html serve [--port N]             serve the generated pages on 127.0.0.1 (pages only)
 Exit codes: 0 clean, 1 lint errors / stale / non-canonical, 2 usage or config error.`;
 
 class UsageError extends Error {}
@@ -71,7 +73,7 @@ function parseArgs(argv) {
   const flags = {}; const positional = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === '--title' || a === '--format') {
+    if (a === '--title' || a === '--format' || a === '--port') {
       if (i + 1 >= argv.length) throw new UsageError(`${a} needs a value`);
       flags[a.slice(2)] = argv[++i];
     } else if (a.startsWith('--')) flags[a.slice(2)] = true;
@@ -410,6 +412,16 @@ export async function main(argv, { cwd = process.cwd(), out = { log: console.log
       }
       case undefined: case '--help': case '-h': case 'help':
         out.log(USAGE); return cmd ? 0 : 2;
+      case 'serve': {
+        allowFlags(flags, ['port'], cmd);
+        if (positional.length) throw new UsageError('serve takes no paths; it serves the project root');
+        const port = flags.port === undefined ? 0 : Number(flags.port);
+        if (!Number.isInteger(port) || port < 0 || port > 65535) throw new UsageError(`--port must be 0–65535, got "${flags.port}"`);
+        const ctx = project(cwd);
+        const server = await serve(ctx.root, { port, index: ctx.config.specs?.index ?? 'index.html' });
+        out.log(`serving ${ctx.root} at http://localhost:${server.address().port}/ (pages only); Ctrl-C to stop`);
+        return new Promise(() => {});
+      }
       case '--version': out.log(version); return 0;
       default: throw new UsageError(`unknown command "${cmd}"`);
     }

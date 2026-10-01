@@ -127,7 +127,7 @@ The system description lives in `specs/system/` and captures what the system
    - Key findings about the system
    - Any areas where information was unclear or assumptions were made
 
-   If md2html ≥ 0.2.0 is available (lookup as in `/spec:view` step 1) and
+   If md2html ≥ 0.3.0 is available (lookup as in `/spec:view` step 1) and
    `reports.json` has no `specs` key, add one line: "`/spec:view` turns on the
    lint hook and the HTML view for spec files." Don't create any files.
 

@@ -307,17 +307,17 @@ var require_visit = __commonJS({
     visit2.BREAK = BREAK;
     visit2.SKIP = SKIP2;
     visit2.REMOVE = REMOVE;
-    function visit_(key2, node2, visitor, path14) {
-      const ctrl = callVisitor(key2, node2, visitor, path14);
+    function visit_(key2, node2, visitor, path15) {
+      const ctrl = callVisitor(key2, node2, visitor, path15);
       if (identity.isNode(ctrl) || identity.isPair(ctrl)) {
-        replaceNode(key2, path14, ctrl);
-        return visit_(key2, ctrl, visitor, path14);
+        replaceNode(key2, path15, ctrl);
+        return visit_(key2, ctrl, visitor, path15);
       }
       if (typeof ctrl !== "symbol") {
         if (identity.isCollection(node2)) {
-          path14 = Object.freeze(path14.concat(node2));
+          path15 = Object.freeze(path15.concat(node2));
           for (let i = 0; i < node2.items.length; ++i) {
-            const ci = visit_(i, node2.items[i], visitor, path14);
+            const ci = visit_(i, node2.items[i], visitor, path15);
             if (typeof ci === "number")
               i = ci - 1;
             else if (ci === BREAK)
@@ -328,13 +328,13 @@ var require_visit = __commonJS({
             }
           }
         } else if (identity.isPair(node2)) {
-          path14 = Object.freeze(path14.concat(node2));
-          const ck = visit_("key", node2.key, visitor, path14);
+          path15 = Object.freeze(path15.concat(node2));
+          const ck = visit_("key", node2.key, visitor, path15);
           if (ck === BREAK)
             return BREAK;
           else if (ck === REMOVE)
             node2.key = null;
-          const cv = visit_("value", node2.value, visitor, path14);
+          const cv = visit_("value", node2.value, visitor, path15);
           if (cv === BREAK)
             return BREAK;
           else if (cv === REMOVE)
@@ -355,17 +355,17 @@ var require_visit = __commonJS({
     visitAsync.BREAK = BREAK;
     visitAsync.SKIP = SKIP2;
     visitAsync.REMOVE = REMOVE;
-    async function visitAsync_(key2, node2, visitor, path14) {
-      const ctrl = await callVisitor(key2, node2, visitor, path14);
+    async function visitAsync_(key2, node2, visitor, path15) {
+      const ctrl = await callVisitor(key2, node2, visitor, path15);
       if (identity.isNode(ctrl) || identity.isPair(ctrl)) {
-        replaceNode(key2, path14, ctrl);
-        return visitAsync_(key2, ctrl, visitor, path14);
+        replaceNode(key2, path15, ctrl);
+        return visitAsync_(key2, ctrl, visitor, path15);
       }
       if (typeof ctrl !== "symbol") {
         if (identity.isCollection(node2)) {
-          path14 = Object.freeze(path14.concat(node2));
+          path15 = Object.freeze(path15.concat(node2));
           for (let i = 0; i < node2.items.length; ++i) {
-            const ci = await visitAsync_(i, node2.items[i], visitor, path14);
+            const ci = await visitAsync_(i, node2.items[i], visitor, path15);
             if (typeof ci === "number")
               i = ci - 1;
             else if (ci === BREAK)
@@ -376,13 +376,13 @@ var require_visit = __commonJS({
             }
           }
         } else if (identity.isPair(node2)) {
-          path14 = Object.freeze(path14.concat(node2));
-          const ck = await visitAsync_("key", node2.key, visitor, path14);
+          path15 = Object.freeze(path15.concat(node2));
+          const ck = await visitAsync_("key", node2.key, visitor, path15);
           if (ck === BREAK)
             return BREAK;
           else if (ck === REMOVE)
             node2.key = null;
-          const cv = await visitAsync_("value", node2.value, visitor, path14);
+          const cv = await visitAsync_("value", node2.value, visitor, path15);
           if (cv === BREAK)
             return BREAK;
           else if (cv === REMOVE)
@@ -409,23 +409,23 @@ var require_visit = __commonJS({
       }
       return visitor;
     }
-    function callVisitor(key2, node2, visitor, path14) {
+    function callVisitor(key2, node2, visitor, path15) {
       if (typeof visitor === "function")
-        return visitor(key2, node2, path14);
+        return visitor(key2, node2, path15);
       if (identity.isMap(node2))
-        return visitor.Map?.(key2, node2, path14);
+        return visitor.Map?.(key2, node2, path15);
       if (identity.isSeq(node2))
-        return visitor.Seq?.(key2, node2, path14);
+        return visitor.Seq?.(key2, node2, path15);
       if (identity.isPair(node2))
-        return visitor.Pair?.(key2, node2, path14);
+        return visitor.Pair?.(key2, node2, path15);
       if (identity.isScalar(node2))
-        return visitor.Scalar?.(key2, node2, path14);
+        return visitor.Scalar?.(key2, node2, path15);
       if (identity.isAlias(node2))
-        return visitor.Alias?.(key2, node2, path14);
+        return visitor.Alias?.(key2, node2, path15);
       return void 0;
     }
-    function replaceNode(key2, path14, node2) {
-      const parent = path14[path14.length - 1];
+    function replaceNode(key2, path15, node2) {
+      const parent = path15[path15.length - 1];
       if (identity.isCollection(parent)) {
         parent.items[key2] = node2;
       } else if (identity.isPair(parent)) {
@@ -1037,10 +1037,10 @@ var require_Collection = __commonJS({
     var createNode = require_createNode();
     var identity = require_identity();
     var Node = require_Node();
-    function collectionFromPath(schema, path14, value2) {
+    function collectionFromPath(schema, path15, value2) {
       let v = value2;
-      for (let i = path14.length - 1; i >= 0; --i) {
-        const k = path14[i];
+      for (let i = path15.length - 1; i >= 0; --i) {
+        const k = path15[i];
         if (typeof k === "number" && Number.isInteger(k) && k >= 0) {
           const a = [];
           a[k] = v;
@@ -1059,7 +1059,7 @@ var require_Collection = __commonJS({
         sourceObjects: /* @__PURE__ */ new Map()
       });
     }
-    var isEmptyPath = (path14) => path14 == null || typeof path14 === "object" && !!path14[Symbol.iterator]().next().done;
+    var isEmptyPath = (path15) => path15 == null || typeof path15 === "object" && !!path15[Symbol.iterator]().next().done;
     var Collection = class extends Node.NodeBase {
       constructor(type, schema) {
         super(type);
@@ -1089,11 +1089,11 @@ var require_Collection = __commonJS({
        * be a Pair instance or a `{ key, value }` object, which may not have a key
        * that already exists in the map.
        */
-      addIn(path14, value2) {
-        if (isEmptyPath(path14))
+      addIn(path15, value2) {
+        if (isEmptyPath(path15))
           this.add(value2);
         else {
-          const [key2, ...rest] = path14;
+          const [key2, ...rest] = path15;
           const node2 = this.get(key2, true);
           if (identity.isCollection(node2))
             node2.addIn(rest, value2);
@@ -1107,8 +1107,8 @@ var require_Collection = __commonJS({
        * Removes a value from the collection.
        * @returns `true` if the item was found and removed.
        */
-      deleteIn(path14) {
-        const [key2, ...rest] = path14;
+      deleteIn(path15) {
+        const [key2, ...rest] = path15;
         if (rest.length === 0)
           return this.delete(key2);
         const node2 = this.get(key2, true);
@@ -1122,8 +1122,8 @@ var require_Collection = __commonJS({
        * scalar values from their surrounding node; to disable set `keepScalar` to
        * `true` (collections are always returned intact).
        */
-      getIn(path14, keepScalar) {
-        const [key2, ...rest] = path14;
+      getIn(path15, keepScalar) {
+        const [key2, ...rest] = path15;
         const node2 = this.get(key2, true);
         if (rest.length === 0)
           return !keepScalar && identity.isScalar(node2) ? node2.value : node2;
@@ -1141,8 +1141,8 @@ var require_Collection = __commonJS({
       /**
        * Checks if the collection includes a value with the key `key`.
        */
-      hasIn(path14) {
-        const [key2, ...rest] = path14;
+      hasIn(path15) {
+        const [key2, ...rest] = path15;
         if (rest.length === 0)
           return this.has(key2);
         const node2 = this.get(key2, true);
@@ -1152,8 +1152,8 @@ var require_Collection = __commonJS({
        * Sets a value in this collection. For `!!set`, `value` needs to be a
        * boolean to add/remove the item from the set.
        */
-      setIn(path14, value2) {
-        const [key2, ...rest] = path14;
+      setIn(path15, value2) {
+        const [key2, ...rest] = path15;
         if (rest.length === 0) {
           this.set(key2, value2);
         } else {
@@ -3668,9 +3668,9 @@ var require_Document = __commonJS({
           this.contents.add(value2);
       }
       /** Adds a value to the document. */
-      addIn(path14, value2) {
+      addIn(path15, value2) {
         if (assertCollection(this.contents))
-          this.contents.addIn(path14, value2);
+          this.contents.addIn(path15, value2);
       }
       /**
        * Create a new `Alias` node, ensuring that the target `node` has the required anchor.
@@ -3745,14 +3745,14 @@ var require_Document = __commonJS({
        * Removes a value from the document.
        * @returns `true` if the item was found and removed.
        */
-      deleteIn(path14) {
-        if (Collection.isEmptyPath(path14)) {
+      deleteIn(path15) {
+        if (Collection.isEmptyPath(path15)) {
           if (this.contents == null)
             return false;
           this.contents = null;
           return true;
         }
-        return assertCollection(this.contents) ? this.contents.deleteIn(path14) : false;
+        return assertCollection(this.contents) ? this.contents.deleteIn(path15) : false;
       }
       /**
        * Returns item at `key`, or `undefined` if not found. By default unwraps
@@ -3767,10 +3767,10 @@ var require_Document = __commonJS({
        * scalar values from their surrounding node; to disable set `keepScalar` to
        * `true` (collections are always returned intact).
        */
-      getIn(path14, keepScalar) {
-        if (Collection.isEmptyPath(path14))
+      getIn(path15, keepScalar) {
+        if (Collection.isEmptyPath(path15))
           return !keepScalar && identity.isScalar(this.contents) ? this.contents.value : this.contents;
-        return identity.isCollection(this.contents) ? this.contents.getIn(path14, keepScalar) : void 0;
+        return identity.isCollection(this.contents) ? this.contents.getIn(path15, keepScalar) : void 0;
       }
       /**
        * Checks if the document includes a value with the key `key`.
@@ -3781,10 +3781,10 @@ var require_Document = __commonJS({
       /**
        * Checks if the document includes a value at `path`.
        */
-      hasIn(path14) {
-        if (Collection.isEmptyPath(path14))
+      hasIn(path15) {
+        if (Collection.isEmptyPath(path15))
           return this.contents !== void 0;
-        return identity.isCollection(this.contents) ? this.contents.hasIn(path14) : false;
+        return identity.isCollection(this.contents) ? this.contents.hasIn(path15) : false;
       }
       /**
        * Sets a value in this document. For `!!set`, `value` needs to be a
@@ -3801,13 +3801,13 @@ var require_Document = __commonJS({
        * Sets a value in this document. For `!!set`, `value` needs to be a
        * boolean to add/remove the item from the set.
        */
-      setIn(path14, value2) {
-        if (Collection.isEmptyPath(path14)) {
+      setIn(path15, value2) {
+        if (Collection.isEmptyPath(path15)) {
           this.contents = value2;
         } else if (this.contents == null) {
-          this.contents = Collection.collectionFromPath(this.schema, Array.from(path14), value2);
+          this.contents = Collection.collectionFromPath(this.schema, Array.from(path15), value2);
         } else if (assertCollection(this.contents)) {
-          this.contents.setIn(path14, value2);
+          this.contents.setIn(path15, value2);
         }
       }
       /**
@@ -5768,9 +5768,9 @@ var require_cst_visit = __commonJS({
     visit2.BREAK = BREAK;
     visit2.SKIP = SKIP2;
     visit2.REMOVE = REMOVE;
-    visit2.itemAtPath = (cst, path14) => {
+    visit2.itemAtPath = (cst, path15) => {
       let item2 = cst;
-      for (const [field, index2] of path14) {
+      for (const [field, index2] of path15) {
         const tok = item2?.[field];
         if (tok && "items" in tok) {
           item2 = tok.items[index2];
@@ -5779,23 +5779,23 @@ var require_cst_visit = __commonJS({
       }
       return item2;
     };
-    visit2.parentCollection = (cst, path14) => {
-      const parent = visit2.itemAtPath(cst, path14.slice(0, -1));
-      const field = path14[path14.length - 1][0];
+    visit2.parentCollection = (cst, path15) => {
+      const parent = visit2.itemAtPath(cst, path15.slice(0, -1));
+      const field = path15[path15.length - 1][0];
       const coll = parent?.[field];
       if (coll && "items" in coll)
         return coll;
       throw new Error("Parent collection not found");
     };
-    function _visit(path14, item2, visitor) {
-      let ctrl = visitor(item2, path14);
+    function _visit(path15, item2, visitor) {
+      let ctrl = visitor(item2, path15);
       if (typeof ctrl === "symbol")
         return ctrl;
       for (const field of ["key", "value"]) {
         const token = item2[field];
         if (token && "items" in token) {
           for (let i = 0; i < token.items.length; ++i) {
-            const ci = _visit(Object.freeze(path14.concat([[field, i]])), token.items[i], visitor);
+            const ci = _visit(Object.freeze(path15.concat([[field, i]])), token.items[i], visitor);
             if (typeof ci === "number")
               i = ci - 1;
             else if (ci === BREAK)
@@ -5806,10 +5806,10 @@ var require_cst_visit = __commonJS({
             }
           }
           if (typeof ctrl === "function" && field === "key")
-            ctrl = ctrl(item2, path14);
+            ctrl = ctrl(item2, path15);
         }
       }
-      return typeof ctrl === "function" ? ctrl(item2, path14) : ctrl;
+      return typeof ctrl === "function" ? ctrl(item2, path15) : ctrl;
     }
     exports.visit = visit2;
   }
@@ -7111,14 +7111,14 @@ var require_parser = __commonJS({
             case "scalar":
             case "single-quoted-scalar":
             case "double-quoted-scalar": {
-              const fs5 = this.flowScalar(this.type);
+              const fs6 = this.flowScalar(this.type);
               if (atNextItem || it.value) {
-                map4.items.push({ start, key: fs5, sep: [] });
+                map4.items.push({ start, key: fs6, sep: [] });
                 this.onKeyLine = true;
               } else if (it.sep) {
-                this.stack.push(fs5);
+                this.stack.push(fs6);
               } else {
-                Object.assign(it, { key: fs5, sep: [] });
+                Object.assign(it, { key: fs6, sep: [] });
                 this.onKeyLine = true;
               }
               return;
@@ -7246,13 +7246,13 @@ var require_parser = __commonJS({
             case "scalar":
             case "single-quoted-scalar":
             case "double-quoted-scalar": {
-              const fs5 = this.flowScalar(this.type);
+              const fs6 = this.flowScalar(this.type);
               if (!it || it.value)
-                fc.items.push({ start: [], key: fs5, sep: [] });
+                fc.items.push({ start: [], key: fs6, sep: [] });
               else if (it.sep)
-                this.stack.push(fs5);
+                this.stack.push(fs6);
               else
-                Object.assign(it, { key: fs5, sep: [] });
+                Object.assign(it, { key: fs6, sep: [] });
               return;
             }
             case "flow-map-end":
@@ -7561,12 +7561,12 @@ var require_dist = __commonJS({
 });
 
 // src/index.mjs
-import fs4 from "node:fs";
+import fs5 from "node:fs";
 import { fileURLToPath as fileURLToPath2 } from "node:url";
 
 // src/cli.mjs
-import fs3 from "node:fs";
-import path13 from "node:path";
+import fs4 from "node:fs";
+import path14 from "node:path";
 
 // src/config.mjs
 import fs from "node:fs";
@@ -8200,13 +8200,13 @@ var VFile = class {
    * @returns {undefined}
    *   Nothing.
    */
-  set path(path14) {
-    if (isUrl2(path14)) {
-      path14 = fileURLToPath(path14);
+  set path(path15) {
+    if (isUrl2(path15)) {
+      path15 = fileURLToPath(path15);
     }
-    assertNonEmpty(path14, "path");
-    if (this.path !== path14) {
-      this.history.push(path14);
+    assertNonEmpty(path15, "path");
+    if (this.path !== path15) {
+      this.history.push(path15);
     }
   }
   /**
@@ -8473,8 +8473,8 @@ function assertNonEmpty(part, name) {
     throw new Error("`" + name + "` cannot be empty");
   }
 }
-function assertPath(path14, name) {
-  if (!path14) {
+function assertPath(path15, name) {
+  if (!path15) {
     throw new Error("Setting `" + name + "` requires `path` to be set too");
   }
 }
@@ -9568,7 +9568,7 @@ function transformGfmAutolinkLiterals(tree) {
     { ignore: ["link", "linkReference"] }
   );
 }
-function findUrl(_, protocol, domain2, path14, match) {
+function findUrl(_, protocol, domain2, path15, match) {
   let prefix = "";
   if (!previous(match)) {
     return false;
@@ -9581,7 +9581,7 @@ function findUrl(_, protocol, domain2, path14, match) {
   if (!isCorrectDomain(domain2)) {
     return false;
   }
-  const parts = splitUrl(domain2 + path14);
+  const parts = splitUrl(domain2 + path15);
   if (!parts[0]) return false;
   const result = {
     type: "link",
@@ -26257,7 +26257,7 @@ function rehypeStringify(options) {
 
 // assets:./assets.mjs
 var baseCss = ':root {\n  --bg: #fbfbfa; --fg: #1d1d1f; --muted: #5f6368; --line: #e3e3e0; --card: #ffffff;\n  --accent: #1f5bd6; --go: #1e7b3a; --go-bg: #e6f4ea; --partial: #8a5a00; --partial-bg: #fdf1d6;\n  --no: #b3261e; --no-bg: #fce8e6; --code: #f2f2ef; --figure-bg: #ffffff;\n  color-scheme: light;\n}\n@media (prefers-color-scheme: dark) {\n  :root:not([data-theme="light"]) {\n    --bg: #16171a; --fg: #e8e8ea; --muted: #a0a3a8; --line: #2c2e33; --card: #1e2024;\n    --accent: #8ab4ff; --go: #7fd49a; --go-bg: #173524; --partial: #f0c36a; --partial-bg: #3a2e12;\n    --no: #ff9b91; --no-bg: #3d1a17; --code: #26282d; --figure-bg: #ffffff; color-scheme: dark;\n  }\n}\n:root[data-theme="dark"] {\n  --bg: #16171a; --fg: #e8e8ea; --muted: #a0a3a8; --line: #2c2e33; --card: #1e2024;\n  --accent: #8ab4ff; --go: #7fd49a; --go-bg: #173524; --partial: #f0c36a; --partial-bg: #3a2e12;\n  --no: #ff9b91; --no-bg: #3d1a17; --code: #26282d; --figure-bg: #ffffff; color-scheme: dark;\n}\n* { box-sizing: border-box; }\nbody { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; overflow-wrap: break-word; }\nmain { max-width: 980px; margin: 0 auto; padding: 32px 16px 80px; }\n.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }\n.appicon { flex: none; width: 48px; height: 48px; border-radius: 11px; box-shadow: 0 1px 3px rgba(0,0,0,.15); }\nh1 { font-size: 2rem; line-height: 1.2; margin: 0 0 8px; }\nh2 { font-size: 1.4rem; margin: 48px 0 12px; padding-top: 12px; border-top: 1px solid var(--line); }\nh3 { font-size: 1.1rem; margin: 28px 0 8px; }\np, li { max-width: 72ch; }\na { color: var(--accent); }\ncode { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: .88em; }\npre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 12px 0; overflow-x: auto; line-height: 1.45; }\npre code { background: none; padding: 0; border-radius: 0; font-size: .85rem; }\nblockquote { margin: 12px 0; padding: 0 0 0 16px; border-left: 3px solid var(--line); color: var(--muted); }\nimg { max-width: 100%; height: auto; }\nhr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }\nhr + h2 { border-top: 0; padding-top: 0; margin-top: 0; }\n.sub { color: var(--muted); margin: 0 0 24px; }\n.sub img { height: 1.2em; width: auto; vertical-align: middle; }\n.tldr { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; }\n.tldr p:first-child { margin-top: 0; }\n.tldr > :last-child { margin-bottom: 0; }\nnav.toc { columns: 2; column-gap: 32px; font-size: .95rem; margin-top: 20px; }\nnav.toc a { display: block; padding: 2px 0; }\n@media (max-width: 640px) { nav.toc { columns: 1; } }\n.tbl { overflow-x: auto; margin: 12px 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }\ntable { border-collapse: collapse; width: 100%; font-size: .9rem; }\nth, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }\nth { font-weight: 600; background: var(--code); }\ntr:last-child td { border-bottom: 0; }\nth[align="center"], td[align="center"] { text-align: center; }\nth[align="right"], td[align="right"] { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }\ntd.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }\n.v { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: .8rem; font-weight: 600; }\ntd .v { white-space: nowrap; }\n.go { color: var(--go); background: var(--go-bg); }\n.partial { color: var(--partial); background: var(--partial-bg); }\n.no { color: var(--no); background: var(--no-bg); }\nfigure { margin: 16px 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }\nfigure img { display: block; max-width: 100%; height: auto; margin: 0 auto; background: var(--figure-bg); border-radius: 6px; }\nfigcaption { color: var(--muted); font-size: .85rem; margin-top: 8px; text-align: center; }\nfigcaption a.mmd-src { white-space: nowrap; }\n.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px; margin: 12px 0; }\n.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; min-width: 0; }\n.card h4 { margin: 0 0 6px; font-size: 1rem; }\n.card p { margin: 6px 0; font-size: .93rem; }\n.contains-task-list { list-style: none; padding-left: 20px; }\n.footnotes { margin-top: 48px; padding-top: 12px; border-top: 1px solid var(--line); font-size: .9rem; color: var(--muted); }\n.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }\n\n.reports-nav { display: flex; align-items: center; gap: 4px;\n  padding: 8px 16px; overflow-x: auto; white-space: nowrap; scrollbar-width: none;\n  background: var(--card); border-bottom: 1px solid var(--line);\n  font: 500 14px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }\n.reports-nav::-webkit-scrollbar { display: none; }\n.reports-nav .brand { display: flex; align-items: center; gap: 8px; margin-right: 8px; color: var(--muted); }\n.reports-nav .brand img { width: 20px; height: 20px; border-radius: 5px; }\n.reports-nav a.item { padding: 6px 12px; border-radius: 999px; color: var(--fg); text-decoration: none; }\n.reports-nav a.item:hover { background: rgba(127,127,127,.12); }\n.reports-nav a.item[aria-current="page"] { background: var(--accent); color: var(--bg); }\n\n.report-meta { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 4px 0 16px; padding: 0; font-size: .88rem; }\n.report-meta div { display: flex; align-items: baseline; gap: 6px; }\n.report-meta dt { color: var(--muted); }\n.report-meta dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }\n.report-status { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; }\n.report-status.research { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }\n.report-status.ongoing { color: var(--partial); background: var(--partial-bg); }\n.report-status.implemented { color: var(--go); background: var(--go-bg); }\n';
-var version = "0.2.0";
+var version = "0.3.0";
 
 // src/transforms/frontmatter.mjs
 var import_yaml5 = __toESM(require_dist(), 1);
@@ -26603,7 +26603,7 @@ import path12 from "node:path";
 // assets:../assets.mjs
 var baseCss2 = ':root {\n  --bg: #fbfbfa; --fg: #1d1d1f; --muted: #5f6368; --line: #e3e3e0; --card: #ffffff;\n  --accent: #1f5bd6; --go: #1e7b3a; --go-bg: #e6f4ea; --partial: #8a5a00; --partial-bg: #fdf1d6;\n  --no: #b3261e; --no-bg: #fce8e6; --code: #f2f2ef; --figure-bg: #ffffff;\n  color-scheme: light;\n}\n@media (prefers-color-scheme: dark) {\n  :root:not([data-theme="light"]) {\n    --bg: #16171a; --fg: #e8e8ea; --muted: #a0a3a8; --line: #2c2e33; --card: #1e2024;\n    --accent: #8ab4ff; --go: #7fd49a; --go-bg: #173524; --partial: #f0c36a; --partial-bg: #3a2e12;\n    --no: #ff9b91; --no-bg: #3d1a17; --code: #26282d; --figure-bg: #ffffff; color-scheme: dark;\n  }\n}\n:root[data-theme="dark"] {\n  --bg: #16171a; --fg: #e8e8ea; --muted: #a0a3a8; --line: #2c2e33; --card: #1e2024;\n  --accent: #8ab4ff; --go: #7fd49a; --go-bg: #173524; --partial: #f0c36a; --partial-bg: #3a2e12;\n  --no: #ff9b91; --no-bg: #3d1a17; --code: #26282d; --figure-bg: #ffffff; color-scheme: dark;\n}\n* { box-sizing: border-box; }\nbody { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; overflow-wrap: break-word; }\nmain { max-width: 980px; margin: 0 auto; padding: 32px 16px 80px; }\n.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }\n.appicon { flex: none; width: 48px; height: 48px; border-radius: 11px; box-shadow: 0 1px 3px rgba(0,0,0,.15); }\nh1 { font-size: 2rem; line-height: 1.2; margin: 0 0 8px; }\nh2 { font-size: 1.4rem; margin: 48px 0 12px; padding-top: 12px; border-top: 1px solid var(--line); }\nh3 { font-size: 1.1rem; margin: 28px 0 8px; }\np, li { max-width: 72ch; }\na { color: var(--accent); }\ncode { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: .88em; }\npre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 12px 0; overflow-x: auto; line-height: 1.45; }\npre code { background: none; padding: 0; border-radius: 0; font-size: .85rem; }\nblockquote { margin: 12px 0; padding: 0 0 0 16px; border-left: 3px solid var(--line); color: var(--muted); }\nimg { max-width: 100%; height: auto; }\nhr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }\nhr + h2 { border-top: 0; padding-top: 0; margin-top: 0; }\n.sub { color: var(--muted); margin: 0 0 24px; }\n.sub img { height: 1.2em; width: auto; vertical-align: middle; }\n.tldr { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; }\n.tldr p:first-child { margin-top: 0; }\n.tldr > :last-child { margin-bottom: 0; }\nnav.toc { columns: 2; column-gap: 32px; font-size: .95rem; margin-top: 20px; }\nnav.toc a { display: block; padding: 2px 0; }\n@media (max-width: 640px) { nav.toc { columns: 1; } }\n.tbl { overflow-x: auto; margin: 12px 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }\ntable { border-collapse: collapse; width: 100%; font-size: .9rem; }\nth, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }\nth { font-weight: 600; background: var(--code); }\ntr:last-child td { border-bottom: 0; }\nth[align="center"], td[align="center"] { text-align: center; }\nth[align="right"], td[align="right"] { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }\ntd.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }\n.v { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: .8rem; font-weight: 600; }\ntd .v { white-space: nowrap; }\n.go { color: var(--go); background: var(--go-bg); }\n.partial { color: var(--partial); background: var(--partial-bg); }\n.no { color: var(--no); background: var(--no-bg); }\nfigure { margin: 16px 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }\nfigure img { display: block; max-width: 100%; height: auto; margin: 0 auto; background: var(--figure-bg); border-radius: 6px; }\nfigcaption { color: var(--muted); font-size: .85rem; margin-top: 8px; text-align: center; }\nfigcaption a.mmd-src { white-space: nowrap; }\n.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px; margin: 12px 0; }\n.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; min-width: 0; }\n.card h4 { margin: 0 0 6px; font-size: 1rem; }\n.card p { margin: 6px 0; font-size: .93rem; }\n.contains-task-list { list-style: none; padding-left: 20px; }\n.footnotes { margin-top: 48px; padding-top: 12px; border-top: 1px solid var(--line); font-size: .9rem; color: var(--muted); }\n.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }\n\n.reports-nav { display: flex; align-items: center; gap: 4px;\n  padding: 8px 16px; overflow-x: auto; white-space: nowrap; scrollbar-width: none;\n  background: var(--card); border-bottom: 1px solid var(--line);\n  font: 500 14px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }\n.reports-nav::-webkit-scrollbar { display: none; }\n.reports-nav .brand { display: flex; align-items: center; gap: 8px; margin-right: 8px; color: var(--muted); }\n.reports-nav .brand img { width: 20px; height: 20px; border-radius: 5px; }\n.reports-nav a.item { padding: 6px 12px; border-radius: 999px; color: var(--fg); text-decoration: none; }\n.reports-nav a.item:hover { background: rgba(127,127,127,.12); }\n.reports-nav a.item[aria-current="page"] { background: var(--accent); color: var(--bg); }\n\n.report-meta { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 4px 0 16px; padding: 0; font-size: .88rem; }\n.report-meta div { display: flex; align-items: baseline; gap: 6px; }\n.report-meta dt { color: var(--muted); }\n.report-meta dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }\n.report-status { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; }\n.report-status.research { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }\n.report-status.ongoing { color: var(--partial); background: var(--partial-bg); }\n.report-status.implemented { color: var(--go); background: var(--go-bg); }\n';
 var specCss = '\n.spec-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px;\n  padding: 8px 16px; background: var(--card); border-bottom: 1px solid var(--line);\n  font: 500 14px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }\n.spec-nav a { padding: 6px 12px; border-radius: 999px; color: var(--fg); text-decoration: none; }\n.spec-nav a:hover { background: rgba(127,127,127,.12); }\n.spec-nav a.up { color: var(--muted); margin-right: 8px; }\n.spec-nav a[aria-current="page"] { background: var(--accent); color: var(--bg); }\n.spec-nav .spec-status { margin-left: auto; }\n.spec-status { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; white-space: nowrap; }\n.spec-status.exploring { color: var(--muted); background: var(--code); }\n.spec-status.proposed { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }\n.spec-status.applying { color: var(--partial); background: var(--partial-bg); }\n.spec-status.paused { color: var(--no); background: var(--no-bg); }\n.spec-status.applied { color: var(--go); background: var(--go-bg); }\n\npre.mermaid { font-size: .85rem; }\npre.mermaid[data-processed] { background: none; border: 0; padding: 0; text-align: center; }\npre.mermaid svg { max-width: 100%; height: auto; }\n\n.spec-index td a { margin-right: 10px; }\n.spec-index td a:last-child { margin-right: 0; }\n.spec-index td.pages { min-width: 16ch; }\n.spec-index td.dir code { white-space: nowrap; }\n@media (max-width: 640px) {\n  .spec-index thead { display: none; }\n  .spec-index tr { display: block; padding: 8px 0; border-bottom: 1px solid var(--line); }\n  .spec-index tr:last-child { border-bottom: 0; }\n  .spec-index td { display: flex; gap: 12px; border: 0; padding: 3px 12px; text-align: left; white-space: normal; }\n  .spec-index td::before { content: attr(data-label); flex: none; width: 6.5em; color: var(--muted); font-size: .85em; }\n  .spec-index td.pages { display: block; padding-left: calc(12px + 6.5em + 12px); text-indent: calc(-6.5em - 12px); }\n  .spec-index td.pages::before { display: inline-block; margin-right: 12px; text-indent: 0; }\n}\n/* Plan checkboxes: GFM renders them disabled (greyed); keep done vs. open steps easy to tell apart. */\n.contains-task-list input[type="checkbox"] { accent-color: var(--accent); opacity: 1; width: 1em; height: 1em; vertical-align: -0.1em; }\n.task-list-item:has(input:checked) { color: var(--muted); }\n';
-var version2 = "0.2.0";
+var version2 = "0.3.0";
 
 // src/spec/build.mjs
 var capitalise2 = (s) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -26808,6 +26808,79 @@ function syntaxMarkdown() {
   return out.join("\n");
 }
 
+// src/serve.mjs
+import fs3 from "node:fs";
+import http from "node:http";
+import path13 from "node:path";
+var TYPES = {
+  ".html": "text/html; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".webp": "image/webp",
+  ".avif": "image/avif",
+  ".ico": "image/x-icon"
+};
+function resolveServable(realRoot, urlPath) {
+  let rel;
+  try {
+    rel = decodeURIComponent(urlPath.split(/[?#]/)[0]);
+  } catch {
+    return null;
+  }
+  const segments = rel.split("/").filter(Boolean);
+  if (!segments.length || segments.some((s) => s.startsWith(".") || s === "node_modules" || s.includes("\\") || s.includes("\0"))) return null;
+  if (!TYPES[path13.extname(segments.at(-1)).toLowerCase()]) return null;
+  let real;
+  try {
+    real = fs3.realpathSync(path13.join(realRoot, ...segments));
+  } catch {
+    return null;
+  }
+  if (real !== realRoot && !real.startsWith(realRoot + path13.sep)) return null;
+  try {
+    if (!fs3.statSync(real).isFile()) return null;
+  } catch {
+    return null;
+  }
+  return real;
+}
+function serve(root4, { port = 0, index: index2 = "index.html" } = {}) {
+  const realRoot = fs3.realpathSync(root4);
+  const server = http.createServer((req, res) => {
+    if (req.method !== "GET" && req.method !== "HEAD") {
+      res.writeHead(405);
+      res.end();
+      return;
+    }
+    const urlPath = new URL(req.url, "http://localhost").pathname;
+    if (urlPath === "/") {
+      res.writeHead(302, { Location: `/${index2}` });
+      res.end();
+      return;
+    }
+    const file = resolveServable(realRoot, urlPath);
+    if (!file) {
+      res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+      res.end("not found");
+      return;
+    }
+    res.writeHead(200, { "Content-Type": TYPES[path13.extname(file).toLowerCase()], "Cache-Control": "no-store" });
+    if (req.method === "HEAD") {
+      res.end();
+      return;
+    }
+    fs3.createReadStream(file).pipe(res);
+  });
+  return new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(port, "127.0.0.1", () => resolve(server));
+  });
+}
+
 // src/cli.mjs
 var import_yaml6 = __toESM(require_dist(), 1);
 var USAGE = `md2html ${version}
@@ -26818,6 +26891,7 @@ Usage:
   md2html build [--check] [--watch] [--specs] [paths…]   --specs: spec pages + index only
   md2html check                        fmt --check + lint + build --check over all sources
   md2html syntax [--json]              the cheat sheet
+  md2html serve [--port N]             serve the generated pages on 127.0.0.1 (pages only)
 Exit codes: 0 clean, 1 lint errors / stale / non-canonical, 2 usage or config error.`;
 var UsageError = class extends Error {
 };
@@ -26837,7 +26911,7 @@ function frontmatterOf(source) {
 function listFiles(root4, keep) {
   const out = [];
   const walk2 = (dir) => {
-    for (const entry of fs3.readdirSync(path13.join(root4, dir), { withFileTypes: true })) {
+    for (const entry of fs4.readdirSync(path14.join(root4, dir), { withFileTypes: true })) {
       if (entry.name.startsWith(".") || SKIP_DIRS.has(entry.name)) continue;
       const rel = dir ? `${dir}/${entry.name}` : entry.name;
       if (entry.isDirectory()) walk2(rel);
@@ -26853,7 +26927,7 @@ function parseArgs(argv) {
   const positional = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === "--title" || a === "--format") {
+    if (a === "--title" || a === "--format" || a === "--port") {
       if (i + 1 >= argv.length) throw new UsageError(`${a} needs a value`);
       flags[a.slice(2)] = argv[++i];
     } else if (a.startsWith("--")) flags[a.slice(2)] = true;
@@ -26907,32 +26981,32 @@ What we should do next, and why.
 `;
 }
 function titleFromPath(file) {
-  const base = path13.basename(file).replace(/-report\.md$/, "").replace(/\.md$/, "").replace(/[-_]+/g, " ").trim();
+  const base = path14.basename(file).replace(/-report\.md$/, "").replace(/\.md$/, "").replace(/[-_]+/g, " ").trim();
   return base ? base[0].toUpperCase() + base.slice(1) : "Report";
 }
 function project(cwd) {
   const root4 = findRoot(cwd);
   if (!root4) throw new ConfigError(`no reports.json found in ${cwd} or any parent directory (run /md2html:setup)`);
   const config = loadConfig(root4);
-  const abs = (rel) => path13.join(root4, rel);
+  const abs = (rel) => path14.join(root4, rel);
   const readFile = (rel) => {
     try {
-      return fs3.readFileSync(abs(rel), "utf8");
+      return fs4.readFileSync(abs(rel), "utf8");
     } catch {
       return null;
     }
   };
-  const exists = (rel) => fs3.existsSync(abs(rel));
-  const display2 = (rel) => toPosix(path13.relative(cwd, abs(rel))) || rel;
-  const realRoot = fs3.realpathSync(root4);
+  const exists = (rel) => fs4.existsSync(abs(rel));
+  const display2 = (rel) => toPosix(path14.relative(cwd, abs(rel))) || rel;
+  const realRoot = fs4.realpathSync(root4);
   const files = (positional) => {
     if (!positional.length) return listSources(root4, config);
     return positional.flatMap((p2) => {
-      const target = path13.resolve(cwd, p2);
-      if (!fs3.existsSync(target)) throw new UsageError(`${p2}: no such file`);
-      const rel = toPosix(path13.relative(realRoot, fs3.realpathSync(target)));
-      if (rel.startsWith("..") || path13.isAbsolute(rel)) throw new UsageError(`${p2} is outside the project root ${root4}`);
-      if (fs3.statSync(target).isDirectory()) {
+      const target = path14.resolve(cwd, p2);
+      if (!fs4.existsSync(target)) throw new UsageError(`${p2}: no such file`);
+      const rel = toPosix(path14.relative(realRoot, fs4.realpathSync(target)));
+      if (rel.startsWith("..") || path14.isAbsolute(rel)) throw new UsageError(`${p2} is outside the project root ${root4}`);
+      if (fs4.statSync(target).isDirectory()) {
         const prefix = rel ? `${rel}/` : "";
         return listSources(root4, config).filter((f) => f.startsWith(prefix));
       }
@@ -26957,7 +27031,7 @@ function runFmt(ctx, files, { check: check2 }, out) {
     dirty++;
     if (check2) out.err(`${ctx.display(f)}: not in canonical form (run md2html fmt)`);
     else {
-      fs3.writeFileSync(path13.join(ctx.root, f), formatted);
+      fs4.writeFileSync(path14.join(ctx.root, f), formatted);
       out.log(`formatted ${ctx.display(f)}`);
     }
   }
@@ -27028,8 +27102,8 @@ function groupsOf(ctx, files = listSources(ctx.root, ctx.config).filter((f) => p
 }
 var writeIfChanged = (ctx, rel, html8, out) => {
   if (ctx.readFile(rel) === html8) return;
-  fs3.mkdirSync(path13.dirname(path13.join(ctx.root, rel)), { recursive: true });
-  fs3.writeFileSync(path13.join(ctx.root, rel), html8);
+  fs4.mkdirSync(path14.dirname(path14.join(ctx.root, rel)), { recursive: true });
+  fs4.writeFileSync(path14.join(ctx.root, rel), html8);
   out.log(`wrote ${ctx.display(rel)}`);
 };
 var notGenerated = (html8) => html8 !== null && !GENERATED.test(html8);
@@ -27051,7 +27125,7 @@ function buildSpecs(ctx, themeCss, out) {
   const stale = listFiles(ctx.root, (rel) => rel !== index2 && rel.endsWith(".html") && profileOf(rel.replace(/\.html$/, ".md"), ctx.config) === "spec");
   for (const f of stale) {
     if (!ctx.exists(f.replace(/\.html$/, ".md")) && GENERATED.test(ctx.readFile(f) ?? "")) {
-      fs3.unlinkSync(path13.join(ctx.root, f));
+      fs4.unlinkSync(path14.join(ctx.root, f));
       out.log(`removed ${ctx.display(f)}`);
     }
   }
@@ -27082,7 +27156,7 @@ function runBuild(ctx, allFiles, { check: check2 }, out, { orphanCheck = false, 
     stale++;
     if (check2) out.err(`${ctx.display(target)}: stale (run md2html build)`);
     else {
-      fs3.writeFileSync(path13.join(ctx.root, target), html8);
+      fs4.writeFileSync(path14.join(ctx.root, target), html8);
       out.log(`wrote ${ctx.display(target)}`);
     }
   }
@@ -27092,7 +27166,7 @@ function runBuild(ctx, allFiles, { check: check2 }, out, { orphanCheck = false, 
 function specRelevant(ctx, rel) {
   if (!ctx.config.specs || rel.endsWith(".html")) return false;
   if (rel.split("/").some((s) => s.startsWith(".") || SKIP_DIRS.has(s))) return false;
-  const stat = fs3.statSync(path13.join(ctx.root, rel), { throwIfNoEntry: false });
+  const stat = fs4.statSync(path14.join(ctx.root, rel), { throwIfNoEntry: false });
   return !stat || stat.isDirectory();
 }
 function watch(cwd, positional, out, { specsOnly = false } = {}) {
@@ -27103,7 +27177,7 @@ function watch(cwd, positional, out, { specsOnly = false } = {}) {
   const pending = /* @__PURE__ */ new Set();
   const { reports, specs } = byProfile(ctx.files(positional), ctx.config);
   out.log(`watching ${specsOnly ? 0 : reports.length} report(s) and ${specs.length} spec file(s); Ctrl-C to stop`);
-  fs3.watch(ctx.root, { recursive: true }, (_event, name) => {
+  fs4.watch(ctx.root, { recursive: true }, (_event, name) => {
     if (!name) return;
     const rel = toPosix(name);
     if (rel === "reports.json" || rel === ctx.config.theme) all3 = true;
@@ -27148,15 +27222,15 @@ async function main(argv, { cwd = process.cwd(), out = { log: console.log, err: 
       case "new": {
         allowFlags(flags, ["title"], cmd);
         if (positional.length !== 1) throw new UsageError("new needs exactly one <path>");
-        const target = path13.resolve(cwd, positional[0]);
+        const target = path14.resolve(cwd, positional[0]);
         if (!target.endsWith(".md")) throw new UsageError(`${positional[0]}: a report path must end in .md`);
-        if (fs3.existsSync(target)) throw new UsageError(`${positional[0]} already exists; not overwriting`);
-        fs3.mkdirSync(path13.dirname(target), { recursive: true });
-        fs3.writeFileSync(target, format(skeleton(flags.title ?? titleFromPath(target), today())));
+        if (fs4.existsSync(target)) throw new UsageError(`${positional[0]} already exists; not overwriting`);
+        fs4.mkdirSync(path14.dirname(target), { recursive: true });
+        fs4.writeFileSync(target, format(skeleton(flags.title ?? titleFromPath(target), today())));
         out.log(`created ${positional[0]}`);
-        const root4 = findRoot(path13.dirname(target));
+        const root4 = findRoot(path14.dirname(target));
         if (root4) {
-          const rel = toPosix(path13.relative(root4, target));
+          const rel = toPosix(path14.relative(root4, target));
           if (!matchesAny(rel, loadConfig(root4).sources)) out.err(`warning: ${positional[0]} is not matched by "sources" in reports.json, so build and check will skip it`);
         }
         return 0;
@@ -27198,6 +27272,17 @@ async function main(argv, { cwd = process.cwd(), out = { log: console.log, err: 
       case "help":
         out.log(USAGE);
         return cmd ? 0 : 2;
+      case "serve": {
+        allowFlags(flags, ["port"], cmd);
+        if (positional.length) throw new UsageError("serve takes no paths; it serves the project root");
+        const port = flags.port === void 0 ? 0 : Number(flags.port);
+        if (!Number.isInteger(port) || port < 0 || port > 65535) throw new UsageError(`--port must be 0–65535, got "${flags.port}"`);
+        const ctx = project(cwd);
+        const server = await serve(ctx.root, { port, index: ctx.config.specs?.index ?? "index.html" });
+        out.log(`serving ${ctx.root} at http://localhost:${server.address().port}/ (pages only); Ctrl-C to stop`);
+        return new Promise(() => {
+        });
+      }
       case "--version":
         out.log(version);
         return 0;
@@ -27237,7 +27322,7 @@ var preset = {
 // src/index.mjs
 var isMain = (() => {
   try {
-    return fs4.realpathSync(process.argv[1]) === fs4.realpathSync(fileURLToPath2(import.meta.url));
+    return fs5.realpathSync(process.argv[1]) === fs5.realpathSync(fileURLToPath2(import.meta.url));
   } catch {
     return false;
   }
