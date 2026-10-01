@@ -90,7 +90,7 @@ Show the spec workflow overview and assess current status.
    The Next Step column maps from the phase:
    - Exploring → `/spec:propose` to formalize
    - Proposing → Continue with `/spec:propose`
-   - Proposed → `/spec:apply` to start implementing
+   - Proposed → `/spec:grill` to stress-test it, or `/spec:apply` to start implementing
    - Applying → `/spec:apply` to continue
    - Paused → `/spec:apply` to resume
    - Applied → `/spec:archive` to wrap up
@@ -173,6 +173,7 @@ Show the spec workflow overview and assess current status.
    | `/spec:explore`         | Think through ideas, investigate, clarify                                                 |
    | `/spec:propose`         | Create a change with artifacts (proposal, architecture, plan)                             |
    | `/spec:iterate`         | Review artifacts, apply user annotations, and produce a clean consolidated version         |
+   | `/spec:grill`           | Get grilled on a change; answers are folded back into its artifacts (needs mattpocock-skills) |
    | `/spec:apply`           | Implement the plan from a change                                                          |
    | `/spec:archive`         | Archive a completed change                                                                |
    | `/spec:view`            | Open the change as HTML in the browser (needs the md2html plugin)                         |
@@ -189,6 +190,9 @@ Show the spec workflow overview and assess current status.
    1. **Propose** — Formalize a change: what, why, how, and the concrete plan.
       Creates `specs/changes/<name>/` with `proposal.md`, `domain.md`,
       `architecture.md`, and `plan.md`.
+   1. **Grill** (optional, repeatable) — `/spec:grill` interviews you on the
+      change until the open decisions are settled, and writes the answers into
+      the artifacts.
    1. **Apply** — Work through the plan, marking each step done. Pause on blockers
       rather than guessing.
    1. **Archive** — Verify readiness, update the system description

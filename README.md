@@ -15,6 +15,11 @@ Register the marketplace, then install any plugin:
 /plugin install agent-bus@till-claude-code-marketplace
 ```
 
+`spec` depends on Matt Pocock's [`mattpocock-skills`](https://github.com/mattpocock/skills)
+(MIT) for `/spec:grill`; installing `spec` installs it from his marketplace and keeps it
+current with his releases. If that doesn't happen automatically, add it once:
+`/plugin marketplace add mattpocock/skills`.
+
 Select "Install for all collaborators on this repository (project scope)" or
 "Install for just me (user scope)" as needed. Restart Claude Code to load new
 plugins.
@@ -69,6 +74,7 @@ you exactly where you are and what to do next.
 | `/spec:document-system` | Document the system as-is: domain, architecture, functional                      | Once at the start, or after major changes are archived          |
 | `/spec:explore`         | Open-ended thinking — investigate, compare approaches, question assumptions      | When you have an idea but aren't ready to commit to a plan      |
 | `/spec:propose`         | Create a change with all artifacts (proposal, domain, architecture, plan), then open it as HTML (`/spec:view`) | When you know what you want to build                            |
+| `/spec:grill`           | Get grilled on a change (Matt Pocock's `grilling` + `domain-modeling`); answers go into its proposal/domain/architecture/plan | After propose, before apply — settle open decisions |
 | `/spec:iterate`         | Review artifacts, apply user annotations, produce clean consolidated version     | After marking up artifacts with decisions, rejections, comments |
 | `/spec:apply`           | Implement the plan step by step, tracking progress                               | When artifacts are ready and it's time to code                  |
 | `/spec:adversarial-code-review` | Hostile-mindset review in three separate axes: Defects (bugs, regressions, edge cases), Standards (repo standards + code-smell baseline), Spec (matches the change?) | After implementation, before archiving; or `[fixed-point] [change]` for "review since X" |

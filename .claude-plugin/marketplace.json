@@ -8,12 +8,15 @@
     "version": "1.1.0",
     "pluginRoot": "./plugins"
   },
+  "allowCrossMarketplaceDependenciesOn": [
+    "mattpocock"
+  ],
   "plugins": [
     {
       "name": "spec",
       "source": "./plugins/spec",
-      "description": "Spec workflow — document, explore, propose, iterate, apply, and archive changes, and view them as HTML",
-      "version": "7.0.0",
+      "description": "Spec workflow — document, explore, propose, grill, iterate, apply, and archive changes, and view them as HTML",
+      "version": "7.1.0",
       "author": {
         "name": "Till Gartner"
       },

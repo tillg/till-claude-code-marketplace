@@ -1,9 +1,15 @@
 {
   "name": "spec",
-  "version": "7.0.0",
-  "description": "Spec workflow — document, explore, propose, iterate, apply, and archive changes, and view them as HTML",
+  "version": "7.1.0",
+  "description": "Spec workflow — document, explore, propose, grill, iterate, apply, and archive changes, and view them as HTML",
   "marketplace": "https://raw.githubusercontent.com/tillg/till-claude-code-marketplace/main/.claude-plugin/marketplace.json",
   "author": {
     "name": "Till Gartner"
-  }
+  },
+  "dependencies": [
+    {
+      "name": "mattpocock-skills",
+      "marketplace": "mattpocock"
+    }
+  ]
 }
