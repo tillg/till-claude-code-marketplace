@@ -128,21 +128,11 @@ If the user mentions a change or you detect one is relevant:
 
 If you create a file in `specs/changes/<name>/` (e.g. notes, a first
 `proposal.md`) for a change that has no status yet, start it with spec
-frontmatter and `status: exploring` (schema in `/spec:propose`):
+frontmatter and `status: exploring`. The schema and what each status means
+are defined in `../../reference/frontmatter.md` (relative to this skill's directory); read it before writing.
 
-```yaml
----
-feature: <name>
-title: "<Artifact>: <short title>"
-status: exploring
-created: YYYY-MM-DD
-edited: YYYY-MM-DD
----
-```
-
-Add `order` 1–4 for proposal, domain, architecture, plan. When editing an
-existing file, keep its `status` (don't downgrade a change that is further
-along) and set `edited` to today. All files of a change share one `status`.
+When editing an existing file, keep its `status` (don't downgrade a change
+that is further along) and set `edited` to today.
 
 ---
 

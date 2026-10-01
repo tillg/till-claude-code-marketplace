@@ -1,5 +1,5 @@
 ---
-description: Use when reviewing implemented code for bugs, regressions, edge cases, race conditions, and plan drift. Reviews the diff since a fixed point along three separate axes — Defects, Standards (repo coding standards plus a code-smell baseline) and Spec (does it match the spec change?) — in parallel sub-agents, findings first. Useful after a story, before completion, across an epic, or for "review since X".
+description: Use when reviewing implemented code for bugs, regressions, edge cases, race conditions, and plan drift. Reviews the diff since a fixed point along three separate axes — Defects, Standards (repo coding standards plus a code-smell baseline) and Spec (does it match the spec change?) — in parallel sub-agents, findings first. Useful after /spec:apply and before /spec:archive, across several changes, or for "review since X".
 argument-hint: "[fixed-point] [change-name]"
 metadata:
   author: Till Gartner
@@ -9,7 +9,8 @@ metadata:
 
 Review code with a hostile mindset. Assume something is wrong and try to find it.
 
-Use this after implementation work, especially before `complete-story` or during `complete-epic`.
+Use this after `/spec:apply` has ticked the plan and before `/spec:archive` folds the change into
+`specs/system/` — or with a fixed point to review several changes at once.
 
 The review runs along three axes, each in its own sub-agent so they don't pollute each other's context:
 
@@ -38,7 +39,8 @@ Each sub-agent then inspects the touched files and any directly connected code p
 **Spec source**, in this order:
 
 1. The change name passed as an argument: `specs/changes/<name>/` (`proposal.md`,
-   `architecture.md`, `plan.md`, plus any other files there).
+   `domain.md`, `architecture.md`, `plan.md` with its `Test first:` / `Verify:` lines, plus
+   any other files there, e.g. `decisions.md`).
 2. The active change in `specs/changes/` matching the branch name or the touched area; if
    exactly one change is active, use it.
 3. Issue references in the commit messages (`#123`, `Closes #45`, …) or a spec path the user
@@ -48,7 +50,9 @@ Each sub-agent then inspects the touched files and any directly connected code p
 
 **Standards sources**: anything in the repo that documents how code should be written, such
 as `CODING_STANDARDS.md`, `CONTRIBUTING.md`, `CLAUDE.md`, `AGENTS.md`, linter configs'
-documented rules, and `specs/system/architecture.md`.
+documented rules, `specs/system/architecture.md`, the vocabulary in `specs/system/domain.md`
+and the change's `domain.md` (names in code should use those terms), and the test-first rules
+in `../../reference/plan.md` (relative to this skill's directory).
 
 On top of whatever the repo documents, the Standards axis always carries the **smell
 baseline** below: a fixed set of Fowler code smells (_Refactoring_, ch. 3) that applies even
@@ -100,12 +104,15 @@ failure paths. Add a `Security Concerns` list if relevant."
   longer aligned.
 - **Edge cases**: empty or null inputs; deleted or missing related entities; duplicate
   submissions; stale data or race windows; partial update paths.
-- **State and consistency**: invalid transitions; src/backend/frontend enum drift; schema or
-  persistence assumptions not reflected in code; data changes that forgot
-  `src/db/schema.sql` or `CURRENT_DATABASE.md`.
-- **Tests**: missing tests where they hide real behavioral risk.
-- **Security**: likely security issues, listed under `Security Concerns` so the workflow can
-  trigger `security-review`.
+- **State and consistency**: invalid transitions; the same enum or constant defined in
+  several places drifting apart; schema or persistence assumptions not reflected in code;
+  changes to data shapes, config or a public interface whose schema, migration, fixtures or
+  user-facing docs (README, …) weren't updated with it. Don't flag `specs/system/` — it is
+  updated at `/spec:archive`.
+- **Tests**: missing tests where they hide real behavioral risk; tests that can't fail
+  (assert nothing, or mock the very thing under test); the suite not green.
+- **Security**: likely security issues, listed under `Security Concerns` so they can be
+  followed up with `/security-review`.
 
 **Standards sub-agent**: the standards-source files from step 2, **plus the smell baseline
 pasted in full** (it has no other access to it), and the brief: "Report, per file/hunk where
@@ -119,7 +126,10 @@ Skip anything tooling enforces. Under 400 words."
 the brief: "Report: (a) requirements or plan steps that are missing or partial; (b) behaviour
 in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but
 where the implementation looks wrong; (d) shortcuts that weaken correctness or test coverage
-compared with the plan. Quote the spec or plan line for each finding. Under 400 words."
+compared with the plan; (e) test-first gaps: a ticked step whose `Test first:` test is
+missing, doesn't assert the step's behavior, or doesn't pass, and a step whose `Verify:`
+command fails when you run it. Quote the spec or plan line for each finding. Under 400
+words."
 
 ## 4. Report
 

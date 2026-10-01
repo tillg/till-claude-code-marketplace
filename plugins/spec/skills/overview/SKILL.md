@@ -51,8 +51,9 @@ Show the spec workflow overview and assess current status.
    |--------|-------------|-------|-----------|
    | `<name>` | 1-line summary from `proposal.md` | Phase with progress | Suggested action |
 
-   The Phase column comes from the spec frontmatter (schema in
-   `/spec:propose`). Read the `status` key of every `.md` in the change
+   The Phase column comes from the spec frontmatter (schema and status
+   meanings in `../../reference/frontmatter.md`, relative to this skill's
+   directory). Read the `status` key of every `.md` in the change
    directory:
 
    | `status` | Phase |
@@ -90,10 +91,15 @@ Show the spec workflow overview and assess current status.
    The Next Step column maps from the phase:
    - Exploring → `/spec:propose` to formalize
    - Proposing → Continue with `/spec:propose`
-   - Proposed → `/spec:grill` to stress-test it, or `/spec:apply` to start implementing
+   - Proposed → `/spec:grill` to stress-test it, `/spec:iterate` after marking it up, or
+     `/spec:apply` to start implementing
    - Applying → `/spec:apply` to continue
    - Paused → `/spec:apply` to resume
-   - Applied → `/spec:archive` to wrap up
+   - Applied → `/spec:adversarial-code-review`, then `/spec:archive` to wrap up
+
+   An `applied` change whose files were last edited more than a few days ago
+   gets a warning under the table: "⚠ `<name>` is done but not archived —
+   `specs/system/` is out of date until you run `/spec:archive <name>`."
 
    Then, for each change, show a **detail block** below the table:
 
@@ -106,14 +112,15 @@ Show the spec workflow overview and assess current status.
    c. **Show the workflow with position** — Render the flow and mark where we
       are. Example:
       ```
-      explore → propose → apply ← YOU ARE HERE → archive
+      document-system → explore → propose → [grill | iterate] → apply ← YOU ARE HERE → adversarial-code-review → archive
       ```
 
    d. **Suggest what's next** — Based on the phase, recommend the natural next
       action. Examples:
       - "All artifacts look solid. Run `/spec:apply` to start implementing."
       - "3/7 steps done. Run `/spec:apply` to continue."
-      - "All steps complete! Run `/spec:archive` to wrap up."
+      - "All steps complete! Run `/spec:adversarial-code-review`, then
+        `/spec:archive` to wrap up."
 
    e. **Give a maturity assessment** — Read through the artifacts and give an
       honest, brief judgement of how ready this change feels:
@@ -121,6 +128,9 @@ Show the spec workflow overview and assess current status.
       - Is the proposal clear about scope and motivation?
       - Does the architecture cover the key decisions and tradeoffs?
       - Is the plan concrete enough to implement step by step?
+      - Is it test-first? Every step needs a `Test first:` and a `Verify:`
+        line (format in `../../reference/plan.md`); a plan without them is
+        at best **Almost there**.
       - Are there open questions, TODOs, or placeholders that need attention?
 
       Be direct. If it looks good, say so. If something feels undercooked,
@@ -162,21 +172,27 @@ Show the spec workflow overview and assess current status.
    A lightweight workflow for thinking through changes before implementing them.
 
    ```
-   explore → [iterate] → propose → apply → archive
+   document-system → explore → propose → [grill | iterate] → apply → adversarial-code-review → archive
    ```
+
+   `document-system` runs once per project; `explore` fits anywhere;
+   `grill` and `iterate` are optional and repeatable; `view` opens the specs
+   as HTML at any point.
 
    ## Skills
 
-   | Skill                   | Purpose                                                                                   |
-   | ----------------------- | ----------------------------------------------------------------------------------------- |
-   | `/spec:document-system` | Create a base description of the system                                                   |
-   | `/spec:explore`         | Think through ideas, investigate, clarify                                                 |
-   | `/spec:propose`         | Create a change with artifacts (proposal, architecture, plan)                             |
-   | `/spec:iterate`         | Review artifacts, apply user annotations, and produce a clean consolidated version         |
-   | `/spec:grill`           | Get grilled on a change; answers are folded back into its artifacts (needs mattpocock-skills) |
-   | `/spec:apply`           | Implement the plan from a change                                                          |
-   | `/spec:archive`         | Archive a completed change                                                                |
-   | `/spec:view`            | Open the change as HTML in the browser (needs the md2html plugin)                         |
+   | Skill                           | Purpose                                                                                       |
+   | ------------------------------- | --------------------------------------------------------------------------------------------- |
+   | `/spec:overview`                | Show status, phase, maturity and this reference                                               |
+   | `/spec:document-system`         | Create a base description of the system                                                       |
+   | `/spec:explore`                 | Think through ideas, investigate, clarify                                                     |
+   | `/spec:propose`                 | Create a change with artifacts (proposal, domain, architecture, test-first plan)              |
+   | `/spec:grill`                   | Get grilled on a change; answers are folded back into its artifacts (needs mattpocock-skills) |
+   | `/spec:iterate`                 | Review artifacts, apply user annotations, and produce a clean consolidated version            |
+   | `/spec:apply`                   | Implement the plan test-first: red → green → verify, then tick the step                       |
+   | `/spec:adversarial-code-review` | Review the implementation along three axes: Defects, Standards, Spec                          |
+   | `/spec:archive`                 | Run the tests, update the system description, commit, delete the change                       |
+   | `/spec:view`                    | Open the change as HTML in the browser (needs the md2html plugin)                             |
 
    ## Typical Flow
 
@@ -185,17 +201,23 @@ Show the spec workflow overview and assess current status.
    1. **Explore** — Open-ended thinking. No code gets written. Read files, draw
       diagrams, compare approaches, question assumptions. Leave when you have
       clarity.
-   1. **Iterate** — Exploration and proposing often alternate. You may explore,
-      propose, then re-explore when new questions surface. This is expected.
    1. **Propose** — Formalize a change: what, why, how, and the concrete plan.
       Creates `specs/changes/<name>/` with `proposal.md`, `domain.md`,
-      `architecture.md`, and `plan.md`.
+      `architecture.md`, and `plan.md`; every plan step names its test and
+      verify command. If another change is still open, it suggests archiving
+      that one first.
    1. **Grill** (optional, repeatable) — `/spec:grill` interviews you on the
       change until the open decisions are settled, and writes the answers into
       the artifacts.
-   1. **Apply** — Work through the plan, marking each step done. Pause on blockers
-      rather than guessing.
-   1. **Archive** — Verify readiness, update the system description
+   1. **Iterate** (optional, repeatable) — mark up the artifacts (`->`,
+      `[ACCEPTED]`, `[REJECTED]`, comments); `/spec:iterate` folds the markup
+      into a clean version. Going back to explore or propose is expected.
+   1. **Apply** — Test-first, step by step: write the step's test, see it
+      fail, write the code, run Verify and the full suite, then tick the
+      step. Pause on blockers rather than guessing.
+   1. **Review** — `/spec:adversarial-code-review` checks the implementation
+      for defects, standards and fit with the spec.
+   1. **Archive** — Run the tests, update the system description
       (`specs/system/`) to reflect everything this change introduced (domain,
       architecture, all perspectives), commit with a descriptive message, then
       delete the change directory and commit the cleanup.
@@ -207,11 +229,13 @@ Show the spec workflow overview and assess current status.
    - **proposal.md** — What and why
    - **domain.md** — New domain concepts, vocabulary, processes
    - **architecture.md** — How
-   - **plan.md** — Implementation steps (checkboxes)
+   - **plan.md** — Implementation steps (checkboxes), each with `Test first:`
+     and `Verify:`
 
    Each file starts with spec frontmatter (`feature`, `title`, `status`,
    `order`, `created`, `edited`); `status` runs
-   `exploring → proposed → applying → (paused) → applied`.
+   `exploring → proposed → applying → (paused) → applied`, and the change
+   directory is deleted at archive.
 
    ---
 
@@ -235,7 +259,7 @@ Show the spec workflow overview and assess current status.
 
    **Phase:** <phase name>
    ```
-   explore → propose → apply ← HERE → archive
+   document-system → explore → propose → [grill | iterate] → apply ← HERE → adversarial-code-review → archive
    ```
 
    **Next:** <suggested action>

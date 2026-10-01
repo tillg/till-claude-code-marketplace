@@ -40,6 +40,12 @@ changes.
 
       If no `plan.md` exists, proceed without warning.
 
+   c. **Run the tests.** Run the project's full test suite and every
+      `Verify:` command in `plan.md`. Show the result. If anything fails,
+      say what, and recommend fixing it (`/spec:apply`) before archiving;
+      continue only if the user explicitly confirms. Archiving records the
+      change as part of the system — it should be green.
+
 3. **Ensure a system description exists**
 
    Check if `specs/system/` exists with at least `domain.md` and
@@ -70,12 +76,10 @@ changes.
    relationships. Update existing diagrams in the system description if this
    change alters them.
 
-   **Frontmatter:** change files carry spec frontmatter (`feature`, `title`,
-   `status`, `order`, `created`, `edited`). When carrying content into
-   `specs/system/`, never copy the keys `feature`, `status` or `order` — system
-   docs keep only `title`, `created`, `edited`. On every system file you touch,
-   set `edited` to today; a new system file gets `created` = `edited` = today;
-   a system file without frontmatter gets it now.
+   **Frontmatter:** see `../../reference/frontmatter.md` (relative to this skill's directory). When carrying content into `specs/system/`,
+   never copy `feature`, `status` or `order` — system docs keep only
+   `title`, `created`, `edited`; set `edited` to today on every system file
+   you touch.
 
    The goal: after archiving, the system description fully reflects the current
    state of the system including this change. Don't leave knowledge only in the
@@ -126,7 +130,8 @@ changes.
 **Guardrails**
 
 - Always prompt for change selection if not provided
-- Don't block archive on readiness warnings — just inform and confirm
+- Don't block archive on readiness warnings — just inform and confirm (a
+  failing test suite needs an explicit "archive anyway")
 - Always update the system description before committing — don't leave
   knowledge stranded in change artifacts
 - Never commit without the user's approval of the commit message

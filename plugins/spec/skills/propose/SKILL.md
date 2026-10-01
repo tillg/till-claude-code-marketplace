@@ -8,12 +8,14 @@ metadata:
 
 Propose a new change - create the change and generate all artifacts in one step.
 
-I'll create a change with artifacts:
+First I check for changes still open in `specs/changes/` and suggest
+archiving them before starting a new one. Then I create a change with
+artifacts:
 
 - proposal.md (what & why)
 - domain.md (new domain concepts)
 - architecture.md (how)
-- plan.md (implementation steps)
+- plan.md (test-first implementation steps)
 
 Then I open the change as HTML in your browser (same as `/spec:view`).
 
@@ -38,6 +40,34 @@ OR a description of what the user wants to build.
 
    **IMPORTANT**: Do NOT proceed without understanding what the user wants to
    build.
+
+1. **Check for work in progress**
+
+   List the directories in `specs/changes/` (excluding `archive/`) other than
+   the one being proposed, and read each one's `status` (majority rule, see
+   "When the files disagree" in `../../reference/frontmatter.md`; no frontmatter → infer as
+   `/spec:overview` does).
+
+   **If none:** continue.
+
+   **If any exist**, show them (name · status · `N/M` steps) and recommend
+   finishing them first — a new proposal is built on `specs/system/`, and
+   that is only current once earlier changes are archived:
+   - `applied` → "`<x>` is done but not archived. Archive it first so the new
+     proposal builds on an up-to-date system description."
+   - `applying` / `paused` / `proposed` / `exploring` → "`<x>` is still in
+     progress (`<status>`). Finish it and archive it first, or work on both
+     in parallel?"
+
+   Ask with the **AskUserQuestion tool**:
+   - **Archive `<x>` first (Recommended)** (offer only for an `applied`
+     change) — read `../archive/SKILL.md` and follow it for `<x>`, then
+     continue here.
+   - **Stop here** — finish the open change first.
+   - **Continue anyway** — propose in parallel.
+
+   If running unattended: don't archive (it commits and deletes), continue,
+   and name the open changes in the summary.
 
 1. **Ensure a system description exists**
 
@@ -71,11 +101,14 @@ OR a description of what the user wants to build.
      technical approach, key decisions, tradeoffs considered, and integration
      points. Use Mermaid diagrams for component interactions, data flows, and
      sequence diagrams.
-   - **plan.md** — Implementation steps. Read proposal.md and architecture.md for
-     context first. Break the architecture into concrete, ordered steps as a checkbox
-     list (`- [ ] task`). Each task should be small enough to implement in one
-     step. No step for updating `specs/system/*` — that's `/spec:archive`'s
-     job; the plan may end with a plain note (not a checkbox): "System docs
+   - **plan.md** — Implementation steps, test-first. Read proposal.md and
+     architecture.md for context first. Break the architecture into concrete,
+     ordered checkbox steps in the format of `../../reference/plan.md`
+     (relative to this skill's directory; read it now): every step names the
+     test written before its code (`Test first:`) and the command that proves
+     it done (`Verify:`). Each step is small enough for one red → green
+     cycle. No step for updating `specs/system/*` — that's `/spec:archive`'s
+     job; the plan ends with the plain note (not a checkbox): "System docs
      are updated at `/spec:archive`."
 
    Every artifact starts with spec frontmatter (see **Spec frontmatter** below),
@@ -113,7 +146,9 @@ sensible choice, note it, and continue.
 
 **Spec frontmatter**
 
-This is the canonical schema; the other spec skills refer to it. Every `.md`
+The schema — keys, allowed `status` values and what each means in reality —
+is defined once in `../../reference/frontmatter.md` (relative to this skill's
+directory). Read it before writing the first artifact. In short, every `.md`
 in a change directory starts with:
 
 ```yaml
@@ -127,30 +162,6 @@ edited: YYYY-MM-DD
 ---
 ```
 
-| Key | Required | Meaning |
-|---|---|---|
-| `feature` | yes | the change name = directory name |
-| `title` | yes | page title, usually the `# …` heading text (quote it) |
-| `status` | yes | feature status (below) |
-| `order` | no | position in the change's nav: 1 proposal, 2 domain, 3 architecture, 4 plan; other files (e.g. `decisions.md`) omit it or use ≥ 5 |
-| `created` | yes | ISO date the file was created |
-| `edited` | yes | ISO date of the last content change (≥ `created`) |
-
-Keys in this order, no others. System docs (`specs/system/*.md`) carry only
-`title`, `created`, `edited`.
-
-Feature status — one value per change, the same in **every** file of the
-change. A skill that changes the status updates all files together and bumps
-`edited` only on files whose content it changed.
-
-| Status | Set by | Meaning |
-|---|---|---|
-| `exploring` | `/spec:explore` when it writes notes into a change dir | idea stage, artifacts incomplete |
-| `proposed` | `/spec:propose`, `/spec:iterate` | all four artifacts exist, not started |
-| `applying` | `/spec:apply` on its first completed step | implementation in progress |
-| `paused` | the user (by hand or asking Claude) | parked on purpose |
-| `applied` | `/spec:apply` when every plan step is `[x]` | done, ready to archive |
-
 **Guardrails**
 
 - Create ALL four artifacts (proposal, domain, architecture, plan)
@@ -162,6 +173,10 @@ change. A skill that changes the status updates all files together and bumps
 - Edit spec files with the Edit/Write tools, not sed/python in Bash, so the
   md2html lint hook sees every change
 - Verify each artifact file exists after writing before proceeding to next
+- Every plan step has a `Test first:` and a `Verify:` line — a plan without
+  them isn't proposed yet
+- Don't start a new change silently while another is open — say so and
+  recommend archiving it first
 - Every artifact carries spec frontmatter with `feature: <name>` and
   `status: proposed`; when continuing an existing change at `exploring`, move
   all its files to `proposed` (never downgrade `applying`/`paused`/`applied`)

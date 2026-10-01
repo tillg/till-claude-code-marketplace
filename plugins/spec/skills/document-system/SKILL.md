@@ -36,20 +36,8 @@ The system description lives in `specs/system/` and captures what the system
    Read configuration files, entry points, key modules, data models, and any
    existing documentation (README, comments, etc.).
 
-   **Frontmatter:** every file in `specs/system/` starts with a short YAML
-   block — `title`, `created`, `edited` only (no `feature`, `status`, `order`;
-   system docs have no lifecycle):
-
-   ```yaml
-   ---
-   title: "Domain: <system name>"
-   created: YYYY-MM-DD
-   edited: YYYY-MM-DD
-   ---
-   ```
-
-   New files: `created` = `edited` = today. Updated files: keep `created`
-   (add it from the file's first git commit date if missing), set `edited` to
+   **Frontmatter:** every file in `specs/system/` starts with `title`,
+   `created`, `edited` only — see "System files" in `../../reference/frontmatter.md` (relative to this skill's directory). Set `edited` to
    today only if the content changed. The body keeps its `# Title` heading.
 
 3. **Create or update `specs/system/domain.md`**

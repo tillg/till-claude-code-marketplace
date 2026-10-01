@@ -58,9 +58,10 @@ Always announce: "Grilling change: <name>".
    - `proposal.md`: scope, non-goals and outcomes the user settled
    - `domain.md`, `architecture.md`: already updated in step 2; reread them for consistency
    - `plan.md`: add, remove or reorder steps the decisions imply; every new decision has a
-     step that implements or verifies it
+     step that implements or verifies it, written test-first (`Test first:` and `Verify:`
+     lines, format in `../../reference/plan.md` relative to this skill's directory)
 
-   Keep the frontmatter (see `/spec:propose` for the schema): bump `edited` to today on every
+   Keep the frontmatter (schema in `../../reference/frontmatter.md`): bump `edited` to today on every
    file whose content changed; leave `status` as it is (grilling doesn't change the phase).
    Edit spec files with the Edit/Write tools, not sed/python in Bash, so the md2html lint hook
    sees every change. If the `/spec:view` watcher is running, the HTML updates by itself.

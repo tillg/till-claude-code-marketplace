@@ -7,3 +7,4 @@ node_modules/
 specs/**/*.html
 /index.html
 .playwright-mcp/
+!specs/**/*-report.html

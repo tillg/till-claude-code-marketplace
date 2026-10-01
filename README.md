@@ -112,20 +112,41 @@ tracking progress throughout.
 
 ```mermaid
 graph LR
-    DS[document-system] --> P[propose]
+    DS[document-system] --> E[explore]
+    E --> P[propose]
     P --> G[grill]
-    G --> I[iterate]
-    I -.->|grill again| G
-
-    I --> A[apply]
-    A --> AR[archive]
-
-    AR -->|next change| P
+    P --> I[iterate]
+    G -.-> I
+    I -.-> G
+    P --> A[apply]
+    G --> A
+    I --> A
+    A --> R[adversarial-code-review]
+    R --> AR[archive]
+    AR -->|next change| E
 ```
 
-`/spec:explore` can be used at any point — it's a thinking mode, not a phase.
-`/spec:grill` is optional and repeatable: skip it for small changes, or run it
-again after iterating until no open decisions are left.
+```
+document-system → explore → propose → [grill | iterate] → apply → adversarial-code-review → archive
+```
+
+`/spec:document-system` runs once per project. `/spec:explore` can be used at
+any point — it's a thinking mode, not a phase. `/spec:grill` and
+`/spec:iterate` are optional and repeatable: skip them for small changes, or
+run them until no open decisions are left. `/spec:view` opens the specs as HTML
+at any time.
+
+**One change at a time.** `/spec:propose` first checks `specs/changes/` for a
+change that is still open and suggests archiving it first — a new proposal
+builds on `specs/system/`, which is only current once earlier changes are
+archived.
+
+**Test-first.** Every plan step names the test written before its code
+(`Test first:`) and the command that proves it done (`Verify:`).
+`/spec:apply` runs red → green → verify per step and ticks a step only when
+its verify command and the full suite pass; `/spec:archive` runs the tests
+again before committing. The format is in
+[`plugins/spec/reference/plan.md`](plugins/spec/reference/plan.md).
 
 The flow is fluid, not rigid — you can loop back from iterate to propose when
 decisions change, and after archiving one change you start the next.
@@ -143,12 +164,12 @@ you exactly where you are and what to do next.
 | `/spec:overview`        | Show workflow reference, current status, phase, maturity assessment, and version | Starting a session, checking where you left off                 |
 | `/spec:document-system` | Document the system as-is: domain, architecture, functional                      | Once at the start, or after major changes are archived          |
 | `/spec:explore`         | Open-ended thinking — investigate, compare approaches, question assumptions      | When you have an idea but aren't ready to commit to a plan      |
-| `/spec:propose`         | Create a change with all artifacts (proposal, domain, architecture, plan), then open it as HTML (`/spec:view`) | When you know what you want to build                            |
+| `/spec:propose`         | Check for open changes (suggest archiving them first), then create a change with all artifacts (proposal, domain, architecture, test-first plan) and open it as HTML (`/spec:view`) | When you know what you want to build                            |
 | `/spec:grill`           | Get grilled on a change (Matt Pocock's `grilling` + `domain-modeling`); answers go into its proposal/domain/architecture/plan | After propose, before apply — settle open decisions |
 | `/spec:iterate`         | Review artifacts, apply user annotations, produce clean consolidated version     | After marking up artifacts with decisions, rejections, comments |
-| `/spec:apply`           | Implement the plan step by step, tracking progress                               | When artifacts are ready and it's time to code                  |
+| `/spec:apply`           | Implement the plan test-first: per step write the test, see it fail, implement, verify, tick | When artifacts are ready and it's time to code                  |
 | `/spec:adversarial-code-review` | Hostile-mindset review in three separate axes: Defects (bugs, regressions, edge cases), Standards (repo standards + code-smell baseline), Spec (matches the change?) | After implementation, before archiving; or `[fixed-point] [change]` for "review since X" |
-| `/spec:archive`         | Update system docs, commit, and clean up the change                              | When all steps are complete                                     |
+| `/spec:archive`         | Run the tests, update system docs, commit, and clean up the change               | When all steps are complete and reviewed                        |
 | `/spec:view`            | Open a change (or all specs) as HTML in the browser; a watcher keeps it current  | Reading a change with rendered Mermaid (needs md2html ≥ 0.3.0) |
 
 #### Artifacts
@@ -171,7 +192,7 @@ is and does right now:
 | `proposal.md`     | What and why — motivation, scope, expected outcome |
 | `domain.md`       | New or changed domain concepts                     |
 | `architecture.md` | Technical approach, key decisions, tradeoffs       |
-| `plan.md`         | Implementation steps as a checkbox list            |
+| `plan.md`         | Implementation steps as a checkbox list, each with `Test first:` and `Verify:` |
 
 Every spec file starts with YAML frontmatter that the skills write and update:
 
@@ -186,6 +207,9 @@ edited: 2026-09-30
 ---
 ```
 
+The full schema — every key, the allowed `status` values and what each means
+in practice — is in
+[`plugins/spec/reference/frontmatter.md`](plugins/spec/reference/frontmatter.md).
 All files of a change share one `status`; `/spec:overview` reads the phase from
 it (legacy changes without frontmatter fall back to counting `plan.md`
 checkboxes). System docs carry only `title`, `created`, `edited`.
