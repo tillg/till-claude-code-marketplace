@@ -33,6 +33,72 @@ plugins.
 With auto-update on, Claude Code checks for new versions at startup and prompts
 you to run `/reload-plugins` when updates are available.
 
+### Link the skills into a project (teammates get them automatically)
+
+To make a repository bring these skills with it, so that everyone who clones it
+and opens Claude Code gets them without typing any `/plugin` command, commit a
+`.claude/settings.json` like this one (keep only the plugins the project uses):
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "till-claude-code-marketplace": {
+      "source": { "source": "github", "repo": "tillg/till-claude-code-marketplace" },
+      "autoUpdate": true
+    },
+    "mattpocock": {
+      "source": { "source": "github", "repo": "mattpocock/skills" },
+      "autoUpdate": true
+    }
+  },
+  "enabledPlugins": {
+    "spec@till-claude-code-marketplace": true,
+    "md2html@till-claude-code-marketplace": true,
+    "mattpocock-skills@mattpocock": true
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=\"${CLAUDE_CODE_PLUGIN_CACHE_DIR:-$HOME/.claude/plugins}/installed_plugins.json\"; for p in spec@till-claude-code-marketplace md2html@till-claude-code-marketplace mattpocock-skills@mattpocock; do grep -q \"\\\"$p\\\"\" \"$f\" 2>/dev/null || claude plugin install \"$p\" --scope project >/dev/null 2>&1; done; exit 0"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+What each part does:
+
+| Key | Effect |
+|---|---|
+| `extraKnownMarketplaces` | Registers this marketplace (and Matt Pocock's, for `/spec:grill`) on the teammate's machine. `autoUpdate: true` keeps both current without anyone running `/plugin marketplace update`. |
+| `enabledPlugins` | Turns the plugins on for this repository (project scope). On its own this does **not** download them: Claude Code fetches a plugin only when the user's own settings enable it. |
+| `hooks.SessionStart` | The missing step: at session start it installs each listed plugin that isn't installed yet (`claude plugin install … --scope project`); once installed, it does nothing. Keep its list in sync with `enabledPlugins`. |
+
+What a teammate experiences:
+
+1. `git clone …`, then `claude` in the repo.
+2. Claude Code asks whether to **trust the folder**. Marketplaces, plugins and
+   hooks from a repository file only apply after that (a safety rule of Claude
+   Code).
+3. In that first session the marketplaces are registered and the hook installs
+   the plugins. They load in the **next** session: restart Claude Code (or run
+   `/reload-plugins`). From then on `/spec:…`, `/md2html:…` and Matt's skills
+   are simply there, and stay up to date.
+
+A teammate who doesn't want a plugin in this repo can turn it off for
+themselves: `/plugin` → Installed → Uninstall → **Disable for me**, which writes
+`false` into their untracked `.claude/settings.local.json`.
+
+Verified on a machine with an empty plugin cache: with only `extraKnownMarketplaces` +
+`enabledPlugins` the marketplaces were registered but the plugins never loaded; with the
+`SessionStart` hook added, all three plugins were installed in the first session and
+available in the second.
+
 ## Plugins
 
 ### spec — Spec-driven change management
