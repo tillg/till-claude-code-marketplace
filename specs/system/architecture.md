@@ -143,6 +143,23 @@ theme and tool version — no clock, mtimes, git or locale; exact dependency
 pins; files written only when bytes change. Tests build fixtures twice under
 different TZ/LANG and check `dist/` matches a fresh bundle.
 
+Key decisions:
+
+| Decision | Alternatives considered | Why |
+|---|---|---|
+| unified/remark | markdown-it (as md2pdf), marked, Pandoc | Real AST for section-level transforms; one parser for fmt, lint and render; pure Node |
+| `remark-directive` syntax | Obsidian callouts, raw HTML | Nests (`cards` > `card`), one generic grammar; callouts only as a lint alias |
+| No raw HTML | allow as escape hatch | Everything goes through the theme: no drift, no injection |
+| Theme = plain CSS + contract | theme JSON → CSS vars, template overrides | Simplest; allows component restyling; closed token list is a lint warning |
+| Committed `dist` bundle | `npm install` on first use | Zero setup, byte-identical everywhere, vendorable for CI (`tools/md2html.mjs`) |
+| Hook runs fmt + lint only | also build | Fast; no HTML churn on intermediate edits |
+| Mermaid outside the build | render during build | Headless browser output differs between machines and would break determinism |
+
+Editor integration: `/md2html:setup` writes a `.remarkrc.mjs` that imports
+md2html's remark preset, so `vscode-remark` shows the same lint and formats on
+save; `md2html syntax --json` feeds editor menus. CI runs `md2html check`
+with a vendored `tools/md2html.mjs`.
+
 `serve` binds 127.0.0.1, answers GET/HEAD only, serves page types only
 (`.html`, `.css`, images), rejects dot-segments, `node_modules` and symlinks
 escaping the root.

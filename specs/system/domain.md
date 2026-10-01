@@ -91,6 +91,26 @@ changes are archived.
 | Directive | Block syntax from the registry: `tldr`, `cards`, `card`, `verdict`. |
 | Theme | Per-project CSS layered after the base CSS; may change tokens and contract classes, not structure. |
 | Report status | `research`, `ongoing`, `implemented`. |
+| Directive registry | One table (`src/registry.mjs`) that defines each directive's attributes, nesting and rendering; syntax help, lint and render all read it. |
+| Derived layout | Layout computed from plain Markdown, no extra syntax: numbered `##`, slug ids, TOC at ≥ 4 sections, header from frontmatter, table frames, figures (lone image + alt caption + sibling `.mmd` source), menu bar, `.md` → `.html` links. |
+| Canonical form | The one way `fmt` writes a report: colon count by nesting depth, attributes in registry order and double-quoted, frontmatter keys in schema order, `-` bullets, `*`/`**`, backtick fences, `> [!tldr]` → `:::tldr`, LF + NFC + one final newline. Prose is never re-wrapped. |
+| Class and token contract | The versioned names a theme may target (classes such as `reports-nav`, `tldr`, `card`; tokens such as `--accent`, `--bg`). Renaming or removing one is a MAJOR bump. |
+
+Report process:
+
+```mermaid
+graph TD
+  N["new: skeleton .md"] --> W["write / edit<br/>(human or Claude)"]
+  W --> F["fmt: canonical form"]
+  F --> L["lint: file:line:col"]
+  L -- errors --> W
+  L -- clean --> B["build: .md → .html<br/>(only if bytes change)"]
+  B --> C["check (CI): fmt --check · lint · build --check"]
+```
+
+Rules: `fmt` is idempotent and never changes the rendered HTML; `build` is a
+pure function of its inputs; raw HTML is not allowed (everything goes through
+the theme).
 
 ## Domain: agent coordination (`agent-bus`)
 
