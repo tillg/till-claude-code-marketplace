@@ -47,7 +47,9 @@ tracking progress throughout.
 ```mermaid
 graph LR
     DS[document-system] --> P[propose]
-    P --> I[iterate]
+    P --> G[grill]
+    G --> I[iterate]
+    I -.->|grill again| G
 
     I --> A[apply]
     A --> AR[archive]
@@ -56,6 +58,8 @@ graph LR
 ```
 
 `/spec:explore` can be used at any point — it's a thinking mode, not a phase.
+`/spec:grill` is optional and repeatable: skip it for small changes, or run it
+again after iterating until no open decisions are left.
 
 The flow is fluid, not rigid — you can loop back from iterate to propose when
 decisions change, and after archiving one change you start the next.
