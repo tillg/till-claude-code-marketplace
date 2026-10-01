@@ -70,7 +70,6 @@ you exactly where you are and what to do next.
 | `/spec:explore`         | Open-ended thinking — investigate, compare approaches, question assumptions      | When you have an idea but aren't ready to commit to a plan      |
 | `/spec:propose`         | Create a change with all artifacts (proposal, domain, architecture, plan), then open it as HTML (`/spec:view`) | When you know what you want to build                            |
 | `/spec:iterate`         | Review artifacts, apply user annotations, produce clean consolidated version     | After marking up artifacts with decisions, rejections, comments |
-| `/spec:ready-or-not`    | Audit artifacts for clarity, completeness, coherence, and consistency            | Before `/spec:apply` — verify the spec is actually ready        |
 | `/spec:apply`           | Implement the plan step by step, tracking progress                               | When artifacts are ready and it's time to code                  |
 | `/spec:adversarial-code-review` | Hostile-mindset review in three separate axes: Defects (bugs, regressions, edge cases), Standards (repo standards + code-smell baseline), Spec (matches the change?) | After implementation, before archiving; or `[fixed-point] [change]` for "review since X" |
 | `/spec:archive`         | Update system docs, commit, and clean up the change                              | When all steps are complete                                     |

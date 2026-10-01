@@ -13,7 +13,7 @@
       "name": "spec",
       "source": "./plugins/spec",
       "description": "Spec workflow — document, explore, propose, iterate, apply, and archive changes, and view them as HTML",
-      "version": "6.7.0",
+      "version": "7.0.0",
       "author": {
         "name": "Till Gartner"
       },

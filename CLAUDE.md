@@ -44,7 +44,7 @@ Use [semantic versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`) and let the
 - Tightening guardrails without removing capability
 
 **MINOR** (`x.Y.0`) — new capability added in a backward-compatible way. Existing invocations still work; users get something new.
-- New skill added to a plugin (e.g. adding `/spec:ready-or-not`)
+- New skill added to a plugin (e.g. adding `/spec:view`)
 - New optional argument or flag on an existing skill
 - New optional frontmatter field on a skill
 - Materially expanded behavior in an existing skill (new checks, new output sections) where prior invocations still produce sensible output
