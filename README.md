@@ -123,6 +123,59 @@ checkboxes). System docs carry only `title`, `created`, `edited`.
 profile and keeps it current with a watcher (committed report HTML is left
 alone).
 
+#### Grilling a change: `/spec:grill` (with Matt Pocock's skills)
+
+`/spec:grill <change>` stress-tests a proposed change before you implement it.
+It interviews you in rounds about everything the artifacts leave open, hedge on
+or contradict — each question comes with a recommended answer — until the open
+decisions are settled. Run it between `/spec:propose` and `/spec:apply`, as
+often as you like.
+
+```mermaid
+graph LR
+  P["/spec:propose"] --> G["/spec:grill"]
+  G --> A["/spec:apply"]
+  G -. "again" .-> G
+  subgraph G2["what /spec:grill runs"]
+    GR["mattpocock-skills:grilling<br/>asks the questions"]
+    DM["mattpocock-skills:domain-modeling<br/>sharpens terms & decisions"]
+  end
+  G --- G2
+```
+
+The interview itself comes from Matt Pocock's
+[skills](https://github.com/mattpocock/skills) (MIT): the same `grilling` and
+`domain-modeling` skills his `/grill-with-docs` combines. `/spec:grill` points
+them at the change and writes the results into **our** spec files instead of
+his doc layout:
+
+| His skill would write | `/spec:grill` writes it to |
+|---|---|
+| a term in `GLOSSARY.md` | the change's `domain.md` |
+| an ADR in `docs/adr/` | a row in the "Key decisions" table of the change's `architecture.md` |
+
+Then it folds the answers into `proposal.md` (scope) and `plan.md` (new or
+changed steps), bumps `edited` and leaves `status` alone. No `GLOSSARY.md` or
+`docs/adr/` is created.
+
+**Referenced, not copied.** The `spec` plugin declares his plugin as a
+dependency (`plugin.json` → `"dependencies": [{ "name": "mattpocock-skills",
+"marketplace": "mattpocock" }]`), and this marketplace allows that
+cross-marketplace dependency (`allowCrossMarketplaceDependenciesOn:
+["mattpocock"]`). So:
+
+- installing or updating `spec` installs `mattpocock-skills` from his own
+  marketplace — if it doesn't, add it once with
+  `/plugin marketplace add mattpocock/skills` and
+  `/plugin install mattpocock-skills@mattpocock`;
+- you get his updates whenever you update plugins (no version is pinned);
+- his other skills (`/tdd`, `/to-spec`, `/grill-with-docs`, …) become available
+  too, since he ships them as one plugin.
+
+If his skills aren't installed, `/spec:grill` says how to install them and
+stops; every other spec skill works without them. Grilling needs a person to
+answer, so it stops in unattended runs.
+
 ---
 
 ### md2pdf — Markdown to PDF converter
