@@ -1,7 +1,7 @@
 ---
 title: "Domain: Claude Code Plugin Marketplace"
 created: 2026-04-15
-edited: 2026-10-01
+edited: 2026-10-02
 ---
 
 # Domain: Claude Code Plugin Marketplace
@@ -91,6 +91,10 @@ changes are archived.
 | Directive | Block syntax from the registry: `tldr`, `cards`, `card`, `verdict`. |
 | Theme | Per-project CSS layered after the base CSS; may change tokens and contract classes, not structure. |
 | Report status | `research`, `ongoing`, `implemented`. |
+| Group | All spec `.md` files of one directory (e.g. `specs/changes/add-x/`), found from the directory listing — no file name is special. Ordered by `order`, then file name. |
+| Inner navigation | Bar on a spec page: an "up" link to the project index, one link per file of the group (label from the file name: `risks.md` → "Risks"), the current one marked, and the status pill. |
+| Project index | Generated page (default `/index.html`, or `specs.index`) with one row per group: feature, majority status, first title, newest `edited`, page count. Never overwrites a hand-written file. |
+| Spec viewer | The `md2html build --specs --watch` watcher plus `md2html serve`, started by `/spec:view`; one of each per project. |
 | Directive registry | One table (`src/registry.mjs`) that defines each directive's attributes, nesting and rendering; syntax help, lint and render all read it. |
 | Derived layout | Layout computed from plain Markdown, no extra syntax: numbered `##`, slug ids, TOC at ≥ 4 sections, header from frontmatter, table frames, figures (lone image + alt caption + sibling `.mmd` source), menu bar, `.md` → `.html` links. |
 | Canonical form | The one way `fmt` writes a report: colon count by nesting depth, attributes in registry order and double-quoted, frontmatter keys in schema order, `-` bullets, `*`/`**`, backtick fences, `> [!tldr]` → `:::tldr`, LF + NFC + one final newline. Prose is never re-wrapped. |

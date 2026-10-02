@@ -1,7 +1,7 @@
 ---
 title: "Architecture: Claude Code Plugin Marketplace"
 created: 2026-04-15
-edited: 2026-10-01
+edited: 2026-10-02
 ---
 
 # Architecture: Claude Code Plugin Marketplace
@@ -119,6 +119,19 @@ graph LR
   `tools/md2html.mjs`, plugin cache, marketplace checkout), adds `specs` to
   `reports.json`, gitignores spec HTML, and runs one watcher and one server
   per project. Without md2html everything else in spec still works.
+- **Spec profile design decisions:**
+
+  | Decision | Alternatives | Why |
+  |---|---|---|
+  | Status repeated in every file of a change | only in `proposal.md` | each page shows it without reading siblings; lint catches drift |
+  | Groups discovered per directory, `order` key | hard-wired artifact list | extra files (`decisions.md`, `risks.md`) join the nav with no code change |
+  | Watcher builds, hook only lints | hook builds too | the watcher already sees every edit, Claude's or not |
+  | Report wins when both globs match | spec wins | reports under `specs/` keep their committed HTML; a report glob as broad as `specs/**/*.md` would swallow specs, so keep it narrow |
+  | Render through an md2html profile | own renderer in spec | one pipeline, one theme; hook and watcher already exist |
+  | Spec HTML gitignored | committed | no diff noise, no staleness checks |
+  | Client-side Mermaid, pinned CDN | inline bundle, mermaid-cli | instant rebuilds, no Chromium; offline shows the source |
+  | No `fmt` for specs | format like reports | specs are prose by many hands; rewriting them is noise |
+
 - **spec → mattpocock-skills**: declared in `plugin.json` `dependencies`;
   `marketplace.json` allows it via `allowCrossMarketplaceDependenciesOn:
   ["mattpocock"]`. Only `/spec:grill` uses it.

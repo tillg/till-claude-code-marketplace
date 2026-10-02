@@ -1,7 +1,7 @@
 ---
 title: "Functional: Claude Code Plugin Marketplace"
 created: 2026-04-15
-edited: 2026-10-01
+edited: 2026-10-02
 ---
 
 # Functional: Claude Code Plugin Marketplace
@@ -85,7 +85,9 @@ repeatable; `/spec:view` opens the specs as HTML at any time.
 ### States and transitions
 A change's `status` runs `exploring → proposed → applying ⇄ paused →
 applied`, then archive deletes the directory. Full meanings in
-`plugins/spec/reference/frontmatter.md`.
+`plugins/spec/reference/frontmatter.md`. Legacy changes without frontmatter
+still work: `/spec:overview` infers the phase from the files and checkboxes
+and marks it "(inferred)"; md2html lint warns.
 
 ### Artifacts
 - `specs/system/` — persistent system description (domain, architecture, functional)
