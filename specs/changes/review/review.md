@@ -4,7 +4,7 @@ title: "Review: the spec workflow"
 status: exploring
 order: 1
 created: 2026-10-01
-edited: 2026-10-01
+edited: 2026-10-02
 ---
 
 # Review: the spec workflow
@@ -85,11 +85,11 @@ Ranked by impact. Each names the finding it addresses.
 
 | Priority | Recommendation | Addresses | Status |
 |---|---|---|---|
-| 1 | Run `/spec:archive` on both applied changes; this refreshes `specs/system/` with md2html, agent-bus, the new skills and the frontmatter schema. | C1, C4 | ⏳ Open — system update planned separately |
+| 1 | Run `/spec:archive` on both applied changes; this refreshes `specs/system/` with md2html, agent-bus, the new skills and the frontmatter schema. | C1, C4 | ✅ Done — `/spec:document-system` refreshed `specs/system/`; both changes archived (`a4f6a35`/`20f0444`, `3270f90`/`675b0aa`) |
 | 2 | Make `/spec:overview` flag `applied` changes older than a few days as "archive overdue", and have `/spec:apply` offer archive when it sets `applied`. | C1 | ✅ Done — overview warns on unarchived `applied` changes; `/spec:propose` checks for open changes and suggests archiving first; apply ends with review → archive |
 | 3 | Strip the foreign references from `adversarial-code-review` (generic "story/epic" wording; "schema files" instead of named paths). | C5 | ✅ Done — uses change / plan step / `specs/system/` vocabulary; adds a test-first check on the Spec axis |
 | 4 | Add a verify line to each plan step (`- [ ] step → verify: <command>`) in `propose`, and have `apply` run it before ticking the box. | C9 | ✅ Done, extended to TDD — every step has `Test first:` and `Verify:` (`plugins/spec/reference/plan.md`); apply runs red → green → verify + full suite before ticking; archive re-runs the tests |
-| 5 | Reconcile the skill list and flow: one source (README table) that overview and `specs/system/functional.md` mirror; add adversarial review and grill to overview. | C3 | 🟡 Partly — README and overview list all 10 skills and share one flow line; `specs/system/` waits for #1 |
+| 5 | Reconcile the skill list and flow: one source (README table) that overview and `specs/system/functional.md` mirror; add adversarial review and grill to overview. | C3 | ✅ Done — README, overview and `specs/system/functional.md` list all 10 skills and share one flow line |
 | 6 | Name `decisions.md` as the optional artifact for choices made unattended; make apply's unattended rule explicit ("log in decisions.md and continue"). | C7 | 🟡 Partly — apply's contradiction resolved (unattended never ticks a failing step); `decisions.md` is named as an extra file in the frontmatter reference, but not yet as the log for unattended choices |
 | 7 | Add a small eval suite (`claude plugin eval`) or a lint script: every skill appears in overview and README, no unknown paths, frontmatter in examples is valid. | C10, C3, C5 | ⏳ Open |
 | 8 | Move shared rules (frontmatter schema, Edit/Write guardrail, change selection) to one reference file the skills point to. | C2 | 🟡 Partly — frontmatter schema now lives only in `plugins/spec/reference/frontmatter.md`, with exact enum values and what each status means in practice; the Edit/Write guardrail and change selection are still copied |
@@ -108,5 +108,12 @@ Done in spec 8.0.0, which is a major bump because `/spec:apply` and `/spec:propo
 - Test-first is now the method: the plan names each test, apply writes it
   first and sees it fail, and a step is ticked only when green (C9).
 
-Still open: #1 (archive the two changes and update the system description), #7, #9 and the rest
-of #5, #6, #8 and #10.
+### Follow-up — 2026-10-02
+
+- `specs/system/` rewritten by `/spec:document-system`: all five plugins, the
+  spec 8.0.0 workflow, md2html and agent-bus (C4, C3).
+- `add-md2html-plugin` and `spec-frontmatter-html-view` archived; the details
+  that existed only in their artifacts were carried into `specs/system/` (C1).
+- `specs/changes/` now holds only this review.
+
+Still open: #7, #9 and the rest of #6, #8 and #10.
