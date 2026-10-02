@@ -57,7 +57,7 @@ Evidence and line numbers refer to the state at review time.
 | C4 | ⚠️ | `.gitignore` lacks the negation `/spec:view` step 3 says to add. | `.gitignore` has `specs/**/*.html`, no `!specs/**/*-report.html` | ✅ | Added `!specs/**/*-report.html` (`9c31313`). |
 | C5 | ❌ | Adversarial review carries another project's vocabulary and paths. | `adversarial-code-review/SKILL.md:12` (`complete-story`, `complete-epic`); `:105` (`src/db/schema.sql`, `CURRENT_DATABASE.md`) | ✅ | Rewritten in spec terms (change, plan step, after apply / before archive, `specs/system/`), with generic schema/migration checks; the Spec axis also checks test-first (`9c31313`). |
 | C6 | ✅ | md2html and mattpocock-skills absences are handled: clear install message, proposal still succeeds, grill refuses to imitate. | `view/SKILL.md` step 1; `propose/SKILL.md:100–101`; `grill/SKILL.md` "Don't imitate the skills from memory" | — | — |
-| C6 | ⚠️ | mattpocock-skills is a hard plugin dependency though only `/spec:grill` uses it. | `plugin.json` `dependencies` | ⏳ | — |
+| C6 | ⚠️ | mattpocock-skills is a hard plugin dependency though only `/spec:grill` uses it. | `plugin.json` `dependencies` | ✅ | **Accepted by design**: installing spec should bring grill's skills along with no extra step; teammates get them through the shared settings anyway. |
 | C7 | ⚠️ | `apply` says both "continue unattended" and "don't guess". Choices made unattended have no defined home; both autonomous changes invented `decisions.md` (`order: 5`), which no skill names. | `apply/SKILL.md:77` vs `:147`; `specs/changes/*/decisions.md` | 🟡 | apply's rule is now one rule: unattended it decides unclear steps and notes them, but never ticks a step whose Verify fails (`9c31313`). `decisions.md` is named as an extra file, not yet as the log for unattended choices. |
 | C8 | ✅ | Frontmatter consistency, checkbox counts and the HTML view are mechanical (md2html lint hook, `grep -c`, deterministic build with tests). | `plugins/md2html/hooks/hooks.json`; `overview/SKILL.md:76–77`; 22 md2html test files | — | — |
 | C8 | ⚠️ | The hook only sees Write/Edit, so enforcement depends on a prose rule; the long bash in `view` is prompt text rather than a script. | `hooks.json` matcher `Write\|Edit\|MultiEdit`; `view/SKILL.md` steps 1, 5 | ⏳ | — |
@@ -97,7 +97,7 @@ Ranked by impact. Each names the finding it addresses.
 | 7 | Add a small eval suite (`claude plugin eval`) or a lint script: every skill appears in overview and README, no unknown paths, frontmatter in examples is valid. | C10, C3, C5 | ⏳ Open |
 | 8 | Move shared rules (frontmatter schema, Edit/Write guardrail, change selection) to one reference file the skills point to. | C2 | 🟡 Partly — frontmatter schema now lives only in `plugins/spec/reference/frontmatter.md`, with exact enum values and what each status means in practice; the Edit/Write guardrail stays copied (accepted by design, see C2); change selection is still copied |
 | 9 | Move `view`'s bash into a bundled script; keep the skill as the "when and why". | C8 | ⏳ Open |
-| 10 | Minor: update overview's version examples, add the missing `.gitignore` negation, drop the `archive/` exclusions (or create `archive/`), consider making mattpocock-skills optional. | C12, C4, C1, C6 | 🟡 Partly — `.gitignore` negation added; the rest open |
+| 10 | Minor: update overview's version examples, add the missing `.gitignore` negation, drop the `archive/` exclusions (or create `archive/`), consider making mattpocock-skills optional. | C12, C4, C1, C6 | 🟡 Partly — `.gitignore` negation added; mattpocock-skills stays a hard dependency (accepted, see C6); version examples and `archive/` exclusions open |
 
 ### Follow-up — 2026-10-01 (spec 8.0.0)
 
@@ -122,5 +122,6 @@ Done in spec 8.0.0, which is a major bump because `/spec:apply` and `/spec:propo
 - `paused` status dropped (spec 9.0.0, md2html 0.5.0); a change on hold stays
   `applying` (C1).
 - C2 closed: the copied Edit/Write guardrail is accepted by design.
+- C6 closed: mattpocock-skills stays a hard dependency, accepted by design.
 
 Still open: #7, #9 and the rest of #6, #8 (change selection) and #10.
