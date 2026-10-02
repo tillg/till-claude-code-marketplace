@@ -56,7 +56,7 @@ Semantic versioning per plugin. The version appears in both `plugin.json` and
 | Change | One planned modification, `specs/changes/<name>/`, kebab-case name. Temporary: deleted at archive. |
 | Artifact | A file of a change: `proposal.md` (what/why), `domain.md` (concepts), `architecture.md` (how), `plan.md` (steps); extras such as `decisions.md` allowed. |
 | Spec frontmatter | YAML block on every spec file. Change files: `feature`, `title`, `status`, `order`, `created`, `edited`. System files: `title`, `created`, `edited`. Defined in `plugins/spec/reference/frontmatter.md`. |
-| Status | Lifecycle of a whole change, same in every file: `exploring`, `proposed`, `applying`, `paused`, `applied`. |
+| Status | Lifecycle of a whole change, same in every file: `exploring`, `proposed`, `applying`, `applied`. |
 | Plan step | A checkbox in `plan.md` with a `Test first:` and a `Verify:` line (`plugins/spec/reference/plan.md`). |
 | Test-first | Per step: write the test, see it fail, implement, run Verify + full suite, then tick. |
 | Grilling | An interview that settles a change's open decisions (via Matt Pocock's `grilling` + `domain-modeling`). |
@@ -69,8 +69,6 @@ stateDiagram-v2
     [*] --> proposed: propose
     exploring --> proposed: all four artifacts exist
     proposed --> applying: first step ticked
-    applying --> paused: user parks it
-    paused --> applying: user resumes
     applying --> applied: all steps ticked, tests green
     applied --> [*]: archive deletes the directory
 ```
@@ -167,8 +165,8 @@ for `/spec:grill`.
 
 ```mermaid
 graph TD
-    M[Marketplace] --> S[spec v8.0.0]
-    M --> H[md2html v0.4.0]
+    M[Marketplace] --> S[spec v9.0.0]
+    M --> H[md2html v0.5.0]
     M --> B[agent-bus v0.4.0]
     M --> P[md2pdf v1.0.0]
     M --> T[transform v1.0.0]

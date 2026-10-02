@@ -31,7 +31,7 @@ graph LR
   marketplace.json           # Registry manifest — lists all plugins
 
 plugins/
-  spec/                      # Spec workflow (v8.0.0), pure prompt
+  spec/                      # Spec workflow (v9.0.0), pure prompt
     .claude-plugin/plugin.json   # depends on mattpocock-skills
     reference/
       frontmatter.md         # canonical spec frontmatter + status lifecycle
@@ -40,7 +40,7 @@ plugins/
       overview/ document-system/ explore/ propose/ grill/
       iterate/ apply/ adversarial-code-review/ archive/ view/
 
-  md2html/                   # Markdown → HTML (v0.4.0), Node
+  md2html/                   # Markdown → HTML (v0.5.0), Node
     .claude-plugin/plugin.json
     hooks/hooks.json         # PostToolUse Write|Edit|MultiEdit
     hooks/post-edit.mjs      # fmt + lint after edits

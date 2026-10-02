@@ -37,7 +37,7 @@ When enabled, Claude Code checks for new plugin versions at startup.
 `/spec:overview` also compares its version with the remote
 `marketplace.json`.
 
-## Plugin: spec (v8.0.0)
+## Plugin: spec (v9.0.0)
 
 ### User Journey: Spec-driven change
 
@@ -83,8 +83,8 @@ repeatable; `/spec:view` opens the specs as HTML at any time.
 | `/spec:view` | `[change]` | Browser page on `http://localhost:<port>` | Adds `specs` to `reports.json`, `.gitignore` lines; starts one md2html watcher + server per project |
 
 ### States and transitions
-A change's `status` runs `exploring → proposed → applying ⇄ paused →
-applied`, then archive deletes the directory. Full meanings in
+A change's `status` runs `exploring → proposed → applying → applied`, then
+archive deletes the directory. Full meanings in
 `plugins/spec/reference/frontmatter.md`. Legacy changes without frontmatter
 still work: `/spec:overview` infers the phase from the files and checkboxes
 and marks it "(inferred)"; md2html lint warns.
@@ -100,7 +100,7 @@ Skills that would ask make a sensible choice and note it — except grill
 (stops), archive selection (always asks) and propose's archive offer (never
 archives unattended). apply never ticks a step whose Verify fails.
 
-## Plugin: md2html (v0.4.0)
+## Plugin: md2html (v0.5.0)
 
 ### Skills
 

@@ -124,7 +124,7 @@ this up and starts a watcher. What differs from reports:
 
 | | Reports | Spec files |
 |---|---|---|
-| Frontmatter | report schema | spec schema: `feature`, `title`, `status` (`exploring` · `proposed` · `applying` · `paused` · `applied`), `order`, `created`, `edited` |
+| Frontmatter | report schema | spec schema: `feature`, `title`, `status` (`exploring` · `proposed` · `applying` · `applied`), `order`, `created`, `edited` |
 | `fmt` | canonical rewrite | never applied |
 | Section numbers, hoisted TL;DR, TOC | yes | no |
 | Navigation | `reports` menu bar | per directory: an up link to the index, one link per file of the directory (sorted by `order`, then name), the page's status pill |

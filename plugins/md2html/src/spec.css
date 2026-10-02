@@ -11,7 +11,6 @@
 .spec-status.exploring { color: var(--muted); background: var(--code); }
 .spec-status.proposed { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
 .spec-status.applying { color: var(--partial); background: var(--partial-bg); }
-.spec-status.paused { color: var(--no); background: var(--no-bg); }
 .spec-status.applied { color: var(--go); background: var(--go-bg); }
 
 pre.mermaid { font-size: .85rem; }

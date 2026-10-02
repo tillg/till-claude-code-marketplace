@@ -55,7 +55,7 @@ OR a description of what the user wants to build.
    that is only current once earlier changes are archived:
    - `applied` → "`<x>` is done but not archived. Archive it first so the new
      proposal builds on an up-to-date system description."
-   - `applying` / `paused` / `proposed` / `exploring` → "`<x>` is still in
+   - `applying` / `proposed` / `exploring` → "`<x>` is still in
      progress (`<status>`). Finish it and archive it first, or work on both
      in parallel?"
 
@@ -179,6 +179,6 @@ edited: YYYY-MM-DD
   recommend archiving it first
 - Every artifact carries spec frontmatter with `feature: <name>` and
   `status: proposed`; when continuing an existing change at `exploring`, move
-  all its files to `proposed` (never downgrade `applying`/`paused`/`applied`)
+  all its files to `proposed` (never downgrade `applying`/`applied`)
 - Use Mermaid diagrams liberally — they are the preferred format for all
   diagrams in spec artifacts

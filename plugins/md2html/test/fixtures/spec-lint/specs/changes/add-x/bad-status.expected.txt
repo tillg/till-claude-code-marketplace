@@ -1,1 +1,1 @@
-specs/changes/add-x/bad-status.md:4:9  error  status "archived" is not allowed. Use exploring | proposed | applying | paused | applied  [spec-frontmatter]
+specs/changes/add-x/bad-status.md:4:9  error  status "archived" is not allowed. Use exploring | proposed | applying | applied  [spec-frontmatter]

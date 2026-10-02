@@ -200,7 +200,7 @@ Every spec file starts with YAML frontmatter that the skills write and update:
 ---
 feature: add-auth            # change name = directory name (change files only)
 title: "Proposal: add authentication"
-status: proposed             # exploring → proposed → applying → (paused) → applied
+status: proposed             # exploring → proposed → applying → applied
 order: 1                     # nav position: 1 proposal, 2 domain, 3 architecture, 4 plan
 created: 2026-09-30
 edited: 2026-09-30

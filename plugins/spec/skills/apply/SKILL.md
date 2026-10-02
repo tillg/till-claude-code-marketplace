@@ -84,8 +84,7 @@ ambiguous you MUST prompt for available changes.
    - Continue to next step
 
    When every plan step is `[x]`, set `status: applied` on every file of the
-   change. If the user asks to park the change, set `status: paused` on all
-   files; resuming sets `applying` again.
+   change.
 
    Frontmatter schema and status meanings: `../../reference/frontmatter.md`.
    Files that lack frontmatter get it now, with the current status.

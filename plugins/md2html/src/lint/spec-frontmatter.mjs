@@ -6,7 +6,7 @@ import { suggest } from '../util.mjs';
 import { reportPath } from './fs.mjs';
 
 export const SPEC_KEYS = ['feature', 'title', 'status', 'order', 'created', 'edited'];
-export const SPEC_STATUSES = ['exploring', 'proposed', 'applying', 'paused', 'applied'];
+export const SPEC_STATUSES = ['exploring', 'proposed', 'applying', 'applied'];
 const ALWAYS = ['title', 'created', 'edited'];
 const CHANGE_ONLY = ['feature', 'status'];
 const DATE_KEYS = ['created', 'edited'];

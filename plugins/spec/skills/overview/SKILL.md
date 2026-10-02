@@ -61,7 +61,6 @@ Show the spec workflow overview and assess current status.
    | `exploring` | Exploring |
    | `proposed` | Proposed (ready) |
    | `applying` | Applying (N/M, from `plan.md` checkboxes) |
-   | `paused` | Paused (N/M) |
    | `applied` | Applied (ready to archive) |
 
    If the files disagree on `status` (or on `feature`, or `feature` ≠ the
@@ -94,7 +93,6 @@ Show the spec workflow overview and assess current status.
    - Proposed → `/spec:grill` to stress-test it, `/spec:iterate` after marking it up, or
      `/spec:apply` to start implementing
    - Applying → `/spec:apply` to continue
-   - Paused → `/spec:apply` to resume
    - Applied → `/spec:adversarial-code-review`, then `/spec:archive` to wrap up
 
    An `applied` change whose files were last edited more than a few days ago
@@ -234,7 +232,7 @@ Show the spec workflow overview and assess current status.
 
    Each file starts with spec frontmatter (`feature`, `title`, `status`,
    `order`, `created`, `edited`); `status` runs
-   `exploring → proposed → applying → (paused) → applied`, and the change
+   `exploring → proposed → applying → applied`, and the change
    directory is deleted at archive.
 
    ---

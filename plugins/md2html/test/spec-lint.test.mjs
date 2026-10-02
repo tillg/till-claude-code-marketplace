@@ -32,6 +32,13 @@ test('clean change file and system doc (no feature/status) yield no messages', (
   assert.deepEqual(lintCase('specs/system/overview.md'), []);
 });
 
+test('status "paused" is not allowed (removed in 0.5.0)', () => {
+  const md = '---\nfeature: add-x\ntitle: "T"\nstatus: paused\ncreated: 2026-10-02\nedited: 2026-10-02\n---\n# T\n';
+  const rel = 'specs/changes/add-x/p.md';
+  assert.equal(formatMessages(lintSpec(md, { file: rel, root: dir }), rel), 'specs/changes/add-x/p.md:4:9  error  status "paused" is not allowed. '
+    + 'Use exploring | proposed | applying | applied  [spec-frontmatter]');
+});
+
 test('report-only rules never run; other rules are warnings', () => {
   const messages = lintCase('specs/changes/add-x/downgraded.md');
   assert.ok(messages.length >= 3);
@@ -65,8 +72,8 @@ test('group: agreeing files, missing values and ties', () => {
   // Tie: the file with the lowest `order` (b) sets the value.
   assert.deepEqual(format(lintSpecGroup([a, b])), 'specs/changes/x/a.md:1:1  error  status "proposed" differs from the rest of specs/changes/x/ ("applying")  [spec-consistency]');
   // Tie without order: the first file wins; `line` is the fallback position.
-  const [c, d] = [{ file: 'specs/changes/x/c.md', status: 'paused' }, { file: 'specs/changes/x/d.md', status: 'applied', line: 3 }];
-  assert.deepEqual(format(lintSpecGroup([c, d])), 'specs/changes/x/d.md:3:1  error  status "applied" differs from the rest of specs/changes/x/ ("paused")  [spec-consistency]');
+  const [c, d] = [{ file: 'specs/changes/x/c.md', status: 'applying' }, { file: 'specs/changes/x/d.md', status: 'applied', line: 3 }];
+  assert.deepEqual(format(lintSpecGroup([c, d])), 'specs/changes/x/d.md:3:1  error  status "applied" differs from the rest of specs/changes/x/ ("applying")  [spec-consistency]');
 });
 
 test('specData: values and key lines; null without frontmatter', () => {

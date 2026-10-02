@@ -30,10 +30,10 @@ test('generator meta, same inlined @layer CSS, theme last', () => {
 });
 
 test('nav: up link, one link per item with aria-current on this page, status pill', () => {
-  const out = buildSpec('---\nstatus: paused\n---\n# T\n', opts);
+  const out = buildSpec('---\nstatus: applying\n---\n# T\n', opts);
   assert.ok(out.includes('<nav class="spec-nav" aria-label="Spec pages"><a class="up" href="../../../index.html">↑ Index</a>'
     + '<a class="item" href="proposal.html">Proposal</a><a class="item" href="plan.html" aria-current="page">Plan</a>'
-    + '<span class="spec-status paused">Paused</span></nav>'));
+    + '<span class="spec-status applying">Applying</span></nav>'));
 });
 
 test('nav: no status → no pill; no group → up link only; index path from config', () => {
