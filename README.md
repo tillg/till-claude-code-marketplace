@@ -145,14 +145,23 @@ archived.
 (`Test first:`) and the command that proves it done (`Verify:`).
 `/spec:apply` runs red → green → verify per step and ticks a step only when
 its verify command and the full suite pass; `/spec:archive` runs the tests
-again before committing.
-
-**Unattended runs leave a trail.** When a spec skill runs without a user and
-has to make a choice it would normally ask about, it appends an entry to
-`DECISIONS.md` in the project root (question, choice, alternatives, status
-`open` until you confirm or revert it). Format:
-[`plugins/spec/reference/decisions.md`](plugins/spec/reference/decisions.md). The format is in
+again before committing. The format is in
 [`plugins/spec/reference/plan.md`](plugins/spec/reference/plan.md).
+
+**Unattended runs leave a trail.** When a spec skill (or `/autonomous`) runs
+without a user and has to make a choice it would normally ask about, it
+records it in `DECISIONS.md` at the project root:
+
+- one **run** per invocation (`#` heading: start date and time, a summary
+  title, who started it, and the task exactly as given),
+- one **decision** per choice under it (`##` heading: time and the choice;
+  then status `open` until you confirm or revert it, context, question,
+  decision, why, alternatives, consequences),
+- a **Contents** list at the top linking every run and decision.
+
+`/spec:view` renders it as HTML (`/DECISIONS.html`, listed in the index), and
+md2html's lint checks it, including the Contents links. Full rules and an
+example: [`plugins/spec/reference/decisions.md`](plugins/spec/reference/decisions.md).
 
 The flow is fluid, not rigid — you can loop back from iterate to propose when
 decisions change, and after archiving one change you start the next.
@@ -445,6 +454,32 @@ purely a scrollback for humans.
 - **Single-machine, filesystem-first.** No Redis, no HTTP, no central
   orchestrator. For cross-machine coordination, port the same schema to a
   real message bus (NATS, Redis Streams).
+
+---
+
+### autonomous — Work alone while you're away
+
+`/autonomous [task]` keeps making progress when you can't answer questions.
+
+1. **Decides instead of asking** and logs every decision and assumption in
+   `DECISIONS.md` at the project root — one run with the task as given, one
+   entry per decision, a Contents list on top — the same format the `spec`
+   plugin uses for unattended runs (its copy:
+   `plugins/autonomous/skills/autonomous/decisions-format.md`).
+2. **Works until completely done**, test-first, with parallel agents for
+   independent sub-tasks. A spec change is worked through like `/spec:apply`.
+3. **Reviews its own work** and fixes what it finds.
+4. **Tests until you come back** — end-to-end via Playwright for web apps
+   (lots of test data; create, search, edit, delete), through the CLI or API
+   otherwise.
+5. **Reports** the decisions, what was built and tested, and what is open.
+
+It never pushes, archives, deletes data beyond its own test data, or runs
+destructive git commands.
+
+The skill is invoked without a prefix (`/autonomous`, not
+`/autonomous:autonomous`): its `SKILL.md` deliberately sets `name`, the one
+exception to this repo's no-`name` rule.
 
 ---
 

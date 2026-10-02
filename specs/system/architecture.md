@@ -31,17 +31,17 @@ graph LR
   marketplace.json           # Registry manifest — lists all plugins
 
 plugins/
-  spec/                      # Spec workflow (v10.0.0), pure prompt
+  spec/                      # Spec workflow (v11.0.0), pure prompt
     .claude-plugin/plugin.json   # depends on mattpocock-skills
     reference/
       frontmatter.md         # canonical spec frontmatter + status lifecycle
       plan.md                # plan-step format + test-first cycle
-      decisions.md           # DECISIONS.md log format for unattended runs
+      decisions.md           # DECISIONS.md format: runs (#), decisions (##), Contents
     skills/
       overview/ document-system/ explore/ propose/ grill/
       iterate/ apply/ adversarial-code-review/ archive/ view/
 
-  md2html/                   # Markdown → HTML (v0.5.0), Node
+  md2html/                   # Markdown → HTML (v0.6.0), Node
     .claude-plugin/plugin.json
     hooks/hooks.json         # PostToolUse Write|Edit|MultiEdit
     hooks/post-edit.mjs      # fmt + lint after edits
@@ -55,6 +55,10 @@ plugins/
     scripts/check-inbox-hook.sh  # UserPromptSubmit wake-up
     scripts/watch.mjs            # fs.watch → spawns claude -p
     skills/coordinate/
+
+  autonomous/                # Unattended work mode (v1.0.0), pure prompt
+    skills/autonomous/       # sets `name:` on purpose → /autonomous (no prefix)
+      decisions-format.md    # identical copy of spec's reference/decisions.md
 
   md2pdf/                    # Markdown → PDF (v1.0.0), Node
     package.json             # markdown-it, highlight.js, playwright
@@ -199,6 +203,7 @@ not registered by `plugin.json`; projects wire them up.
 | spec | None | Plugin: mattpocock-skills (for grill); optional md2html ≥ 0.3.0 (for view) | Claude Code plugin dependencies |
 | md2html | Node.js 20+ | None at runtime (bundled); dev: unified/remark, yaml, esbuild | Committed `dist/` |
 | agent-bus | Node.js (watch.mjs only), sh | None | — |
+| autonomous | None | Optional: spec (for spec changes), Playwright MCP (for e2e tests) | Pure prompt |
 | md2pdf | Node.js | markdown-it, markdown-it-footnote, highlight.js, playwright | `npm install` in plugin dir |
 | transform | Python 3.11–3.13 | pypandoc_binary, extract-msg, marker-pdf | `.venv` via `setup.sh` |
 

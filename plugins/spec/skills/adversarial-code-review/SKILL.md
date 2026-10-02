@@ -178,6 +178,13 @@ Reporting them separately stops one axis from masking another.
 
 ## Review Rules
 
+- **`DECISIONS.md` format** (unattended runs; full rules in `../../reference/decisions.md`,
+  read it before the first entry): one **run** per invocation —
+  `# YYYY-MM-DD HH:MM — <summary> {#run-…}` with **Started by** and the **Task, as given**
+  (verbatim); one **decision** per choice — `## HH:MM — <the choice> {#run-…-n}` with Status
+  `open`, Context, Question, Decision, Why, Alternatives, Consequences; add both to the
+  **Contents** list at the top in the same edit. Called from inside a run (e.g. by
+  `/autonomous`), add to that run instead of starting one.
 - Defects: focus on defects, not style nits; prefer concrete exploit or failure paths
 - Standards: style and smells belong here, labelled as judgement calls unless a documented
   rule is broken

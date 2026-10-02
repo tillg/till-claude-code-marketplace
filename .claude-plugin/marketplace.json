@@ -16,7 +16,7 @@
       "name": "spec",
       "source": "./plugins/spec",
       "description": "Spec workflow — document, explore, propose, grill, iterate, apply test-first, review, and archive changes, and view them as HTML",
-      "version": "10.0.0",
+      "version": "11.0.0",
       "author": {
         "name": "Till Gartner"
       },
@@ -56,7 +56,17 @@
       "name": "md2html",
       "source": "./plugins/md2html",
       "description": "Deterministic Markdown → HTML reports: directive registry, fmt, lint, PostToolUse hook, per-project CSS themes",
-      "version": "0.5.0",
+      "version": "0.6.0",
+      "author": {
+        "name": "Till Gartner"
+      },
+      "strict": false
+    },
+    {
+      "name": "autonomous",
+      "source": "./plugins/autonomous",
+      "description": "Work alone while the user is away: decide instead of asking, log every decision in DECISIONS.md, finish test-first, self-review, then keep testing end-to-end",
+      "version": "1.0.0",
       "author": {
         "name": "Till Gartner"
       },

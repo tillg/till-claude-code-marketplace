@@ -24,7 +24,7 @@ ambiguous you MUST prompt for available changes.
    - If ambiguous, list the directories in `specs/changes/` and use the
      **AskUserQuestion tool** to let the user select
    - If running unattended (no user to answer), make a sensible choice,
-     log it in `DECISIONS.md` at the project root (format: `../../reference/decisions.md`), and continue
+     log it in `DECISIONS.md` at the project root, and continue
 
    Always announce: "Using change: <name>" and how to override (e.g.,
    `/spec:apply <other>`).
@@ -99,7 +99,8 @@ ambiguous you MUST prompt for available changes.
    - User interrupts
 
    If running unattended (no user to answer), make a sensible choice for an
-   unclear step, log it in `DECISIONS.md` at the project root (format: `../../reference/decisions.md`), and continue instead of pausing — but never tick a
+   unclear step, log it in `DECISIONS.md` at the project root, and continue
+   instead of pausing — but never tick a
    step whose Verify fails, and never weaken a test to get there: stop at
    that step and report.
 
@@ -167,6 +168,13 @@ What would you like to do?
 
 **Guardrails**
 
+- **`DECISIONS.md` format** (unattended runs; full rules in `../../reference/decisions.md`,
+  read it before the first entry): one **run** per invocation —
+  `# YYYY-MM-DD HH:MM — <summary> {#run-…}` with **Started by** and the **Task, as given**
+  (verbatim); one **decision** per choice — `## HH:MM — <the choice> {#run-…-n}` with Status
+  `open`, Context, Question, Decision, Why, Alternatives, Consequences; add both to the
+  **Contents** list at the top in the same edit. Called from inside a run (e.g. by
+  `/autonomous`), add to that run instead of starting one.
 - Keep going through steps until done or blocked
 - Always read all context artifacts before starting
 - If a step is ambiguous, pause and ask before implementing

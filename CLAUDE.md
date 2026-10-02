@@ -19,12 +19,17 @@ A Claude Code plugin marketplace — a registry of plugins that can be installed
 - **transform** (`plugins/transform/`) — document to Markdown converter for DOCX, PDF, and MSG files. Skills: `/transform:doc2md`, `/transform:batch`.
 - **md2html** (`plugins/md2html/`) — deterministic Markdown → HTML reports (`new`, `fmt`, `lint`, `build`, `check`, `syntax`), a `PostToolUse` fmt+lint hook, and per-project CSS themes. Skills: `/md2html:write`, `/md2html:build`, `/md2html:setup`. Source in `src/`, committed bundle in `dist/` (`npm test`, `npm run bundle`).
 - **agent-bus** (`plugins/agent-bus/`) — file-based inbox protocol for coordinating multiple Claude Code agents across sibling repos. Skill: `/agent-bus:coordinate`.
+- **autonomous** (`plugins/autonomous/`) — work alone while the user is away: decide instead of asking, log decisions in `DECISIONS.md`, test-first, self-review, then keep testing. Skill: `/autonomous` (un-prefixed, see below).
 
 ## Plugin Authoring
 
 Skills are directories containing a `SKILL.md` file. The frontmatter defines behavior (`description`, `disable-model-invocation`, `argument-hint`, etc.) and the body is the prompt Claude receives when the skill is invoked. Skills can include supporting files (templates, scripts) alongside `SKILL.md`.
 
 **Important: Do NOT use the `name` field in SKILL.md frontmatter.** It overrides auto-namespacing and skills will appear without the plugin prefix (e.g. `/propose` instead of `/spec:propose`). The skill name comes from the directory name, and the namespace prefix comes from `plugin.json`.
+
+**`DECISIONS.md` format lives in two identical files:** `plugins/spec/reference/decisions.md` and `plugins/autonomous/skills/autonomous/decisions-format.md` (each plugin must work alone). Change both in the same commit — `cmp` them — and bump both plugins.
+
+**The one deliberate exception:** `plugins/autonomous/skills/autonomous/SKILL.md` sets `name: autonomous` precisely so it is invoked as `/autonomous` instead of `/autonomous:autonomous`. Don't copy this elsewhere.
 
 ## Versioning
 

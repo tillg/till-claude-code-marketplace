@@ -120,7 +120,7 @@ Show brief progress after each: "Created proposal.md", etc.
 
 If an artifact requires user input (unclear context), use **AskUserQuestion
 tool** to clarify, then continue. If running unattended (no user to answer), make a
-sensible choice, log it in `DECISIONS.md` at the project root (format: `../../reference/decisions.md`), and continue.
+sensible choice, log it in `DECISIONS.md` at the project root, and continue.
 
 1. **Open the HTML view (runs `/spec:view` for this change)**
 
@@ -165,6 +165,13 @@ edited: YYYY-MM-DD
 
 **Guardrails**
 
+- **`DECISIONS.md` format** (unattended runs; full rules in `../../reference/decisions.md`,
+  read it before the first entry): one **run** per invocation —
+  `# YYYY-MM-DD HH:MM — <summary> {#run-…}` with **Started by** and the **Task, as given**
+  (verbatim); one **decision** per choice — `## HH:MM — <the choice> {#run-…-n}` with Status
+  `open`, Context, Question, Decision, Why, Alternatives, Consequences; add both to the
+  **Contents** list at the top in the same edit. Called from inside a run (e.g. by
+  `/autonomous`), add to that run instead of starting one.
 - Create ALL four artifacts (proposal, domain, architecture, plan)
 - Always read earlier artifacts before creating later ones
 - If context is critically unclear, ask the user — but prefer making reasonable

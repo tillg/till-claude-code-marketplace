@@ -37,7 +37,7 @@ When enabled, Claude Code checks for new plugin versions at startup.
 `/spec:overview` also compares its version with the remote
 `marketplace.json`.
 
-## Plugin: spec (v10.0.0)
+## Plugin: spec (v11.0.0)
 
 ### User Journey: Spec-driven change
 
@@ -80,7 +80,7 @@ repeatable; `/spec:view` opens the specs as HTML at any time.
 | `/spec:apply` | Change name | Code + tests | Per step: test first (red), code (green), Verify + full suite, tick; sets `applying` / `applied` |
 | `/spec:adversarial-code-review` | `[fixed-point] [change]` | Findings in three axes: Defects, Standards, Spec | Read-only; three parallel sub-agents |
 | `/spec:archive` | Change name | Two commits | Runs tests, updates `specs/system/`, commits (after approval), deletes the change dir, commits again |
-| `/spec:view` | `[change]` | Browser page on `http://localhost:<port>` | Adds `specs` to `reports.json`, `.gitignore` lines; starts one md2html watcher + server per project |
+| `/spec:view` | `[change]` | Browser page on `http://localhost:<port>` | Adds `specs` (with `DECISIONS.md` in its sources) to `reports.json`, `.gitignore` lines; starts one md2html watcher + server per project |
 
 ### States and transitions
 A change's `status` runs `exploring → proposed → applying → applied`, then
@@ -94,25 +94,38 @@ and marks it "(inferred)"; md2html lint warns.
 - `specs/changes/<name>/` — temporary change artifacts (proposal, domain,
   architecture, plan; optional extras such as `risks.md`)
 - `DECISIONS.md` (project root) — append-only log of choices made in
-  unattended runs, across all changes
+  unattended runs, across all changes; rendered to gitignored `DECISIONS.html`
 - Spec HTML next to each `.md` and `index.html` — gitignored, local only
 
 ### Unattended runs
-Skills that would ask make a sensible choice and log it in `DECISIONS.md` at
-the project root (question, choice, alternatives, status `open` →
-`confirmed` / `reverted`; format in `plugins/spec/reference/decisions.md`) —
-except grill (stops), archive selection (always asks) and propose's archive
+Skills that would ask (and `/autonomous`) make a sensible choice and log it
+in `DECISIONS.md` at the project root — except grill (stops), archive selection (always asks) and propose's archive
 offer (never archives unattended). apply never ticks a step whose Verify
 fails. Each run's summary lists the decisions it logged.
 
-## Plugin: md2html (v0.5.0)
+```mermaid
+graph TD
+  T["Contents (TOC): runs, decisions nested"] --> R["# YYYY-MM-DD HH:MM — summary<br/>Started by · Task, as given (verbatim)"]
+  R --> D1["## HH:MM — the choice<br/>Status · Context · Question · Decision · Why · Alternatives · Consequences"]
+  R --> D2["## HH:MM — …"]
+```
+
+One run per unattended invocation (a skill driven by `/autonomous` adds to
+the `/autonomous` run), appended in chronological order; a decision's
+`Status` goes `open` → `confirmed` / `reverted` when the user reviews it.
+Format, ids and rules: `plugins/spec/reference/decisions.md` (identical copy
+in the autonomous plugin). `/spec:view` adds `DECISIONS.md` to the spec
+sources, so it is rendered (`/DECISIONS.html`, one row in the index) and
+linted — broken Contents links are warnings.
+
+## Plugin: md2html (v0.6.0)
 
 ### Skills
 
 | Skill | Invocation | What it does |
 |---|---|---|
 | `/md2html:write` | Model or user, `[path] [what to write]` | Guides writing a `*-report.md`: layout rules, directive syntax (`syntax.md`) |
-| `/md2html:build` | User only, `[--check] [paths…]` | Builds or checks reports, lists stale/failed files, opens the result over localhost |
+| `/md2html:build` | Model or user, `[--check] [paths…]` | Builds or checks reports, lists stale/failed files, opens the result over localhost via `md2html serve` (pages only; one server per project, reused) |
 | `/md2html:setup` | User only, `[project-dir]` | Writes `reports.json`, optional theme stub, optional vendored `tools/md2html.mjs`, editor and `just` config, CLAUDE.md pointer |
 
 ### CLI (`node dist/md2html.mjs <cmd>`)
@@ -159,6 +172,26 @@ spec files are linted only. Errors are fed back to Claude.
 Wake-up options: `UserPromptSubmit` hook script, `watch.mjs` (starts
 `claude -p` on new mail), or `/loop 2m /agent-bus:coordinate`. Humans follow
 along with `tail -f .agent-bus/chat.md`.
+
+## Plugin: autonomous (v1.0.0)
+
+### User Journey: Make progress while the user is away
+
+```
+/autonomous [task]
+```
+
+1. Decide instead of asking; log each decision in `DECISIONS.md` at the
+   project root (status `open` → `confirmed` / `reverted` by the user).
+2. Work until done, test-first; parallel agents for independent sub-tasks;
+   a spec change is worked like `/spec:apply`.
+3. Self-review and fix (`/spec:adversarial-code-review` for spec changes).
+4. Test end-to-end until the user returns (Playwright MCP for web apps).
+5. Report decisions, what was built and tested, what is open.
+
+Never pushes, archives, deletes non-test data or runs destructive git
+commands. Invoked as `/autonomous`: its `SKILL.md` sets `name` on purpose,
+the one exception to the repo's no-`name` rule.
 
 ## Plugin: md2pdf (v1.0.0)
 

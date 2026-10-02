@@ -33,7 +33,7 @@ ships a committed bundle (`dist/md2html.mjs`), so it needs only `node`: no
 | Skill | Invocation | Purpose |
 |---|---|---|
 | `/md2html:write` | Model-invocable (triggers on "write a report", "update the report", `*-report.md`) | Workflow and house layout rules for writing and editing reports |
-| `/md2html:build` | User only, `[--check] [paths…]` | Build (or check) reports, list stale or failed files, open the result over `http://localhost` |
+| `/md2html:build` | Model or user, `[--check] [paths…]` | Build (or check) reports, list stale or failed files, open the result over `http://localhost` via `md2html serve` (pages only; one server per project, reused) |
 | `/md2html:setup` | User only | Create `reports.json`, an optional theme stub, `.remarkrc.mjs`, `just` recipes, a vendored tool for CI, and a CLAUDE.md pointer |
 
 The cheat sheet [`skills/write/syntax.md`](skills/write/syntax.md) is

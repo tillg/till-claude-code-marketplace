@@ -60,6 +60,14 @@ open that change; without one, open the project index.
      spec glob is needed.
    - `specs` already present: leave it.
 
+   **Decisions log:** make sure `specs.sources` also covers `DECISIONS.md`
+   (the project-root log of unattended choices, format in
+   `../../reference/decisions.md`), so it is rendered and linted like a spec
+   page. No `sources` in `specs`: set `"sources": ["specs/**/*.md",
+   "DECISIONS.md"]` (the default plus the log). `sources` present without
+   `DECISIONS.md`: append it. Do this even before the file exists — the
+   watcher picks it up once a run creates it.
+
    **Index path:** if `$ROOT/index.html` exists and does **not** contain
    `<meta name="generator" content="md2html` (a hand-written page, e.g. a web
    project's), set `"index": "specs/index.html"` inside `specs` — the CLI
@@ -78,13 +86,15 @@ open that change; without one, open the project index.
    specs/**/*.html
    !specs/**/*-report.html
    /index.html
+   /DECISIONS.html
    ```
 
    Why the negation: report HTML under `specs/` is committed, and
    `specs/**/*.html` alone would hide it. Write one `!` line per report
    `sources` glob ending in `.md`, with `.md` → `.html` (the default glob
-   gives the line above); it must come after `specs/**/*.html`. The last line
-   is `/<INDEX>` (default `/index.html`; `/specs/index.html` when moved).
+   gives the line above); it must come after `specs/**/*.html`. Then
+   `/<INDEX>` (default `/index.html`; `/specs/index.html` when moved), and
+   `/DECISIONS.html` for the rendered decisions log.
 
 4. **Build once** (spec files and the index only; committed report HTML is
    never rebuilt here)
@@ -122,7 +132,8 @@ open that change; without one, open the project index.
    If none, start one with the absolute tool path from step 1:
 
    ```bash
-   cd "$ROOT" && nohup node "$MD2HTML" build --specs --watch > "$LOG/spec-view-watch.log" 2>&1 &
+   cd "$ROOT"
+   nohup node "$MD2HTML" build --specs --watch > "$LOG/spec-view-watch.log" 2>&1 &
    echo "WATCH_PID=$!"
    ```
 
@@ -132,7 +143,8 @@ open that change; without one, open the project index.
    use `python3 -m http.server` — it would expose the whole project.
 
    ```bash
-   cd "$ROOT" && nohup node "$MD2HTML" serve > "$LOG/spec-view-server.log" 2>&1 &
+   cd "$ROOT"
+   nohup node "$MD2HTML" serve > "$LOG/spec-view-server.log" 2>&1 &
    SERVER_PID=$!
    for i in $(seq 50); do PORT=$(sed -n 's|.*http://localhost:\([0-9]*\)/.*|\1|p' "$LOG/spec-view-server.log"); [ -n "$PORT" ] && break; sleep 0.1; done
    echo "SERVER_PID=$SERVER_PID PORT=$PORT"
@@ -165,6 +177,7 @@ open that change; without one, open the project index.
 
    URL: http://localhost:<port>/<target>
    Index: http://localhost:<port>/<INDEX>
+   Decisions: http://localhost:<port>/DECISIONS.html   (only if DECISIONS.md exists)
    Watcher: PID <watch-pid> (log: <LOG>/spec-view-watch.log)
    Server:  PID <server-pid> (log: <LOG>/spec-view-server.log)
 
