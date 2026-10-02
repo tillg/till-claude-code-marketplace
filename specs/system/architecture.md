@@ -31,11 +31,12 @@ graph LR
   marketplace.json           # Registry manifest — lists all plugins
 
 plugins/
-  spec/                      # Spec workflow (v9.0.0), pure prompt
+  spec/                      # Spec workflow (v10.0.0), pure prompt
     .claude-plugin/plugin.json   # depends on mattpocock-skills
     reference/
       frontmatter.md         # canonical spec frontmatter + status lifecycle
       plan.md                # plan-step format + test-first cycle
+      decisions.md           # DECISIONS.md log format for unattended runs
     skills/
       overview/ document-system/ explore/ propose/ grill/
       iterate/ apply/ adversarial-code-review/ archive/ view/
@@ -124,7 +125,7 @@ graph LR
   | Decision | Alternatives | Why |
   |---|---|---|
   | Status repeated in every file of a change | only in `proposal.md` | each page shows it without reading siblings; lint catches drift |
-  | Groups discovered per directory, `order` key | hard-wired artifact list | extra files (`decisions.md`, `risks.md`) join the nav with no code change |
+  | Groups discovered per directory, `order` key | hard-wired artifact list | extra files (`risks.md`, notes) join the nav with no code change |
   | Watcher builds, hook only lints | hook builds too | the watcher already sees every edit, Claude's or not |
   | Report wins when both globs match | spec wins | reports under `specs/` keep their committed HTML; a report glob as broad as `specs/**/*.md` would swallow specs, so keep it narrow |
   | Render through an md2html profile | own renderer in spec | one pipeline, one theme; hook and watcher already exist |

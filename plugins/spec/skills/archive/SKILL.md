@@ -18,8 +18,7 @@ changes.
 
 1. **Select the change**
 
-   If no change name provided, list directories in `specs/changes/` (excluding
-   `archive/`). Use the **AskUserQuestion tool** to let the user select.
+   If no change name provided, list directories in `specs/changes/`. Use the **AskUserQuestion tool** to let the user select.
 
    **IMPORTANT**: Do NOT guess or auto-select a change. Always let the user
    choose.

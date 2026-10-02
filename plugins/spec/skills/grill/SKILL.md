@@ -16,8 +16,7 @@ Use it between `/spec:propose` and `/spec:apply`, as often as you like.
 ---
 
 **Input**: Optionally a change name (e.g. `/spec:grill add-auth`). If omitted, infer it from
-the conversation, auto-select if only one active change exists in `specs/changes/` (excluding
-`archive/`), or use the **AskUserQuestion tool** to let the user pick.
+the conversation, auto-select if only one active change exists in `specs/changes/`, or use the **AskUserQuestion tool** to let the user pick.
 
 Always announce: "Grilling change: <name>".
 

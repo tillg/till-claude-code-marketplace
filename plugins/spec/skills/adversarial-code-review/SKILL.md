@@ -40,13 +40,15 @@ Each sub-agent then inspects the touched files and any directly connected code p
 
 1. The change name passed as an argument: `specs/changes/<name>/` (`proposal.md`,
    `domain.md`, `architecture.md`, `plan.md` with its `Test first:` / `Verify:` lines, plus
-   any other files there, e.g. `decisions.md`).
+   any other files there), plus the change's entries in `DECISIONS.md` at the project root
+   (choices made unattended — check the code matches them).
 2. The active change in `specs/changes/` matching the branch name or the touched area; if
    exactly one change is active, use it.
 3. Issue references in the commit messages (`#123`, `Closes #45`, …) or a spec path the user
    gave.
 4. Nothing found: ask the user. If there is no spec, skip the Spec axis and say "no spec
-   available" in the report. If running unattended, skip it without asking.
+   available" in the report. If running unattended, skip it without asking and log that in
+   `DECISIONS.md` (format: `../../reference/decisions.md`).
 
 **Standards sources**: anything in the repo that documents how code should be written, such
 as `CODING_STANDARDS.md`, `CONTRIBUTING.md`, `CLAUDE.md`, `AGENTS.md`, linter configs'

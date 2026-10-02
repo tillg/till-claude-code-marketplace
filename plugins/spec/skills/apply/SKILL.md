@@ -21,10 +21,10 @@ ambiguous you MUST prompt for available changes.
    If a name is provided, use it. Otherwise:
    - Infer from conversation context if the user mentioned a change
    - Auto-select if only one active change exists in `specs/changes/`
-   - If ambiguous, list the directories in `specs/changes/` (excluding `archive/`)
-     and use the **AskUserQuestion tool** to let the user select
-   - If running unattended (no user to answer), make a sensible choice, note
-     it, and continue
+   - If ambiguous, list the directories in `specs/changes/` and use the
+     **AskUserQuestion tool** to let the user select
+   - If running unattended (no user to answer), make a sensible choice,
+     log it in `DECISIONS.md` at the project root (format: `../../reference/decisions.md`), and continue
 
    Always announce: "Using change: <name>" and how to override (e.g.,
    `/spec:apply <other>`).
@@ -99,7 +99,7 @@ ambiguous you MUST prompt for available changes.
    - User interrupts
 
    If running unattended (no user to answer), make a sensible choice for an
-   unclear step, note it, and continue instead of pausing — but never tick a
+   unclear step, log it in `DECISIONS.md` at the project root (format: `../../reference/decisions.md`), and continue instead of pausing — but never tick a
    step whose Verify fails, and never weaken a test to get there: stop at
    that step and report.
 
@@ -109,6 +109,7 @@ ambiguous you MUST prompt for available changes.
    - Steps completed this session
    - Overall progress: "N/M steps complete"
    - If all done: suggest `/spec:adversarial-code-review`, then `/spec:archive`
+   - Decisions logged in `DECISIONS.md` this run, if any
    - If paused: explain why and wait for guidance
 
 **Output During Implementation**

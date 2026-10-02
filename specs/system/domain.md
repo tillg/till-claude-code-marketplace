@@ -54,7 +54,8 @@ Semantic versioning per plugin. The version appears in both `plugin.json` and
 |------|---------|
 | System description | `specs/system/*.md` — what the system **is** and does now (domain, architecture, functional). Updated at archive. |
 | Change | One planned modification, `specs/changes/<name>/`, kebab-case name. Temporary: deleted at archive. |
-| Artifact | A file of a change: `proposal.md` (what/why), `domain.md` (concepts), `architecture.md` (how), `plan.md` (steps); extras such as `decisions.md` allowed. |
+| Artifact | A file of a change: `proposal.md` (what/why), `domain.md` (concepts), `architecture.md` (how), `plan.md` (steps); extras such as `risks.md` allowed. |
+| Decisions log | `DECISIONS.md` at the project root: append-only record of choices a skill made in an unattended run (question, choice, alternatives, status `open` / `confirmed` / `reverted`). Format in `plugins/spec/reference/decisions.md`. |
 | Spec frontmatter | YAML block on every spec file. Change files: `feature`, `title`, `status`, `order`, `created`, `edited`. System files: `title`, `created`, `edited`. Defined in `plugins/spec/reference/frontmatter.md`. |
 | Status | Lifecycle of a whole change, same in every file: `exploring`, `proposed`, `applying`, `applied`. |
 | Plan step | A checkbox in `plan.md` with a `Test first:` and a `Verify:` line (`plugins/spec/reference/plan.md`). |
@@ -165,7 +166,7 @@ for `/spec:grill`.
 
 ```mermaid
 graph TD
-    M[Marketplace] --> S[spec v9.0.0]
+    M[Marketplace] --> S[spec v10.0.0]
     M --> H[md2html v0.5.0]
     M --> B[agent-bus v0.4.0]
     M --> P[md2pdf v1.0.0]

@@ -37,7 +37,7 @@ Show the spec workflow overview and assess current status.
 
 2. **Assess active changes**
 
-   List directories in `specs/changes/` (excluding `archive/`).
+   List directories in `specs/changes/`.
 
    **If no active change exists:** Report that and suggest next steps:
    > No active changes. Run `/spec:explore` to think through an idea, or

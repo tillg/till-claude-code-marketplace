@@ -43,9 +43,9 @@ OR a description of what the user wants to build.
 
 1. **Check for work in progress**
 
-   List the directories in `specs/changes/` (excluding `archive/`) other than
-   the one being proposed, and read each one's `status` (majority rule, see
-   "When the files disagree" in `../../reference/frontmatter.md`; no frontmatter → infer as
+   List the directories in `specs/changes/` other than the one being
+   proposed, and read each one's `status` (majority rule, see "When the
+   files disagree" in `../../reference/frontmatter.md`; no frontmatter → infer as
    `/spec:overview` does).
 
    **If none:** continue.
@@ -67,7 +67,8 @@ OR a description of what the user wants to build.
    - **Continue anyway** — propose in parallel.
 
    If running unattended: don't archive (it commits and deletes), continue,
-   and name the open changes in the summary.
+   log the open changes in `DECISIONS.md` at the project root (format:
+   `../../reference/decisions.md`), and name them in the summary.
 
 1. **Ensure a system description exists**
 
@@ -119,7 +120,7 @@ Show brief progress after each: "Created proposal.md", etc.
 
 If an artifact requires user input (unclear context), use **AskUserQuestion
 tool** to clarify, then continue. If running unattended (no user to answer), make a
-sensible choice, note it, and continue.
+sensible choice, log it in `DECISIONS.md` at the project root (format: `../../reference/decisions.md`), and continue.
 
 1. **Open the HTML view (runs `/spec:view` for this change)**
 
@@ -168,8 +169,9 @@ edited: YYYY-MM-DD
 - Always read earlier artifacts before creating later ones
 - If context is critically unclear, ask the user — but prefer making reasonable
   decisions to keep momentum
-- If running unattended (no user to answer), make a sensible choice, note it,
-  and continue.
+- If running unattended (no user to answer), make a sensible choice, log it
+  in `DECISIONS.md` at the project root, and continue; the summary lists the
+  entries added.
 - Edit spec files with the Edit/Write tools, not sed/python in Bash, so the
   md2html lint hook sees every change
 - Verify each artifact file exists after writing before proceeding to next

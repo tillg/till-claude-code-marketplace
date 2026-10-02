@@ -78,7 +78,7 @@ You have full context of the spec system. Use it naturally, don't force it.
 ### Check for context
 
 At the start, quickly check what exists by listing directories in
-`specs/changes/` (excluding `archive/`).
+`specs/changes/`.
 
 This tells you:
 - If there are active changes

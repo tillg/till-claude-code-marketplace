@@ -37,7 +37,7 @@ When enabled, Claude Code checks for new plugin versions at startup.
 `/spec:overview` also compares its version with the remote
 `marketplace.json`.
 
-## Plugin: spec (v9.0.0)
+## Plugin: spec (v10.0.0)
 
 ### User Journey: Spec-driven change
 
@@ -92,13 +92,18 @@ and marks it "(inferred)"; md2html lint warns.
 ### Artifacts
 - `specs/system/` — persistent system description (domain, architecture, functional)
 - `specs/changes/<name>/` — temporary change artifacts (proposal, domain,
-  architecture, plan; optional extras such as `decisions.md`)
+  architecture, plan; optional extras such as `risks.md`)
+- `DECISIONS.md` (project root) — append-only log of choices made in
+  unattended runs, across all changes
 - Spec HTML next to each `.md` and `index.html` — gitignored, local only
 
 ### Unattended runs
-Skills that would ask make a sensible choice and note it — except grill
-(stops), archive selection (always asks) and propose's archive offer (never
-archives unattended). apply never ticks a step whose Verify fails.
+Skills that would ask make a sensible choice and log it in `DECISIONS.md` at
+the project root (question, choice, alternatives, status `open` →
+`confirmed` / `reverted`; format in `plugins/spec/reference/decisions.md`) —
+except grill (stops), archive selection (always asks) and propose's archive
+offer (never archives unattended). apply never ticks a step whose Verify
+fails. Each run's summary lists the decisions it logged.
 
 ## Plugin: md2html (v0.5.0)
 

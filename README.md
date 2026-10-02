@@ -145,7 +145,13 @@ archived.
 (`Test first:`) and the command that proves it done (`Verify:`).
 `/spec:apply` runs red → green → verify per step and ticks a step only when
 its verify command and the full suite pass; `/spec:archive` runs the tests
-again before committing. The format is in
+again before committing.
+
+**Unattended runs leave a trail.** When a spec skill runs without a user and
+has to make a choice it would normally ask about, it appends an entry to
+`DECISIONS.md` in the project root (question, choice, alternatives, status
+`open` until you confirm or revert it). Format:
+[`plugins/spec/reference/decisions.md`](plugins/spec/reference/decisions.md). The format is in
 [`plugins/spec/reference/plan.md`](plugins/spec/reference/plan.md).
 
 The flow is fluid, not rigid — you can loop back from iterate to propose when

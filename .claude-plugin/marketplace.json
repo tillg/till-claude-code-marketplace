@@ -16,7 +16,7 @@
       "name": "spec",
       "source": "./plugins/spec",
       "description": "Spec workflow — document, explore, propose, grill, iterate, apply test-first, review, and archive changes, and view them as HTML",
-      "version": "9.0.0",
+      "version": "10.0.0",
       "author": {
         "name": "Till Gartner"
       },

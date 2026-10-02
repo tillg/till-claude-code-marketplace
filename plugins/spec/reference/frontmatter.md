@@ -25,7 +25,7 @@ are a warning.
 | `feature` | yes | kebab-case string, **= the directory name** (**linted**) | Which change this file belongs to. Renaming the directory means renaming `feature` in every file. |
 | `title` | yes | non-empty string, quoted (**linted**: a `: ` inside an unquoted value breaks YAML) | Page title in the HTML view and its nav. Form `"<Artifact>: <short title>"`, same text as the file's `# …` heading. |
 | `status` | yes | one of `exploring` · `proposed` · `applying` · `applied` (**linted**) | Where the **whole change** really is — see the status table. Identical in every file of the change (**linted**). |
-| `order` | no | integer ≥ 0 (**linted**) | Position in the change's nav; the lowest opens first. `1` proposal, `2` domain, `3` architecture, `4` plan; extra files (`decisions.md`, notes) use `5`+ or omit it (sorted after numbered files, then by name). |
+| `order` | no | integer ≥ 0 (**linted**) | Position in the change's nav; the lowest opens first. `1` proposal, `2` domain, `3` architecture, `4` plan; extra files (`risks.md`, notes) use `5`+ or omit it (sorted after numbered files, then by name). |
 | `created` | yes | ISO date `YYYY-MM-DD` (**linted**) | Day the file was first written. Never changes. |
 | `edited` | yes | ISO date, ≥ `created` (**linted**) | Day of the last **content** change. A status-only change does not bump it. |
 
