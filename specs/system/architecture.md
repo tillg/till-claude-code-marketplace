@@ -1,7 +1,7 @@
 ---
 title: "Architecture: Claude Code Plugin Marketplace"
 created: 2026-04-15
-edited: 2026-10-02
+edited: 2026-10-06
 ---
 
 # Architecture: Claude Code Plugin Marketplace
@@ -31,15 +31,17 @@ graph LR
   marketplace.json           # Registry manifest — lists all plugins
 
 plugins/
-  spec/                      # Spec workflow (v11.0.0), pure prompt
+  spec/                      # Spec workflow (v12.0.0), pure prompt
     .claude-plugin/plugin.json   # depends on mattpocock-skills
     reference/
       frontmatter.md         # canonical spec frontmatter + status lifecycle
-      plan.md                # plan-step format + test-first cycle
-      decisions.md           # DECISIONS.md format: runs (#), decisions (##), Contents
+      plan.md                # plan-step format, Depends on:, test-first cycle
+      decisions.md           # DECISIONS.md format + reviewing, counting, promotion
+      issue-tracker.md       # how skills use Pocock's docs/agents/issue-tracker.md
+      unattended.md          # interactive / unattended / inside /autonomous rules
     skills/
-      overview/ document-system/ explore/ propose/ grill/
-      iterate/ apply/ adversarial-code-review/ archive/ view/
+      overview/ document-system/ explore/ propose/ grill/ iterate/
+      apply/ adversarial-code-review/ archive/ view/ tweak/ retro/
 
   md2html/                   # Markdown → HTML (v0.6.0), Node
     .claude-plugin/plugin.json
@@ -56,7 +58,7 @@ plugins/
     scripts/watch.mjs            # fs.watch → spawns claude -p
     skills/coordinate/
 
-  autonomous/                # Unattended work mode (v1.0.0), pure prompt
+  autonomous/                # Unattended work mode (v2.0.0), pure prompt
     skills/autonomous/       # sets `name:` on purpose → /autonomous (no prefix)
       decisions-format.md    # identical copy of spec's reference/decisions.md
 
@@ -139,7 +141,30 @@ graph LR
 
 - **spec → mattpocock-skills**: declared in `plugin.json` `dependencies`;
   `marketplace.json` allows it via `allowCrossMarketplaceDependenciesOn:
-  ["mattpocock"]`. Only `/spec:grill` uses it.
+  ["mattpocock"]`. `/spec:grill` calls its skills; spec also reads the issue
+  tracker config its `/setup-matt-pocock-skills` writes
+  (`docs/agents/issue-tracker.md`, `triage-labels.md`) — optional, nothing
+  breaks without it.
+- **autonomous → spec**: `/autonomous` drives spec skills by reading their
+  `SKILL.md` (they are user-invoked only); their "inside an `/autonomous` run"
+  rules live in `plugins/spec/reference/unattended.md`. Without spec,
+  `/autonomous` works alone (own copy of the decisions format, its own retro
+  fallback).
+
+### Spec workflow design decisions
+
+Settled in the `pocock-inspired-flow` change (inspired by Matt Pocock's
+skills v1.3.1, grilled before apply):
+
+| Decision | Alternatives | Why |
+|---|---|---|
+| Archive blocks on the change's open decisions and pending reverts | warn only | 80/80 decisions in karpathy_app stayed open behind warnings; only a gate gets them reviewed |
+| `/spec:tweak` has no change directory | a change dir with only `plan.md` | No change to status definitions or md2html lint; w12spec's tweak works the same way |
+| Retro: mechanical fix first, plugin fixes as upstream issues | lessons file; edit the plugin cache | Prose grows (w12-free); cache edits vanish on update |
+| `--parallel` conflicts → serial re-run, never resolved by hand | an LLM merger | A redo is always correct; Pocock's merger is underspecified |
+| Reuse Pocock's tracker config and selection | own `/spec:setup` | One source of truth; his skills and ours agree on where issues live |
+| `/autonomous` may do whatever it takes, within 3 hard limits | a whitelist | A whitelist ends at the next unforeseen blocker; the 3 limits are never needed to move on and can't be undone |
+| Shared rules in `reference/*.md`, skills keep pointers | rules restated per skill | One edit per rule instead of 4–7 |
 
 ## md2html internals
 
@@ -200,7 +225,7 @@ not registered by `plugin.json`; projects wire them up.
 
 | Plugin | Runtime | Dependencies | Install mechanism |
 |--------|---------|-------------|-------------------|
-| spec | None | Plugin: mattpocock-skills (for grill); optional md2html ≥ 0.3.0 (for view) | Claude Code plugin dependencies |
+| spec | None | Plugin: mattpocock-skills (for grill, and its tracker config); optional md2html ≥ 0.3.0 (for view); optional `gh`/`glab` (issue tracker) | Claude Code plugin dependencies |
 | md2html | Node.js 20+ | None at runtime (bundled); dev: unified/remark, yaml, esbuild | Committed `dist/` |
 | agent-bus | Node.js (watch.mjs only), sh | None | — |
 | autonomous | None | Optional: spec (for spec changes), Playwright MCP (for e2e tests) | Pure prompt |

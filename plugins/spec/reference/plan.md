@@ -37,6 +37,32 @@ By kind of step:
 Order steps so each test can be written against what earlier steps built. The plan ends with
 a plain note (not a checkbox): "System docs are updated at `/spec:archive`."
 
+## Step dependencies (optional)
+
+A plan whose steps don't all build on each other can say which do, so `/spec:apply
+--parallel` can run independent steps at the same time:
+
+```markdown
+- [ ] Parse the config file
+  - Depends on: none
+  - Test first: `test/config.test.mjs` › "reads reports.json" — fails today: no parser
+  - Verify: `npm test` → all green
+- [ ] Render the menu from the config
+  - Depends on: 1
+  - Test first: …
+  - Verify: …
+```
+
+- `Depends on:` is a plain sub-bullet like `Test first:` and `Verify:`; it doesn't count
+  toward `N/M`.
+- Its value is the numbers of the steps that must be ticked first (counting checkbox steps
+  from 1 in plan order, across all sections), comma-separated, or `none` for a step that can
+  start right away.
+- **All or nothing:** if any step has `Depends on:`, every step has it. A plan without such
+  lines is a plain sequence — each step depends on the one before.
+- A step's dependencies come earlier in the plan; no cycles.
+- A **ready step** is an unticked step whose dependencies are all ticked.
+
 ## The cycle `/spec:apply` runs per step
 
 ```mermaid

@@ -1,7 +1,7 @@
 ---
 title: "Functional: Claude Code Plugin Marketplace"
 created: 2026-04-15
-edited: 2026-10-02
+edited: 2026-10-06
 ---
 
 # Functional: Claude Code Plugin Marketplace
@@ -37,12 +37,13 @@ When enabled, Claude Code checks for new plugin versions at startup.
 `/spec:overview` also compares its version with the remote
 `marketplace.json`.
 
-## Plugin: spec (v11.0.0)
+## Plugin: spec (v12.0.0)
 
 ### User Journey: Spec-driven change
 
 ```
-document-system → explore → propose → [grill | iterate] → apply → adversarial-code-review → archive
+document-system → explore → propose → [grill | iterate] → apply → adversarial-code-review → archive → retro
+small change:  tweak (inline plan → test-first → specs/system → one commit) → retro
 ```
 
 ```mermaid
@@ -61,25 +62,34 @@ graph LR
     I --> A
     A --> R[/spec:adversarial-code-review/]
     R --> AR[/spec:archive/]
-    AR -->|next change| E
+    AR --> RT[/spec:retro/]
+    RT -->|next change| E
+    P -.->|small enough| TW[/spec:tweak/]
+    TW -.->|outgrew the limits| P
+    TW --> RT
 ```
 
 `/spec:explore` fits anywhere; grill and iterate are optional and
-repeatable; `/spec:view` opens the specs as HTML at any time.
+repeatable; `/spec:view` opens the specs as HTML at any time. `/spec:tweak` is
+the light lane for small changes (about 3 steps, no new domain term, no open
+design question); propose offers it, and a tweak that outgrows the limits
+escalates to propose.
 
 ### Skills
 
 | Skill | Input | Output | Side effects |
 |-------|-------|--------|-------------|
-| `/spec:overview` | None | Status table, phase, maturity, workflow reference, version/update check | None (read-only); warns on status mismatches and unarchived `applied` changes |
+| `/spec:overview` | None | Status table, phase, maturity, workflow reference, version/update check, `Decisions: N open (K overrides), P pending reverts`, issue-tracker hint | Warns on status mismatches and unarchived `applied` changes; offers to review open decisions (writes their `Status`) |
 | `/spec:document-system` | Codebase | `specs/system/*.md` | Creates/updates system description files |
 | `/spec:explore` | Idea/question | Conversation | None, or `exploring` notes in a change dir on request |
-| `/spec:propose` | Change name or description | `specs/changes/<name>/` with proposal, domain, architecture, test-first plan; HTML view opened | First checks open changes and recommends archiving them; may run archive |
+| `/spec:propose` | Change name, description or issue reference (`#42`, URL, `.scratch/…`) | `specs/changes/<name>/` with proposal (with `**Issue:**` line when linked), domain, architecture, test-first plan (with `Depends on:` when steps are independent); HTML view opened | Offers `/spec:tweak` for small requests; checks open changes and recommends archiving them; may run archive; offers a tracking issue |
 | `/spec:grill` | Change name | Settled decisions written into the artifacts | Needs `mattpocock-skills` and a user to answer; stops otherwise |
 | `/spec:iterate` | Annotated artifacts | Clean consolidated artifacts | Rewrites artifact files; asks before finalizing |
-| `/spec:apply` | Change name | Code + tests | Per step: test first (red), code (green), Verify + full suite, tick; sets `applying` / `applied` |
-| `/spec:adversarial-code-review` | `[fixed-point] [change]` | Findings in three axes: Defects, Standards, Spec | Read-only; three parallel sub-agents |
-| `/spec:archive` | Change name | Two commits | Runs tests, updates `specs/system/`, commits (after approval), deletes the change dir, commits again |
+| `/spec:apply` | `[change] [--parallel]` | Code + tests | Per step: test first (red), code (green), Verify + full suite, tick; sets `applying` / `applied`. `--parallel`: ready steps run in Worker subagents in `.worktrees/<change>/step-<n>`, merged serially, commits on the current branch |
+| `/spec:adversarial-code-review` | `[fixed-point] [change]` | Findings in three axes: Defects, Standards, Spec | Read-only; three parallel sub-agents; with no change, the Spec axis reads the issues referenced in the commits |
+| `/spec:archive` | Change name | Two commits | Runs tests; decision gate (confirm/revert the change's decisions, blocks while one is open or a revert is pending); updates `specs/system/` and promotes lasting decisions; commits (after approval, `Closes #N` for a linked issue, optional close now); deletes the change dir, commits again |
+| `/spec:tweak` | Description or issue reference | Code + tests + updated `specs/system/`, one commit | No change dir; refuses a tree dirty from an open change; escalates to propose when it outgrows the limits |
+| `/spec:retro` | `[change \| fixed-point]` | Severity-ordered environment fixes (test → lint/hook/CI → skill edit → CLAUDE.md pointer) | Applies picked project-level fixes; drafts plugin-level issues on the plugin's repo, publishes after approval; writes no file of its own |
 | `/spec:view` | `[change]` | Browser page on `http://localhost:<port>` | Adds `specs` (with `DECISIONS.md` in its sources) to `reports.json`, `.gitignore` lines; starts one md2html watcher + server per project |
 
 ### States and transitions
@@ -98,21 +108,37 @@ and marks it "(inferred)"; md2html lint warns.
 - Spec HTML next to each `.md` and `index.html` — gitignored, local only
 
 ### Unattended runs
-Skills that would ask (and `/autonomous`) make a sensible choice and log it
-in `DECISIONS.md` at the project root — except grill (stops), archive selection (always asks) and propose's archive
-offer (never archives unattended). apply never ticks a step whose Verify
-fails. Each run's summary lists the decisions it logged.
+Three modes, defined once in `plugins/spec/reference/unattended.md`:
+**interactive** (ask), **unattended** (decide and log; no push, no remote
+tracker writes, no archive) and **inside an `/autonomous` run** (unattended
+plus the run's standing permission: commit, push, tracker writes, archive). In
+both unattended modes skills make a sensible choice and log it in
+`DECISIONS.md` at the project root — except grill (stops). apply never ticks a
+step whose Verify fails. Each run's summary lists the decisions it logged.
 
 ```mermaid
 graph TD
   T["Contents (TOC): runs, decisions nested"] --> R["# YYYY-MM-DD HH:MM — summary<br/>Started by · Task, as given (verbatim)"]
-  R --> D1["## HH:MM — the choice<br/>Status · Context · Question · Decision · Why · Alternatives · Consequences"]
+  R --> D1["## HH:MM — the choice<br/>Status · Overrides (if a rule was bent) · Context · Question · Decision · Why · Alternatives · Consequences"]
   R --> D2["## HH:MM — …"]
 ```
 
 One run per unattended invocation (a skill driven by `/autonomous` adds to
 the `/autonomous` run), appended in chronological order; a decision's
-`Status` goes `open` → `confirmed` / `reverted` when the user reviews it.
+`Status` goes `open` → `confirmed` / `reverted` when the user reviews it
+(`/spec:overview`'s review or archive's gate). A `reverted` decision is a
+**pending revert** until tweak or apply append `Undone in <hash>.`; archive
+blocks on it. Confirmed decisions with lasting weight are promoted at archive
+to `docs/adr/` or a Key decisions table.
+
+### Issue tracker
+Optional. spec reads Pocock's `docs/agents/issue-tracker.md` (written by
+`/setup-matt-pocock-skills`: GitHub, GitLab, local `.scratch/` or "other").
+Issue references go in to propose and tweak; a change records its linked issue
+as an `**Issue:**` line in `proposal.md`; archive and tweak end the commit with
+`Closes #N` and offer to close it; the review's Spec axis reads referenced
+issues. Writes ask first (inside `/autonomous`: allowed, with an AI
+disclaimer). Rules: `plugins/spec/reference/issue-tracker.md`.
 Format, ids and rules: `plugins/spec/reference/decisions.md` (identical copy
 in the autonomous plugin). `/spec:view` adds `DECISIONS.md` to the spec
 sources, so it is rendered (`/DECISIONS.html`, one row in the index) and
@@ -173,7 +199,7 @@ Wake-up options: `UserPromptSubmit` hook script, `watch.mjs` (starts
 `claude -p` on new mail), or `/loop 2m /agent-bus:coordinate`. Humans follow
 along with `tail -f .agent-bus/chat.md`.
 
-## Plugin: autonomous (v1.0.0)
+## Plugin: autonomous (v2.0.0)
 
 ### User Journey: Make progress while the user is away
 
@@ -182,16 +208,26 @@ along with `tail -f .agent-bus/chat.md`.
 ```
 
 1. Decide instead of asking; log each decision in `DECISIONS.md` at the
-   project root (status `open` → `confirmed` / `reverted` by the user).
+   project root (status `open` → `confirmed` / `reverted` by the user); one
+   `Overrides` decision per override kind per run.
 2. Work until done, test-first; parallel agents for independent sub-tasks;
-   a spec change is worked like `/spec:apply`.
-3. Self-review and fix (`/spec:adversarial-code-review` for spec changes).
-4. Test end-to-end until the user returns (Playwright MCP for web apps).
-5. Report decisions, what was built and tested, what is open.
+   a spec change is worked like `/spec:apply` (with `--parallel` when the
+   plan's `Depends on:` lines allow). Commit and push each green unit.
+3. Self-review and fix (`/spec:adversarial-code-review` for spec changes);
+   archive a finished change.
+4. Retro its own run: apply project-level fixes, draft plugin-level issues.
+5. Test end-to-end until the user returns (Playwright MCP for web apps).
+6. Report decisions (overrides first), every commit, push, branch/PR, tracker
+   write, archive and deploy, and what is open.
 
-Never pushes, archives, deletes non-test data or runs destructive git
-commands. Invoked as `/autonomous`: its `SKILL.md` sets `name` on purpose,
-the one exception to the repo's no-`name` rule.
+**Whatever it takes:** invoking it is the standing permission for every
+action the task needs — commit, push (a protected branch gets one
+`autonomous/<slug>` branch and PR), issues (AI disclaimer; close once the fix
+is on the default branch), archive, non-production deploys with the
+documented command. **Hard limits:** no force-push or history rewrite of
+pushed work, no deleting data it didn't create, no exposing secrets. Invoked
+as `/autonomous`: its `SKILL.md` sets `name` on purpose, the one exception to
+the repo's no-`name` rule.
 
 ## Plugin: md2pdf (v1.0.0)
 

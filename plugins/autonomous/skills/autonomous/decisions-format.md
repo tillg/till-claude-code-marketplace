@@ -38,7 +38,8 @@ graph TD
 - **Contents** at the top lists every run and, nested under it, its decisions.
 
 Runs and decisions are in chronological order: new ones go at the end. Old entries are never
-rewritten, except a decision's `Status`.
+rewritten, except a decision's `Status` and lines **appended** to its `Consequences` (later
+occurrences of an override kind, `Undone in …`, `Promoted to …`; see "Reviewing decisions").
 
 ## Complete example
 
@@ -75,6 +76,7 @@ edited: 2026-10-02
 ## 15:05 — Lock accounts after 5 failed logins {#run-2026-10-02-1430-2}
 
 - **Status:** open
+- **Overrides:** `/spec:apply` — pause when a step is unclear (the lockout limit isn't in the plan)
 - …
 ```
 
@@ -104,7 +106,8 @@ edited: 2026-10-02
 | Field | Content |
 |---|---|
 | Status | `open` when written; the user changes it to `confirmed` or `reverted` |
-| Context | where it came up: change, plan step, file — and why nothing settled it |
+| Overrides | **Only when the decision bends a guardrail**: a rule from a skill, a CLAUDE.md or the user's instructions. Names the rule and where it lives, e.g. `` `/spec:archive` — re-run the suite before archiving ``. Left out otherwise. |
+| Context | where it came up: change (its name in backticks, e.g. `` `add-auth` ``), plan step, file — and why nothing settled it |
 | Question | what had to be decided |
 | Decision | the choice |
 | Why | the reasons, specific to this project |
@@ -119,6 +122,68 @@ edited: 2026-10-02
 
 **Editing**
 - Use the Edit/Write tools, not sed/python in Bash, so the md2html lint hook checks the file.
+
+## Reviewing decisions
+
+Unattended runs decide; the user reviews. A decision is reviewed by setting its `Status`:
+
+- `confirmed`: the choice stands.
+- `reverted`: the choice must be undone. Undoing it is implementation work (`/spec:tweak` or
+  `/spec:apply`), test-first. When it is undone, append `Undone in <commit>.` to the
+  decision's Consequences; until then the revert is **pending**.
+
+A review edit (a `Status`, an appended line) is a content change: set the file's `edited` to
+today.
+
+**Counting** — mechanical, never by eye; the format puts `Overrides` right after `Status`:
+
+- open: `grep -c '^- \*\*Status:\*\* open' DECISIONS.md`
+- open overrides: `grep -A1 '^- \*\*Status:\*\* open' DECISIONS.md | grep -c '^- \*\*Overrides:\*\*'`
+- pending reverts: every `- **Status:** reverted` decision whose section (up to the next `##`)
+  has no `Undone in` line — list them by heading.
+
+**Marking a revert undone.** Whoever undoes a reverted decision — `/spec:tweak` at its commit,
+`/spec:apply` when it ticks the step that undoes it — appends `Undone in <commit hash>.` to
+that decision's Consequences in the same turn.
+
+**A change's decisions** are the decisions (any `Status`) in a run whose `Started by` or
+`Task, as given` names the change, plus those whose `Context` names it. "Names" means the
+whole name as a token — `` `<name>` `` or `specs/changes/<name>/` — never a substring
+(`auth` must not match `oauth` or `add-auth-v2`).
+
+**The review flow** (used by `/spec:archive` and `/spec:overview`):
+
+1. Collect the open decisions to review (grouped by run, oldest first; decisions with
+   `Overrides` first within a run).
+2. Ask with the **AskUserQuestion tool**, at most 4 decisions per call, showing each one's
+   title, Decision and Overrides: **Confirm** or **Revert**, plus **Stop reviewing** to end
+   early.
+3. Write each answer to its `Status` with Edit, and bump `edited`.
+4. List every pending revert with what has to be undone and how (`/spec:tweak` or
+   `/spec:apply`).
+
+**Where reviews happen**
+
+- `/spec:archive` runs the flow over the change's open decisions and **does not archive while
+  any of the change's decisions is `open` or a pending revert**. Inside an `/autonomous` run
+  there is nobody to ask: the decisions stay `open` and are listed in the archive commit.
+- `/spec:overview` shows `Decisions: N open (K overrides)` plus any pending reverts,
+  and offers the flow over all open decisions. This catches decisions that never reach an
+  archive gate. A decision confirmed there whose change is already archived (no
+  `specs/changes/<name>/` any more) is promoted right away, as "Promotion" below says.
+
+**Override kinds.** An `/autonomous` run logs **one** decision per kind of bent rule (e.g.
+"push to the default branch"), on its first occurrence. Later occurrences in the same run are
+appended to that decision's Consequences, not logged again.
+
+**Promotion.** At `/spec:archive`, every `confirmed` decision of the change that has no
+`Promoted to …` line yet, and that is hard to reverse, surprising without context **and** the
+result of a real trade-off, is promoted: into `docs/adr/NNNN-<slug>.md` if `docs/adr/` exists
+(next free number), else as a row of the decisions table in `specs/system/architecture.md` (a
+new "Key decisions" table — Decision · Alternatives · Why — if there is none). The ADR or row
+links back with a path relative to its own file (from `specs/system/`:
+`../../DECISIONS.md#<id>`; from `docs/adr/`: `../../DECISIONS.md#<id>`). Then append
+`Promoted to <path>.` to the decision's Consequences. Its `Status` stays `confirmed`.
 
 ## After the run
 

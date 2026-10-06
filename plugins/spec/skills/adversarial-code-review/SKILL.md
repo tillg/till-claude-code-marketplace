@@ -44,8 +44,13 @@ Each sub-agent then inspects the touched files and any directly connected code p
    (choices made unattended — check the code matches them).
 2. The active change in `specs/changes/` matching the branch name or the touched area; if
    exactly one change is active, use it.
-3. Issue references in the commit messages (`#123`, `Closes #45`, …) or a spec path the user
-   gave.
+3. The **issues referenced** in the commit messages (`#123`, `Closes #45`, …): fetch each (body and comments) as
+   `../../reference/issue-tracker.md` says, and use them as the spec, like Pocock's
+   `code-review`. No tracker config → use the references' text only and say so. Or a spec
+   path the user gave.
+
+With a change from 1 or 2 that has an `**Issue:**` line, fetch that issue too and add it to
+the Spec axis's sources.
 4. Nothing found: ask the user. If there is no spec, skip the Spec axis and say "no spec
    available" in the report. If running unattended, skip it without asking and log that in
    `DECISIONS.md` (format: `../../reference/decisions.md`).
@@ -178,13 +183,9 @@ Reporting them separately stops one axis from masking another.
 
 ## Review Rules
 
-- **`DECISIONS.md` format** (unattended runs; full rules in `../../reference/decisions.md`,
-  read it before the first entry): one **run** per invocation —
-  `# YYYY-MM-DD HH:MM — <summary> {#run-…}` with **Started by** and the **Task, as given**
-  (verbatim); one **decision** per choice — `## HH:MM — <the choice> {#run-…-n}` with Status
-  `open`, Context, Question, Decision, Why, Alternatives, Consequences; add both to the
-  **Contents** list at the top in the same edit. Called from inside a run (e.g. by
-  `/autonomous`), add to that run instead of starting one.
+- **Unattended runs** (no user to answer, or inside `/autonomous`): follow
+  `../../reference/unattended.md`; log choices in `DECISIONS.md` in the format of
+  `../../reference/decisions.md` (read it before the first entry).
 - Defects: focus on defects, not style nits; prefer concrete exploit or failure paths
 - Standards: style and smells belong here, labelled as judgement calls unless a documented
   rule is broken

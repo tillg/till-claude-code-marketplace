@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pocock skills vs. our spec workflow</title>
+<meta name="description" content="mattpocock/skills v1.3.1 compared with the spec plugin and w12spec, checked against karpathy_app and w12-free.">
+<meta name="generator" content="md2html 0.6.0">
+<style>
+@layer base, theme;
+@layer base {
+:root {
+  --bg: #fbfbfa; --fg: #1d1d1f; --muted: #5f6368; --line: #e3e3e0; --card: #ffffff;
+  --accent: #1f5bd6; --go: #1e7b3a; --go-bg: #e6f4ea; --partial: #8a5a00; --partial-bg: #fdf1d6;
+  --no: #b3261e; --no-bg: #fce8e6; --code: #f2f2ef; --figure-bg: #ffffff;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16171a; --fg: #e8e8ea; --muted: #a0a3a8; --line: #2c2e33; --card: #1e2024;
+    --accent: #8ab4ff; --go: #7fd49a; --go-bg: #173524; --partial: #f0c36a; --partial-bg: #3a2e12;
+    --no: #ff9b91; --no-bg: #3d1a17; --code: #26282d; --figure-bg: #ffffff; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #16171a; --fg: #e8e8ea; --muted: #a0a3a8; --line: #2c2e33; --card: #1e2024;
+  --accent: #8ab4ff; --go: #7fd49a; --go-bg: #173524; --partial: #f0c36a; --partial-bg: #3a2e12;
+  --no: #ff9b91; --no-bg: #3d1a17; --code: #26282d; --figure-bg: #ffffff; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; overflow-wrap: break-word; }
+main { max-width: 980px; margin: 0 auto; padding: 32px 16px 80px; }
+.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.appicon { flex: none; width: 48px; height: 48px; border-radius: 11px; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 1.4rem; margin: 48px 0 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+h3 { font-size: 1.1rem; margin: 28px 0 8px; }
+p, li { max-width: 72ch; }
+a { color: var(--accent); }
+code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: .88em; }
+pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 12px 0; overflow-x: auto; line-height: 1.45; }
+pre code { background: none; padding: 0; border-radius: 0; font-size: .85rem; }
+blockquote { margin: 12px 0; padding: 0 0 0 16px; border-left: 3px solid var(--line); color: var(--muted); }
+img { max-width: 100%; height: auto; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 32px 0; }
+hr + h2 { border-top: 0; padding-top: 0; margin-top: 0; }
+.sub { color: var(--muted); margin: 0 0 24px; }
+.sub img { height: 1.2em; width: auto; vertical-align: middle; }
+.tldr { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; }
+.tldr p:first-child { margin-top: 0; }
+.tldr > :last-child { margin-bottom: 0; }
+nav.toc { columns: 2; column-gap: 32px; font-size: .95rem; margin-top: 20px; }
+nav.toc a { display: block; padding: 2px 0; }
+@media (max-width: 640px) { nav.toc { columns: 1; } }
+.tbl { overflow-x: auto; margin: 12px 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+th { font-weight: 600; background: var(--code); }
+tr:last-child td { border-bottom: 0; }
+th[align="center"], td[align="center"] { text-align: center; }
+th[align="right"], td[align="right"] { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+td.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.v { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: .8rem; font-weight: 600; }
+td .v { white-space: nowrap; }
+.go { color: var(--go); background: var(--go-bg); }
+.partial { color: var(--partial); background: var(--partial-bg); }
+.no { color: var(--no); background: var(--no-bg); }
+figure { margin: 16px 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+figure img { display: block; max-width: 100%; height: auto; margin: 0 auto; background: var(--figure-bg); border-radius: 6px; }
+figcaption { color: var(--muted); font-size: .85rem; margin-top: 8px; text-align: center; }
+figcaption a.mmd-src { white-space: nowrap; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px; margin: 12px 0; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; min-width: 0; }
+.card h4 { margin: 0 0 6px; font-size: 1rem; }
+.card p { margin: 6px 0; font-size: .93rem; }
+.contains-task-list { list-style: none; padding-left: 20px; }
+.footnotes { margin-top: 48px; padding-top: 12px; border-top: 1px solid var(--line); font-size: .9rem; color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+.reports-nav { display: flex; align-items: center; gap: 4px;
+  padding: 8px 16px; overflow-x: auto; white-space: nowrap; scrollbar-width: none;
+  background: var(--card); border-bottom: 1px solid var(--line);
+  font: 500 14px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }
+.reports-nav::-webkit-scrollbar { display: none; }
+.reports-nav .brand { display: flex; align-items: center; gap: 8px; margin-right: 8px; color: var(--muted); }
+.reports-nav .brand img { width: 20px; height: 20px; border-radius: 5px; }
+.reports-nav a.item { padding: 6px 12px; border-radius: 999px; color: var(--fg); text-decoration: none; }
+.reports-nav a.item:hover { background: rgba(127,127,127,.12); }
+.reports-nav a.item[aria-current="page"] { background: var(--accent); color: var(--bg); }
+
+.report-meta { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 4px 0 16px; padding: 0; font-size: .88rem; }
+.report-meta div { display: flex; align-items: baseline; gap: 6px; }
+.report-meta dt { color: var(--muted); }
+.report-meta dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+.report-status { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; }
+.report-status.research { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.report-status.ongoing { color: var(--partial); background: var(--partial-bg); }
+.report-status.implemented { color: var(--go); background: var(--go-bg); }
+}
+@layer theme {
+}
+</style>
+</head>
+<body>
+<nav class="reports-nav" aria-label="Reports"><span class="brand">Reports</span></nav>
+<main>
+<header class="top"><h1>Pocock skills vs. our spec workflow</h1></header>
+<dl class="report-meta"><div><dt>Created</dt><dd>2026-10-05</dd></div><div><dt>Last edited</dt><dd>2026-10-05</dd></div><div><dt>Status</dt><dd><span class="report-status research">Research</span></dd></div></dl>
+<p class="sub">mattpocock/skills v1.3.1 compared with the <code>spec</code> plugin and w12spec, checked against karpathy_app and w12-free.</p>
+<div class="tldr">
+<p><strong>Short answer:</strong> Matt optimises the <strong>path into code</strong>: grill, ticket graph, parallel worktree agents, then a retro that hardens the environment. We optimise <strong>what the repo knows afterwards</strong>: a living <code>specs/system/</code> folded back at archive, Verify commands on every step, three-axis review and a <code>DECISIONS.md</code> for unattended runs.</p>
+<ul>
+<li><strong>He is stronger</strong> at parallelism (<code>implement-spec</code>), using the issue tracker as shared state, context hygiene, and starting small: <code>/implement</code> is 4 lines.</li>
+<li><strong>We are stronger</strong> at long-term spec truth (his specs are never updated once they become issues), checkable test-first plans, review depth, and auditable autonomy.</li>
+<li><strong>Our weak spot is cost on small changes.</strong> In karpathy_app a 12-line request produced ≈370 lines of spec for ≈50 lines of UI. w12-free had to invent a light <code>tweak</code> tier for exactly this reason.</li>
+<li><strong>Best moves:</strong> borrow his <code>retro</code>, his tracker-as-state and his worktree parallelism. Add a light lane, plus a review step for open decisions. Keep the system fold-back.</li>
+</ul>
+</div>
+<nav class="toc" aria-label="Contents">
+<a href="#context">1. Context</a>
+<a href="#steps">2. Steps side by side</a>
+<a href="#pocock-stronger">3. Where Pocock is stronger</a>
+<a href="#we-stronger">4. Where we are stronger</a>
+<a href="#scaling">5. Small vs. large projects</a>
+<a href="#recommendation">6. Worth borrowing</a>
+<a href="#sources">7. Sources</a>
+</nav>
+<h2 id="context">1. Context</h2>
+<p>Matt Pocock released <strong>v1.3.1</strong> of <a href="https://github.com/mattpocock/skills">mattpocock/skills</a> on 2026-10-04. This report compares it with our workflow on four questions: what the steps are, where each side is stronger, how each scales, and what to borrow.</p>
+<p>"Our workflow" turned out to be <strong>two</strong> things:</p>
+<ul>
+<li><strong><code>spec</code> plugin</strong> (this marketplace, spec 11.0.0, autonomous 1.0.0, md2html 0.6.0). karpathy_app uses it.</li>
+<li><strong>w12spec</strong>, the in-repo workflow of <strong>w12-free</strong>: about 45 skills, a 545-line contract (<code>specs/platform/w12spec.md</code>) and a 2,046-line <code>scripts/workflow.sh</code>. w12-free does <strong>not</strong> use the <code>spec</code> plugin. w12spec is a heavier sibling that shares the same ideas: fresh context per phase, on-disk handoff, the coder never grades its own work, and "decide and log" when unattended.</li>
+</ul>
+<p>The two projects used as evidence:</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Project</th>
+<th>Size</th>
+<th>Pace</th>
+<th>Workflow</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>karpathy_app ("smaller")</td>
+<td>≈14k LOC app + deploy, ≈13k test LOC, 512 files</td>
+<td>155 commits in 11 days, 9 archived changes</td>
+<td><code>spec</code> plugin + <code>/autonomous</code> + Pocock grilling/glossary</td>
+</tr>
+<tr>
+<td>w12-free ("larger")</td>
+<td>≈2M LOC Java/TS (≈60 % tests), ≈6 active humans</td>
+<td>18,218 commits in 5.5 months, ≈189 epics/bugs</td>
+<td>w12spec (own), Pocock grilling adapted</td>
+</tr>
+</tbody>
+</table></div>
+<p>karpathy_app is not tiny. It is small compared with w12-free, but the overhead on small changes shows up <em>inside</em> it, change by change.</p>
+<h2 id="steps">2. Steps side by side</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Pocock (v1.3.1)</th>
+<th><code>spec</code> plugin</th>
+<th>w12spec (w12-free)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Setup</td>
+<td><code>/setup-matt-pocock-skills</code> → <code>docs/agents/</code> (tracker, labels, domain)</td>
+<td><code>/spec:document-system</code> → <code>specs/system/{domain,architecture,functional}.md</code></td>
+<td><code>specs/system</code>, <code>specs/modules</code> (27.7k lines), <code>specs/platform</code></td>
+</tr>
+<tr>
+<td>Orient / route</td>
+<td><code>ask-matt</code> router + <code>PHASE-BOUNDARIES.md</code></td>
+<td><code>/spec:overview</code> (phase, maturity, YOU ARE HERE)</td>
+<td><code>workflow.sh next-story</code> / <code>story-health</code></td>
+</tr>
+<tr>
+<td>Think</td>
+<td><code>/grill-with-docs</code> → <code>GLOSSARY.md</code>, ADRs in <code>docs/adr/</code></td>
+<td><code>/spec:explore</code>, <code>/spec:grill</code> (calls Pocock's grilling + domain-modeling, writes into the change's <code>domain.md</code> / architecture decisions)</td>
+<td><code>grill-me</code> / <code>grill-with-docs</code> adapted to <code>specs/system/domain.md</code> and ADRs</td>
+</tr>
+<tr>
+<td>Prototype</td>
+<td><code>/prototype</code> (throwaway HTML on its own branch), <code>/handoff</code></td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Specify</td>
+<td><code>/to-spec</code> → <strong>issue</strong> (user stories, test seams, no file paths)</td>
+<td><code>/spec:propose</code> → <code>specs/changes/&#x3C;name>/</code> with <code>proposal</code>, <code>domain</code>, <code>architecture</code>, <code>plan</code> (frontmatter, status)</td>
+<td><code>create-epic</code> / <code>create-story</code> → <code>epic.md</code> (median 225 lines), <code>spec.md</code> (94)</td>
+</tr>
+<tr>
+<td>Refine</td>
+<td>—</td>
+<td><code>/spec:iterate</code> (consolidates the user's inline annotations)</td>
+<td><code>plan</code> → <code>plan.md</code> (median 155), learnings search</td>
+</tr>
+<tr>
+<td>Slice</td>
+<td><code>/to-tickets</code> → vertical-slice issues with <strong>blocking edges</strong></td>
+<td>Plan steps (<code>Test first:</code> / <code>Verify:</code>) inside <code>plan.md</code></td>
+<td>Stories under an epic, <code>.meta</code> files, epic branch</td>
+</tr>
+<tr>
+<td>Build</td>
+<td><code>/implement</code> (tdd → code-review → commit, fresh context per ticket) or <code>/implement-spec</code> (<strong>parallel worktree subagents</strong>, integration branch)</td>
+<td><code>/spec:apply</code> (baseline suite, red → green → refactor per step, tick only when Verify is green)</td>
+<td><code>pick-up</code> → <code>execute</code>; overnight <code>run-epic</code> (Codex/pi writes, Claude reviews)</td>
+</tr>
+<tr>
+<td>Review</td>
+<td><code>code-review</code>: 2 axes (Standards, Spec), parallel</td>
+<td><code>/spec:adversarial-code-review</code>: 3 axes (Defects, Standards + smell baseline, Spec + <code>DECISIONS.md</code>)</td>
+<td>Independent <code>review:</code> / <code>review-fix:</code> loop (630 / 259 commits)</td>
+</tr>
+<tr>
+<td>Ship</td>
+<td><code>pr</code> (Merge Danger, Before/After)</td>
+<td><code>/spec:archive</code>: re-run suite, update <code>specs/system/*</code>, 2 commits, delete change dir</td>
+<td><code>complete-story</code> / <code>complete-epic</code>: fold into module specs, ADRs, learnings, delete change dir</td>
+</tr>
+<tr>
+<td>Learn</td>
+<td><code>/retro</code> → linter rules, hooks, CI, <code>CODING_STANDARDS.md</code></td>
+<td>—</td>
+<td><code>specs/learnings/</code> (174 files) searched at plan time</td>
+</tr>
+<tr>
+<td>Unattended</td>
+<td>AFK only per ticket/subagent; <code>chief-of-staff</code> experimental on <code>main</code></td>
+<td><code>/autonomous</code>: decide, log in <code>DECISIONS.md</code>, test-first, self-review</td>
+<td><code>run-epic-overnight.sh</code> (935 lines), "decide and log" policy</td>
+</tr>
+<tr>
+<td>Small change</td>
+<td><code>/grill-with-docs</code> → <code>/implement</code></td>
+<td>none: always 4 artifacts</td>
+<td><code>w12spec-tweak</code> (no change dir, spec updated in place)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="pocock-stronger">3. Where Pocock is stronger</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Pocock</th>
+<th>Us</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Parallel build</td>
+<td><code>implement-spec</code>: task graph, worktree per ticket, merger subagent</td>
+<td>One change at a time; parallel changes discouraged, no worktree flow</td>
+<td><span class="v go">Pocock</span></td>
+</tr>
+<tr>
+<td>Shared state</td>
+<td>Issue tracker (GitHub/GitLab/local <code>.scratch/</code>) with native blocking links; any session claims a ready ticket</td>
+<td>Files in <code>specs/changes/</code>; no notion of "ready" or claiming</td>
+<td><span class="v go">Pocock</span></td>
+</tr>
+<tr>
+<td>Learning loop</td>
+<td><code>/retro</code> turns mistakes into linters, hooks and CI; <code>CLAUDE.md</code> stays thin</td>
+<td>Nothing in the plugin; w12spec has learnings, but those are prose</td>
+<td><span class="v go">Pocock</span></td>
+</tr>
+<tr>
+<td>Context hygiene</td>
+<td><code>PHASE-BOUNDARIES.md</code>: continue → <code>/clear</code> → <code>/handoff</code> → subagent → <code>/compact</code>, ≈150k "smart zone"</td>
+<td>Implicit (fresh contexts per agent)</td>
+<td><span class="v partial">Pocock</span></td>
+</tr>
+<tr>
+<td>Getting started</td>
+<td><code>/implement</code> is 4 lines; skills are composable, "not a framework"</td>
+<td>≈11k words across spec skills; propose always writes 4 files and starts a viewer</td>
+<td><span class="v go">Pocock</span></td>
+</tr>
+<tr>
+<td>Design vocabulary</td>
+<td><code>codebase-design</code> (deep modules, seams, deletion test), test seams agreed up front</td>
+<td>Plan steps name tests, but no shared design vocabulary</td>
+<td><span class="v partial">Pocock</span></td>
+</tr>
+<tr>
+<td>Triage / intake</td>
+<td><code>/triage</code> with label states and <code>.out-of-scope/</code> memory</td>
+<td>— (w12-free: backlog of 1,037 files, 221 needing a human decision)</td>
+<td><span class="v go">Pocock</span></td>
+</tr>
+<tr>
+<td>Portability</td>
+<td>Claude Code + Codex (<code>agents/openai.yaml</code>)</td>
+<td>Claude Code only (w12spec: Claude/Codex/pi)</td>
+<td><span class="v partial">Pocock</span></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="we-stronger">4. Where we are stronger</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Us</th>
+<th>Pocock</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spec truth after shipping</td>
+<td><code>specs/system/</code> is updated at every archive (karpathy_app: 14 commits, ≈2.1k lines, current)</td>
+<td>Specs live in issues, are never updated, ban file paths; only <code>GLOSSARY.md</code> + ADRs persist</td>
+<td><span class="v go">we</span></td>
+</tr>
+<tr>
+<td>Verifiable plans</td>
+<td>Every step has <code>Test first:</code> and a runnable <code>Verify:</code>; a step is ticked only when green; archive re-runs the suite</td>
+<td><code>tdd</code> at agreed seams; <code>implement</code> has no explicit acceptance check</td>
+<td><span class="v go">we</span></td>
+</tr>
+<tr>
+<td>Review depth</td>
+<td>3 separate axes incl. <strong>Defects</strong>; it finds real bugs (karpathy_app: SVG sanitising, fail-closed egress, DNS token owner)</td>
+<td>2 axes (Standards, Spec); no dedicated defect hunt</td>
+<td><span class="v go">we</span></td>
+</tr>
+<tr>
+<td>Unattended work</td>
+<td><code>/autonomous</code> + <code>DECISIONS.md</code> (karpathy_app: 7 runs, 80 decisions with alternatives and rollback)</td>
+<td>No decision log, no stop conditions</td>
+<td><span class="v go">we</span></td>
+</tr>
+<tr>
+<td>Mechanical checks</td>
+<td>md2html lint hook on spec frontmatter and status; deterministic HTML view</td>
+<td>Prose discipline (but <code>retro</code> pushes towards checks)</td>
+<td><span class="v go">we</span></td>
+</tr>
+<tr>
+<td>Lifecycle visibility</td>
+<td><code>status</code> (<code>exploring → proposed → applying → applied</code>), <code>/spec:overview</code>, <code>/spec:view</code></td>
+<td>Labels on issues; no local overview</td>
+<td><span class="v partial">we</span></td>
+</tr>
+<tr>
+<td>E2E QA</td>
+<td><code>/autonomous</code> keeps testing end to end (Playwright); karpathy_app has ≈50 <code>fix-&#x3C;issue></code> regression specs</td>
+<td>No browser/E2E step in the main flow</td>
+<td><span class="v go">we</span></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="scaling">5. Small vs. large projects</h2>
+<h3 id="small">Smaller: karpathy_app</h3>
+<p>It works:</p>
+<ul>
+<li>MVP, deploy pipeline, 7 features and ≈40 bug fixes in 11 days.</li>
+<li>Test code ≈ product code.</li>
+<li>The glossary vocabulary shows up consistently in specs and UI.</li>
+</ul>
+<p>The cost:</p>
+<ul>
+<li>
+<p><strong>Spec size does not scale down.</strong> Spec size stays 400–1,400 lines whatever the size of the change:</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Change</th>
+<th>Spec lines</th>
+<th>Source lines</th>
+<th>Spec : source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>separate-settings</td>
+<td>395</td>
+<td>+31/−22</td>
+<td>≈7.5 : 1</td>
+</tr>
+<tr>
+<td>product-website</td>
+<td>398</td>
+<td>267</td>
+<td>≈1.5 : 1</td>
+</tr>
+<tr>
+<td>ai-open-page</td>
+<td>875</td>
+<td>≈980</td>
+<td>≈0.9 : 1</td>
+</tr>
+<tr>
+<td>web-search</td>
+<td>731</td>
+<td>≈2,450</td>
+<td>≈0.3 : 1</td>
+</tr>
+</tbody>
+</table></div>
+</li>
+<li>
+<p><strong>Nobody reviews the decisions.</strong> All 80 entries are still <code>Status: open</code>. Several of them override guardrails: a prod deploy, treating <code>/spec:apply</code> as permission to change tests, archiving without the re-run, calling a failing test flaky. This cuts against "we're better at autonomy". Logging works; review of the log does not happen.</p>
+</li>
+<li>
+<p><strong>Archive gets shortcut</strong> because the full e2e suite takes 11 minutes.</p>
+</li>
+<li>
+<p><strong>Leftover proposals.</strong> Parallel agents left 2 of 4 proposals unapplied.</p>
+</li>
+<li>
+<p><strong>ADRs went stale</strong> (3, all from day one). Real architecture choices land in <code>DECISIONS.md</code> instead.</p>
+</li>
+<li>
+<p><strong>Pocock skills load twice.</strong> 13 of them are copied into <code>.claude/skills/</code>, and the auto-updating plugin is enabled too.</p>
+</li>
+<li>
+<p><strong>Old file name.</strong> It still uses <code>CONTEXT.md</code>, which v1.3.0 renamed to <code>GLOSSARY.md</code> (breaking).</p>
+</li>
+</ul>
+<p>For truly small projects, Pocock's <code>/grill-with-docs</code> → <code>/implement</code> is far cheaper. Ours only pays off once <code>specs/system/</code> is worth keeping current.</p>
+<h3 id="large">Larger: w12-free</h3>
+<p>w12spec shows what our ideas need at ≈2M LOC and ≈6 people. It has <strong>added</strong> what neither the plugin nor Pocock has:</p>
+<ul>
+<li><strong>Tier split.</strong> <code>w12spec-tweak</code> handles small changes and bugs with no change dir.</li>
+<li><strong>Learnings.</strong> 174 learning notes, searched at plan time.</li>
+<li><strong>Script-owned state.</strong> <code>workflow.sh</code> decides the next story, so agents don't re-read <code>.meta</code> files to work out the order.</li>
+<li><strong>Cross-engine review.</strong> Codex or pi writes the code, Claude reviews it.</li>
+<li><strong>Size caps.</strong> <code>check-doc-thinness.sh</code> keeps <code>CLAUDE.md</code> and rules files thin.</li>
+</ul>
+<p>It also shows the failure modes at scale:</p>
+<ul>
+<li><strong>Backlog explosion.</strong> 1,037 files. Unattended runs route every discovery to <code>backlog-note</code>, and nothing drains the backlog.</li>
+<li><strong>251 ADRs</strong>, with number collisions solved by random suffixes.</li>
+<li><strong>24 "thinness" fix commits</strong> after merges.</li>
+<li><strong>Test bloat</strong> from mandatory TDD, later reined in (<code>test-consolidation</code>).</li>
+<li><strong>≈6,500 lines of SKILL.md</strong> that have drifted across <code>.claude/</code> and <code>.agents/</code>.</li>
+<li><strong>Rework.</strong> 630 <code>review:</code> + 259 <code>review-fix:</code> commits.</li>
+</ul>
+<p>Pocock's approach at this scale: the tracker as shared state, <code>/triage</code> with <code>.out-of-scope/</code>, <code>wayfinder</code> for unclear efforts, and <code>implement-spec</code> for parallelism. That covers exactly w12-free's pain points (backlog, parallel work, intake). It does not cover w12-free's strength: <strong>living module specs</strong>.</p>
+<h2 id="recommendation">6. Worth borrowing</h2>
+<p>From Pocock into <code>spec</code>:</p>
+<ol>
+<li><strong><code>/spec:retro</code></strong>, modelled on his <code>/retro</code>. It ends a change by proposing linter rules, hooks or CI checks instead of more prose. This is also a counter to SKILL.md growth.</li>
+<li><strong>A light lane</strong>, e.g. <code>/spec:tweak</code>: one <code>plan.md</code> with Test first / Verify, folded straight into <code>specs/system/</code> with no proposal/domain/architecture files. w12-free proves it is needed.</li>
+<li><strong>Parallel apply.</strong> Run the independent plan steps in worktree subagents (in <code>.worktrees/</code>), like <code>implement-spec</code>, with a merger step and an explicit conflict strategy (his is underspecified).</li>
+<li><strong>Context-boundary guidance.</strong> A short table of when to <code>/clear</code>, <code>/handoff</code> or use a subagent between propose, apply and review.</li>
+<li><strong>Track the GLOSSARY rename.</strong> Make sure <code>/spec:grill</code> copes with <code>GLOSSARY.md</code>. In karpathy_app, <code>git mv CONTEXT.md GLOSSARY.md</code> and remove the copied <code>.claude/skills/</code> duplicates.</li>
+<li><strong>Consider pinning</strong> the mattpocock-skills dependency. It is currently unpinned and changes when his plugin updates, and v1.3.0 shows he makes breaking renames.</li>
+</ol>
+<p>From us to keep (and harden):</p>
+<ol>
+<li><strong>Keep</strong> the archive fold-back into <code>specs/system/</code>. It is the clearest advantage over Pocock.</li>
+<li><strong>Keep</strong> the 3-axis review and the per-step Verify.</li>
+<li><strong>Add a decision-review step.</strong> Make <code>/spec:overview</code> or <code>/spec:archive</code> surface <code>DECISIONS.md</code> entries still <code>open</code>, and require confirm/revert before archive, at least for guardrail overrides.</li>
+<li><strong>Promote durable decisions to ADRs</strong> at archive. That way <code>DECISIONS.md</code> stays a run log and ADRs don't go stale.</li>
+<li><strong>Cap the backlog.</strong> If unattended runs add backlog notes, give them a triage/out-of-scope path (Pocock's <code>/triage</code> idea) before they pile up like in w12-free.</li>
+</ol>
+<h2 id="sources">7. Sources</h2>
+<ul>
+<li><a href="https://github.com/mattpocock/skills">github.com/mattpocock/skills</a> at <code>4588b32</code> (2026-10-05): <code>CHANGELOG.md</code>, <code>skills/engineering/ask-matt/SKILL.md</code>, <code>ask-matt/PHASE-BOUNDARIES.md</code>, <code>implement-spec</code>, <code>retro</code>, <code>to-spec</code>, <code>to-tickets</code>, <code>code-review</code>, <code>skills/in-progress/chief-of-staff/SKILL.md</code>; releases v1.3.0 / v1.3.1 (2026-10-04).</li>
+<li>This repo: <code>plugins/spec/skills/*/SKILL.md</code>, <code>plugins/spec/reference/{frontmatter,plan,decisions}.md</code>, <code>plugins/autonomous/skills/autonomous/SKILL.md</code>, <code>plugins/md2html/hooks/hooks.json</code>, <code>specs/changes/review/review.md</code>, <code>.claude-plugin/marketplace.json</code>.</li>
+<li>karpathy_app: <code>CLAUDE.md</code>, <code>CONTEXT.md</code>, <code>DECISIONS.md</code>, <code>specs/system/</code>, <code>specs/changes/</code>, <code>docs/adr/</code>, <code>.claude/skills/</code>, git history (e.g. <code>34eb15c</code>, <code>373e5df</code>, <code>402d1f9</code>).</li>
+<li>w12-free: <code>specs/platform/w12spec.md</code>, <code>scripts/workflow.sh</code>, <code>scripts/run-epic-overnight.sh</code>, <code>specs/backlog/TRIAGE_REPORT.md</code>, <code>specs/architecture/</code>, <code>specs/learnings/</code>, <code>.claude/skills/</code>, git history (e.g. <code>924d46f8a1</code>, <code>bc6792300e</code>, <code>345ce21c87</code>).</li>
+<li>Gathered by four parallel research agents on 2026-10-05; numbers are approximate counts from files and <code>git log</code>.</li>
+</ul>
+</main>
+</body>
+</html>

@@ -14,12 +14,12 @@ A Claude Code plugin marketplace — a registry of plugins that can be installed
 
 ## Current Plugins
 
-- **spec** (`plugins/spec/`) — spec workflow plugin for spec-driven change management. Provides skills like `/spec:explore`, `/spec:propose`, `/spec:apply`, `/spec:archive`, and `/spec:view` (HTML view of specs via md2html). Spec files carry YAML frontmatter (`feature`, `title`, `status`, `order`, `created`, `edited`).
+- **spec** (`plugins/spec/`) — spec workflow plugin for spec-driven change management. Provides skills like `/spec:explore`, `/spec:propose`, `/spec:apply` (`--parallel` runs independent steps in `.worktrees/`), `/spec:archive` (decision review gate), `/spec:tweak` (light lane for small changes), `/spec:retro` (mistakes → checks), and `/spec:view` (HTML view of specs via md2html). Spec files carry YAML frontmatter (`feature`, `title`, `status`, `order`, `created`, `edited`). Shared rules live in `plugins/spec/reference/` (`frontmatter`, `plan`, `decisions`, `issue-tracker`); the issue tracker config is Pocock's `docs/agents/issue-tracker.md`.
 - **md2pdf** (`plugins/md2pdf/`) — Markdown to PDF converter with code highlighting, tables, mermaid diagrams, and images.
 - **transform** (`plugins/transform/`) — document to Markdown converter for DOCX, PDF, and MSG files. Skills: `/transform:doc2md`, `/transform:batch`.
 - **md2html** (`plugins/md2html/`) — deterministic Markdown → HTML reports (`new`, `fmt`, `lint`, `build`, `check`, `syntax`), a `PostToolUse` fmt+lint hook, and per-project CSS themes. Skills: `/md2html:write`, `/md2html:build`, `/md2html:setup`. Source in `src/`, committed bundle in `dist/` (`npm test`, `npm run bundle`).
 - **agent-bus** (`plugins/agent-bus/`) — file-based inbox protocol for coordinating multiple Claude Code agents across sibling repos. Skill: `/agent-bus:coordinate`.
-- **autonomous** (`plugins/autonomous/`) — work alone while the user is away: decide instead of asking, log decisions in `DECISIONS.md`, test-first, self-review, then keep testing. Skill: `/autonomous` (un-prefixed, see below).
+- **autonomous** (`plugins/autonomous/`) — work alone while the user is away: do whatever it takes to move on (commit, push, issues, archive, deploy) within three hard limits (no force-push/history rewrite of pushed work, no deleting data it didn't create, no exposing secrets), log decisions in `DECISIONS.md` (one `Overrides` decision per override kind), test-first, self-review, retro, then keep testing. Skill: `/autonomous` (un-prefixed, see below).
 
 ## Plugin Authoring
 

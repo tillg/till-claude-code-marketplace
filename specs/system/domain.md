@@ -1,7 +1,7 @@
 ---
 title: "Domain: Claude Code Plugin Marketplace"
 created: 2026-04-15
-edited: 2026-10-02
+edited: 2026-10-06
 ---
 
 # Domain: Claude Code Plugin Marketplace
@@ -57,9 +57,19 @@ Semantic versioning per plugin. The version appears in both `plugin.json` and
 | System description | `specs/system/*.md` — what the system **is** and does now (domain, architecture, functional). Updated at archive. |
 | Change | One planned modification, `specs/changes/<name>/`, kebab-case name. Temporary: deleted at archive. |
 | Artifact | A file of a change: `proposal.md` (what/why), `domain.md` (concepts), `architecture.md` (how), `plan.md` (steps); extras such as `risks.md` allowed. |
-| Decisions log | `DECISIONS.md` at the project root: append-only record of choices made in unattended runs, by spec skills and `/autonomous`. A Contents list on top; one `#` section per **run** (start date/time, summary title, the task verbatim); one `##` **decision** per choice (time, the choice; Status, Context, Question, Decision, Why, Alternatives, Consequences). Format in `plugins/spec/reference/decisions.md`. |
+| Decisions log | `DECISIONS.md` at the project root: append-only record of choices made in unattended runs, by spec skills and `/autonomous`. A Contents list on top; one `#` section per **run** (start date/time, summary title, the task verbatim); one `##` **decision** per choice (time, the choice; Status, Overrides if a rule was bent, Context, Question, Decision, Why, Alternatives, Consequences). Format in `plugins/spec/reference/decisions.md`. |
 | Run | One unattended invocation of a skill or `/autonomous` with a task; skills it drives add to it. |
 | Decision status | `open` (written by the run) → `confirmed` or `reverted` (set by the user on review). |
+| Override | A decision that bends a rule from a skill, a CLAUDE.md or the user's instructions; marked by its `Overrides` field. `/autonomous` logs one per **override kind** (one bent rule) per run; later occurrences are appended to its Consequences. |
+| Decision review | The user setting each open decision to `confirmed` or `reverted` — offered by `/spec:overview`, required by `/spec:archive` for the **change's decisions** (those whose run or `Context` names the change as a whole token). |
+| Pending revert | A `reverted` decision without an `Undone in <hash>.` line; archive blocks on it until tweak or apply undo it. |
+| Promotion | Moving a confirmed decision that is hard to reverse, surprising and a real trade-off into an ADR (`docs/adr/`) or a Key decisions table in `specs/system/architecture.md`; the decision gets `Promoted to …`. |
+| Tweak | A small change done with `/spec:tweak`: no change directory, one inline test-first plan, `specs/system/` updated in place, one commit. Escalates to propose when it breaks the **tweak limits** (≈3 steps, no new domain term or boundary, no open design question, a test harness exists). |
+| Retro | `/spec:retro`: what went wrong becomes **environment fixes**, most mechanical first (test → lint/hook/CI → skill edit → one-line CLAUDE.md pointer). A **plugin-level fix** becomes a drafted issue on the plugin's repo, never an edit in the plugin cache. |
+| Step dependency | A plan step's `Depends on:` line (`none` or step numbers; all or no steps have it). A **ready step** is unticked with all dependencies ticked. |
+| Orchestrator / Worker | In `/spec:apply --parallel`: the session that alone writes `plan.md`/`DECISIONS.md` and merges (Orchestrator), and a subagent running one step in its own worktree (Worker). A conflicting or red merge triggers the **serial fallback**: re-run the step in the main tree and commit it. |
+| Issue tracker | Where issues live, configured by Pocock's `docs/agents/issue-tracker.md` (GitHub, GitLab, local `.scratch/`, other). A change's **linked issue** is an `**Issue:**` line in its proposal; a **tracking issue** is one propose publishes that points at the change. |
+| Unattended modes | Interactive, unattended (decide and log) and inside an `/autonomous` run (plus the **standing permission** to commit, push, write issues, archive). Defined in `plugins/spec/reference/unattended.md`. |
 | Spec frontmatter | YAML block on every spec file. Change files: `feature`, `title`, `status`, `order`, `created`, `edited`. System files: `title`, `created`, `edited`. Defined in `plugins/spec/reference/frontmatter.md`. |
 | Status | Lifecycle of a whole change, same in every file: `exploring`, `proposed`, `applying`, `applied`. |
 | Plan step | A checkbox in `plan.md` with a `Test first:` and a `Verify:` line (`plugins/spec/reference/plan.md`). |
@@ -81,7 +91,22 @@ stateDiagram-v2
 Rules: one `status` per change in every file; `feature` = directory name;
 status never downgrades; a plan step is ticked only when its verify command
 and the full suite pass; a new proposal is recommended only once open
-changes are archived.
+changes are archived; a change isn't archived while one of its decisions is
+open or a revert is pending.
+
+Decision lifecycle:
+
+```mermaid
+stateDiagram-v2
+    [*] --> open: unattended run logs it (Overrides if a rule was bent)
+    open --> confirmed: review (overview, archive gate)
+    open --> reverted: review
+    reverted --> undone: tweak / apply append "Undone in hash"
+    confirmed --> promoted: archive (ADR or Key decisions row)
+```
+
+`undone` and `promoted` aren't `Status` values: the decision keeps
+`reverted` / `confirmed` and gets a line appended to its Consequences.
 
 ## Domain: deterministic reports (`md2html`)
 
@@ -149,11 +174,15 @@ plugins on first session.
 
 ### Claude (agent)
 Executes skills; edits spec and report files under the md2html hook; in
-agent-bus, one Claude session per repo acts as an agent.
+agent-bus, one Claude session per repo acts as an agent. Under `/autonomous`
+it acts with the standing permission, inside three **hard limits**: no
+force-push or history rewrite of pushed work, no deleting data it didn't
+create, no exposing secrets.
 
 ### External: Matt Pocock's `mattpocock-skills`
 Separate marketplace (`mattpocock/skills`), a declared dependency of `spec`
-for `/spec:grill`.
+for `/spec:grill`. Its `/setup-matt-pocock-skills` also writes the issue
+tracker config (`docs/agents/`) that spec reads.
 
 ## Vocabulary (marketplace)
 
@@ -170,16 +199,17 @@ for `/spec:grill`.
 
 ```mermaid
 graph TD
-    M[Marketplace] --> S[spec v11.0.0]
+    M[Marketplace] --> S[spec v12.0.0]
     M --> H[md2html v0.6.0]
     M --> B[agent-bus v0.4.0]
     M --> P[md2pdf v1.0.0]
     M --> T[transform v1.0.0]
-    M --> AU[autonomous v1.0.0]
+    M --> AU[autonomous v2.0.0]
 
     S --> S1[overview · document-system · explore]
     S --> S2[propose · grill · iterate]
     S --> S3[apply · adversarial-code-review · archive]
+    S --> S5[tweak · retro]
     S --> S4[view]
     S -. depends on .-> MP[mattpocock-skills]
     S4 -. uses .-> H

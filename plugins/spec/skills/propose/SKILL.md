@@ -24,7 +24,11 @@ When ready to implement, run /spec:apply
 ---
 
 **Input**: The argument after `/spec:propose` is the change name (kebab-case),
-OR a description of what the user wants to build.
+OR a description of what the user wants to build, OR an **issue reference**
+(`#42`, an issue URL, a `.scratch/…` path). For an issue reference, read
+`../../reference/issue-tracker.md`, fetch the issue (body and comments) as
+its config says, and use it as the description; derive the change name from
+its title. No tracker config → treat the reference as plain text and say so.
 
 **Steps**
 
@@ -40,6 +44,15 @@ OR a description of what the user wants to build.
 
    **IMPORTANT**: Do NOT proceed without understanding what the user wants to
    build.
+
+1. **Small enough for a tweak?** (whether the input came as an argument or
+   from the question above)
+
+   If the request looks like it fits the tweak limits (defined once in
+   `../tweak/SKILL.md`, "The tweak limits"), say so and offer `/spec:tweak`
+   instead (**AskUserQuestion tool**: "Tweak it" / "Full proposal"). Don't
+   redirect on your own: the user picks. Skip this step when the proposal
+   comes from a tweak's escalation, or when running unattended.
 
 1. **Check for work in progress**
 
@@ -94,6 +107,8 @@ OR a description of what the user wants to build.
    - **proposal.md** — What and why. Describe the change, its motivation, scope,
      and expected outcome. Read the codebase as needed to ground the proposal in
      reality. Use Mermaid diagrams to illustrate scope or impact where helpful.
+     If the change came from an issue, put its `**Issue:**` line directly under
+     the `# Proposal: …` heading (format in `../../reference/issue-tracker.md`).
    - **domain.md** — New findings about the domain we work on. New concepts,
      terms, processes, involved parties. Or changed concepts, terms, processes,
      parties. Use Mermaid diagrams to visualize entity relationships, process
@@ -111,6 +126,11 @@ OR a description of what the user wants to build.
      cycle. No step for updating `specs/system/*` — that's `/spec:archive`'s
      job; the plan ends with the plain note (not a checkbox): "System docs
      are updated at `/spec:archive`."
+     If some steps don't build on each other (e.g. two independent
+     features), give **every** step a `Depends on:` line (`none` or the
+     numbers of the steps it needs; rules in "Step dependencies" of the plan
+     reference), so `/spec:apply --parallel` can run them side by side. A plan
+     where each step builds on the one before gets no `Depends on:` lines.
 
    Every artifact starts with spec frontmatter (see **Spec frontmatter** below),
    `status: proposed`, `order` 1–4 in the sequence above. Keep the body's own
@@ -133,6 +153,19 @@ sensible choice, log it in `DECISIONS.md` at the project root, and continue.
    If md2html ≥ 0.3.0 isn't available (view step 1 stops), don't fail the
    proposal: the summary says the HTML view needs md2html ≥ 0.3.0 and that
    `/spec:view` sets it up once it is installed.
+
+1. **Offer a tracking issue** (only if the change has no linked issue and
+   `docs/agents/issue-tracker.md` exists)
+
+   Like Pocock's `to-spec`, but the issue points at the change instead of
+   holding the spec: title = the proposal's title, body = a 3-line summary
+   and the path `specs/changes/<name>/`, label = the `ready-for-agent` role
+   (rules in `../../reference/issue-tracker.md`). Ask before publishing
+   (**AskUserQuestion tool**: "Publish tracking issue" / "No issue").
+   Published → add its `**Issue:**` line to `proposal.md`. Unattended:
+   publish only inside an `/autonomous` run, else skip and log it
+   (`../../reference/unattended.md`). No tracker config → skip, and name
+   `/setup-matt-pocock-skills` once in the summary.
 
 1. **Show summary** (always the last output)
 
@@ -165,13 +198,9 @@ edited: YYYY-MM-DD
 
 **Guardrails**
 
-- **`DECISIONS.md` format** (unattended runs; full rules in `../../reference/decisions.md`,
-  read it before the first entry): one **run** per invocation —
-  `# YYYY-MM-DD HH:MM — <summary> {#run-…}` with **Started by** and the **Task, as given**
-  (verbatim); one **decision** per choice — `## HH:MM — <the choice> {#run-…-n}` with Status
-  `open`, Context, Question, Decision, Why, Alternatives, Consequences; add both to the
-  **Contents** list at the top in the same edit. Called from inside a run (e.g. by
-  `/autonomous`), add to that run instead of starting one.
+- **Unattended runs** (no user to answer, or inside `/autonomous`): follow
+  `../../reference/unattended.md`; log choices in `DECISIONS.md` in the format of
+  `../../reference/decisions.md` (read it before the first entry).
 - Create ALL four artifacts (proposal, domain, architecture, plan)
 - Always read earlier artifacts before creating later ones
 - If context is critically unclear, ask the user — but prefer making reasonable

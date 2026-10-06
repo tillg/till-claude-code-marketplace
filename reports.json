@@ -1,1 +1,8 @@
-{ "specs": {} }
+{
+  "specs": {
+    "sources": [
+      "specs/**/*.md",
+      "DECISIONS.md"
+    ]
+  }
+}

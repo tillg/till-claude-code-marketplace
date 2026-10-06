@@ -123,11 +123,14 @@ graph LR
     I --> A
     A --> R[adversarial-code-review]
     R --> AR[archive]
-    AR -->|next change| E
+    AR --> RT[retro]
+    RT -->|next change| E
+    T[tweak] --> RT
 ```
 
 ```
-document-system → explore → propose → [grill | iterate] → apply → adversarial-code-review → archive
+document-system → explore → propose → [grill | iterate] → apply → adversarial-code-review → archive → retro
+small change:  tweak (inline plan → test-first → specs/system → one commit) → retro
 ```
 
 `/spec:document-system` runs once per project. `/spec:explore` can be used at
@@ -135,6 +138,33 @@ any point — it's a thinking mode, not a phase. `/spec:grill` and
 `/spec:iterate` are optional and repeatable: skip them for small changes, or
 run them until no open decisions are left. `/spec:view` opens the specs as HTML
 at any time.
+
+**Small changes take the light lane.** `/spec:tweak` handles a change of about
+3 steps with no new domain term and no open design question: no change
+directory, one inline test-first plan, `specs/system/` updated in place, one
+commit. If it outgrows those limits it hands over to `/spec:propose`, which in
+turn offers the tweak when a request is small enough.
+
+**Parallel apply.** Plan steps may declare `Depends on:`. `/spec:apply
+--parallel` then runs ready steps in Worker subagents, each in its own git
+worktree under `.worktrees/`, merges them one by one with the full suite after
+each merge, and re-runs a step serially if its merge conflicts or turns the
+suite red.
+
+**Retro.** `/spec:retro` looks back on a change, tweak or session and proposes
+environment fixes, most mechanical first: a test, then a lint rule, hook or CI
+check, then a skill edit, and a one-line CLAUDE.md pointer last. Fixes to an
+installed plugin become a drafted issue on the plugin's repo instead of an edit
+in the plugin cache.
+
+**Issue tracker.** spec uses the tracker Matt Pocock's skills use: run
+`/setup-matt-pocock-skills` once (it picks GitHub, GitLab, local `.scratch/` or
+"other" from `git remote`) and it writes `docs/agents/issue-tracker.md`. Then
+`/spec:propose #42` and `/spec:tweak #42` take an issue as the request, propose
+offers a tracking issue, `/spec:archive` and `/spec:tweak` end the commit with
+`Closes #42` and offer to close it, and the review's Spec axis reads the issues
+referenced in the commits. Optional: without the config everything works as
+before. Rules: [`plugins/spec/reference/issue-tracker.md`](plugins/spec/reference/issue-tracker.md).
 
 **One change at a time.** `/spec:propose` first checks `specs/changes/` for a
 change that is still open and suggests archiving it first — a new proposal
@@ -155,12 +185,18 @@ records it in `DECISIONS.md` at the project root:
 - one **run** per invocation (`#` heading: start date and time, a summary
   title, who started it, and the task exactly as given),
 - one **decision** per choice under it (`##` heading: time and the choice;
-  then status `open` until you confirm or revert it, context, question,
-  decision, why, alternatives, consequences),
+  then status `open` until you confirm or revert it, **Overrides** when it
+  bent a guardrail, context, question, decision, why, alternatives,
+  consequences),
 - a **Contents** list at the top linking every run and decision.
 
 `/spec:view` renders it as HTML (`/DECISIONS.html`, listed in the index), and
-md2html's lint checks it, including the Contents links. Full rules and an
+md2html's lint checks it, including the Contents links. **You review the
+decisions:** `/spec:overview` shows `Decisions: N open (K overrides)`
+and offers to confirm or revert them right away, and `/spec:archive` won't
+archive a change while one of its decisions is open or a revert is still
+pending. Confirmed decisions with lasting weight are promoted to an ADR or the
+Key decisions table of `specs/system/architecture.md`. Full rules and an
 example: [`plugins/spec/reference/decisions.md`](plugins/spec/reference/decisions.md).
 
 The flow is fluid, not rigid — you can loop back from iterate to propose when
@@ -182,10 +218,12 @@ you exactly where you are and what to do next.
 | `/spec:propose`         | Check for open changes (suggest archiving them first), then create a change with all artifacts (proposal, domain, architecture, test-first plan) and open it as HTML (`/spec:view`) | When you know what you want to build                            |
 | `/spec:grill`           | Get grilled on a change (Matt Pocock's `grilling` + `domain-modeling`); answers go into its proposal/domain/architecture/plan | After propose, before apply — settle open decisions |
 | `/spec:iterate`         | Review artifacts, apply user annotations, produce clean consolidated version     | After marking up artifacts with decisions, rejections, comments |
-| `/spec:apply`           | Implement the plan test-first: per step write the test, see it fail, implement, verify, tick | When artifacts are ready and it's time to code                  |
+| `/spec:apply`           | Implement the plan test-first: per step write the test, see it fail, implement, verify, tick; `--parallel` runs independent steps in worktrees | When artifacts are ready and it's time to code                  |
 | `/spec:adversarial-code-review` | Hostile-mindset review in three separate axes: Defects (bugs, regressions, edge cases), Standards (repo standards + code-smell baseline), Spec (matches the change?) | After implementation, before archiving; or `[fixed-point] [change]` for "review since X" |
 | `/spec:archive`         | Run the tests, update system docs, commit, and clean up the change               | When all steps are complete and reviewed                        |
 | `/spec:view`            | Open a change (or all specs) as HTML in the browser; a watcher keeps it current  | Reading a change with rendered Mermaid (needs md2html ≥ 0.3.0) |
+| `/spec:tweak`           | Small change without a change directory: inline test-first plan, `specs/system/` in place, one commit; takes `#42` | A fix or small change within the tweak limits |
+| `/spec:retro`           | Retrospective: turn what went wrong into tests, lint rules, hooks; plugin fixes become drafted issues | After archive or a tweak, or when a session went sideways |
 
 #### Artifacts
 
@@ -472,10 +510,19 @@ purely a scrollback for humans.
 4. **Tests until you come back** — end-to-end via Playwright for web apps
    (lots of test data; create, search, edit, delete), through the CLI or API
    otherwise.
-5. **Reports** the decisions, what was built and tested, and what is open.
+5. **Retros its own run** — applies project-level environment fixes itself,
+   drafts plugin-level issues for you.
+6. **Reports** the decisions (overrides first), every commit, push, branch/PR,
+   tracker write, archive and deploy, and what is still open.
 
-It never pushes, archives, deletes data beyond its own test data, or runs
-destructive git commands.
+**Whatever it takes.** Invoking `/autonomous` is your permission for every
+action the task needs to move on: it commits green work, pushes, opens a
+branch and PR when a push is refused, files and closes issues (with an AI
+disclaimer), archives finished changes and deploys when needed — logging one
+`Overrides` decision per kind of bent rule per run. It applies with
+`--parallel` when the plan allows. **Hard limits**, never crossed: no
+force-push or history rewrite of anything already pushed, no deleting data it didn't
+create, no exposing secrets.
 
 The skill is invoked without a prefix (`/autonomous`, not
 `/autonomous:autonomous`): its `SKILL.md` deliberately sets `name`, the one

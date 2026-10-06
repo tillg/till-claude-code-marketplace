@@ -138,6 +138,22 @@ Show the spec workflow overview and assess current status.
       - **Almost there** — Minor gaps or questions, but workable
       - **Needs work** — Significant gaps, vague sections, or missing artifacts
 
+2b. **Open decisions** (runs whether or not a change is active)
+
+   If `DECISIONS.md` exists at the project root, read "Reviewing decisions" in
+   `../../reference/decisions.md` and count with its commands: N open,
+   K open overrides, P pending reverts. If N > 0 or P > 0, show one line (in
+   the output, right after the changes section):
+   > Decisions: N open (K overrides), P pending reverts — review before archive
+
+   List each pending revert with what has to be undone (`/spec:tweak` or
+   `/spec:apply`).
+
+   Then offer to review them right away (**AskUserQuestion tool**: "Review
+   now" / "Later"). On "Review now", run the reference's review flow over all
+   open decisions. This catches decisions that never meet an archive gate:
+   those from `/autonomous` archives and tweaks. On "Later", move on.
+
 3. **Check system description status**
 
    Check if `specs/system/` exists and contains files (at least `domain.md` or
@@ -159,6 +175,12 @@ Show the spec workflow overview and assess current status.
      meaningful to document yet. Just note:
      > System description: not yet (project is just getting started — no need yet)
 
+   **Issue tracker:** if `docs/agents/issue-tracker.md` is missing, add one hint line:
+   > Issue tracker: not connected — run `/setup-matt-pocock-skills` to link issues to
+   > changes (optional; see `../../reference/issue-tracker.md`)
+
+   If it exists, note which tracker it configures (GitHub, GitLab, local, other) in one line.
+
 4. **Show the workflow reference**
 
    Display the reference section:
@@ -170,12 +192,13 @@ Show the spec workflow overview and assess current status.
    A lightweight workflow for thinking through changes before implementing them.
 
    ```
-   document-system → explore → propose → [grill | iterate] → apply → adversarial-code-review → archive
+   document-system → explore → propose → [grill | iterate] → apply → adversarial-code-review → archive → retro
+   small change:  tweak (inline plan → test-first → specs/system → one commit) → retro
    ```
 
    `document-system` runs once per project; `explore` fits anywhere;
    `grill` and `iterate` are optional and repeatable; `view` opens the specs
-   as HTML at any point.
+   as HTML at any point; `tweak` replaces propose → archive for small changes.
 
    ## Skills
 
@@ -187,10 +210,12 @@ Show the spec workflow overview and assess current status.
    | `/spec:propose`                 | Create a change with artifacts (proposal, domain, architecture, test-first plan)              |
    | `/spec:grill`                   | Get grilled on a change; answers are folded back into its artifacts (needs mattpocock-skills) |
    | `/spec:iterate`                 | Review artifacts, apply user annotations, and produce a clean consolidated version            |
-   | `/spec:apply`                   | Implement the plan test-first: red → green → verify, then tick the step                       |
+   | `/spec:apply`                   | Implement the plan test-first: red → green → verify, then tick the step; `--parallel` runs independent steps in worktrees |
    | `/spec:adversarial-code-review` | Review the implementation along three axes: Defects, Standards, Spec                          |
    | `/spec:archive`                 | Run the tests, update the system description, commit, delete the change                       |
    | `/spec:view`                    | Open the change as HTML in the browser (needs the md2html plugin)                             |
+   | `/spec:tweak`                   | Small change without a change directory: inline plan, test-first, one commit                  |
+   | `/spec:retro`                   | Retrospective: turn what went wrong into tests, lint rules, hooks (plugin fixes → issues)     |
 
    ## Typical Flow
 
@@ -264,6 +289,10 @@ Show the spec workflow overview and assess current status.
 
    **Maturity:** <Ready / Almost there / Needs work>
    <1-3 sentences explaining the assessment>
+
+   ---
+
+   **Decisions:** N open (K overrides) — review before archive   ← once, only if N > 0; also when there are no active changes
 
    ---
 

@@ -1,7 +1,7 @@
 ---
 description: Implement the plan from a spec change
 disable-model-invocation: true
-argument-hint: "[change-name]"
+argument-hint: "[change-name] [--parallel]"
 metadata:
   author: Till Gartner
 ---
@@ -77,7 +77,9 @@ ambiguous you MUST prompt for available changes.
    - **Verify** — run the step's `Verify:` command and the full test suite.
      Both must pass; show the result.
    - Only then mark the step complete in plan.md: `- [ ]` → `- [x]` (bump
-     plan.md's `edited` to today)
+     plan.md's `edited` to today). If the step undoes a `reverted` decision in
+     `DECISIONS.md`, append `Undone in <commit or "working tree">.` to its
+     Consequences ("Reviewing decisions" in `../../reference/decisions.md`)
    - After the **first** completed step, if the status is not yet `applying`,
      set `status: applying` in the frontmatter of **every** `.md` in the change
      directory (a status change alone does not bump `edited`)
@@ -98,11 +100,80 @@ ambiguous you MUST prompt for available changes.
      both outputs and wait
    - User interrupts
 
-   If running unattended (no user to answer), make a sensible choice for an
-   unclear step, log it in `DECISIONS.md` at the project root, and continue
-   instead of pausing — but never tick a
-   step whose Verify fails, and never weaken a test to get there: stop at
-   that step and report.
+   **Unattended, or inside an `/autonomous` run:** see
+   `../../reference/unattended.md` — decide and log instead of pausing, never
+   tick a red step; inside an `/autonomous` run also commit each ticked step
+   (`<change>: step <n> — <step>`) and push, sequential and `--parallel`.
+
+4b. **Parallel mode** (only with `--parallel`; replaces step 4's loop)
+
+   Runs independent steps side by side, each in its own git worktree. `--parallel` is the
+   user's explicit permission for what the sequential mode never does: worktrees, temporary
+   branches, and commits on the current branch. Without `Depends on:` lines in the plan (see
+   "Step dependencies" in `../../reference/plan.md`), say so and run step 4 instead.
+
+   **Preconditions**, in this order — stop and say why if one fails:
+   1. `.worktrees/` is in `.gitignore` — if not, add the line and commit just that
+      (`Ignore .worktrees/`).
+   2. The working tree is clean (`git status --porcelain`) apart from this change's files in
+      `specs/changes/<change>/` and `DECISIONS.md` — merges must not mix with other
+      uncommitted work.
+   3. No leftovers of an earlier run: `git worktree prune`; remove any `.worktrees/<change>/`
+      entry (`git worktree remove --force`) and any **local** `<change>-step-*` branch without
+      an upstream (`git branch -D`). A `<change>-step-*` branch that has an upstream isn't
+      this mode's — stop and say so.
+   4. The test runner won't pick up the copies in `.worktrees/` (recursive discovery from the
+      root would run them). If it would and it can't be told to ignore `.worktrees/`, run
+      step 4 instead.
+   5. The baseline suite (step 3) is green.
+
+   **Orchestrator and Workers.** You are the **Orchestrator**. Each step runs in a **Worker**
+   (Agent tool) in `.worktrees/<change>/step-<n>` on branch `<change>-step-<n>`, created from
+   the current `HEAD` when the Worker is spawned (`git worktree add -b <change>-step-<n>
+   .worktrees/<change>/step-<n> HEAD`), so it sees every step already merged.
+
+   **Single writer:** only the Orchestrator edits `plan.md`, `DECISIONS.md` and anything under
+   `specs/`. Workers never touch them; that rules out conflicts on the shared files.
+
+   **Worker brief** — pointers, not copies, all as **absolute paths**: the worktree (the only
+   place it may edit, run and commit — every command with `cd <worktree> &&` or `git -C
+   <worktree>`, because its shell starts in the main tree); the change's spec files **in the
+   main tree**, read-only (they are usually uncommitted, so the worktree doesn't have them);
+   `../../reference/plan.md`; the step's text with `Test first:` / `Verify:`. The Worker runs
+   the red → green → refactor → verify cycle in the worktree, commits there (`<change>: step
+   <n> — <step>`), and reports: red output, green output, Verify and suite output, the
+   commit, and every choice it had to make (it does not log them).
+
+   **Loop:**
+   1. Spawn Workers for the **ready steps** (unticked, all dependencies ticked, not skipped),
+      **at most 3** running at a time.
+   2. As each Worker finishes, **merge serially** in the order they finish:
+      `git merge --no-ff <change>-step-<n>`, then run the full suite in the main tree.
+      - **Merged and green** → do the step-4 bookkeeping (tick, `edited`, `status`), log the
+        Worker's choices in `DECISIONS.md` when unattended, then
+        `git worktree remove .worktrees/<change>/step-<n>` and `git branch -d <change>-step-<n>`.
+      - **Merge conflict** → `git merge --abort`, then the cleanup below, then the **Serial
+        fallback**. Never resolve conflicts by hand.
+      - **Suite red after the merge** → `git reset --merge ORIG_HEAD` (only the merge just
+        made), then the cleanup, then the Serial fallback.
+      - **The Worker's own Verify failed** → don't merge; cleanup; the step stays unticked:
+        pause as in step 4 (unattended: mark it **skipped**, log it — its dependents wait).
+
+      **Cleanup** on these failure paths: `git worktree remove --force
+      .worktrees/<change>/step-<n>` and `git branch -D <change>-step-<n>` (the branch was
+      never merged, so `-d` would refuse).
+
+      **Serial fallback:** once no Worker is running, re-run the step in the main tree the
+      step-4 way, then **commit it** (`<change>: step <n> — <step>`), so Workers spawned later
+      branch from a `HEAD` that contains it.
+   3. Recompute the ready steps and spawn the next Workers.
+   4. **Stop** when nothing is ready and no Worker is running. Steps still unticked are
+      blocked (by a skipped step or a pause): list each with what blocks it.
+
+   **Pausing** (a failed step, a blocker, the user interrupts): spawn no new Workers, let the
+   running ones finish, merge the green ones as above, then pause. Before the final report,
+   `git worktree list` shows no `.worktrees/<change>/` entries and no `<change>-step-*` branch
+   remains. The report lists the step commits.
 
 5. **On completion or pause, show status**
 
@@ -168,13 +239,9 @@ What would you like to do?
 
 **Guardrails**
 
-- **`DECISIONS.md` format** (unattended runs; full rules in `../../reference/decisions.md`,
-  read it before the first entry): one **run** per invocation —
-  `# YYYY-MM-DD HH:MM — <summary> {#run-…}` with **Started by** and the **Task, as given**
-  (verbatim); one **decision** per choice — `## HH:MM — <the choice> {#run-…-n}` with Status
-  `open`, Context, Question, Decision, Why, Alternatives, Consequences; add both to the
-  **Contents** list at the top in the same edit. Called from inside a run (e.g. by
-  `/autonomous`), add to that run instead of starting one.
+- **Unattended runs** (no user to answer, or inside `/autonomous`): follow
+  `../../reference/unattended.md`; log choices in `DECISIONS.md` in the format of
+  `../../reference/decisions.md` (read it before the first entry).
 - Keep going through steps until done or blocked
 - Always read all context artifacts before starting
 - If a step is ambiguous, pause and ask before implementing

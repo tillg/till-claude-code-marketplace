@@ -1,7 +1,7 @@
 {
   "name": "spec",
-  "version": "11.0.0",
-  "description": "Spec workflow — document, explore, propose, grill, iterate, apply test-first, review, and archive changes, and view them as HTML",
+  "version": "12.0.0",
+  "description": "Spec workflow — document, explore, propose, grill, iterate, apply test-first (also in parallel), review, archive and retro changes, tweak small ones, link issues, and view them as HTML",
   "marketplace": "https://raw.githubusercontent.com/tillg/till-claude-code-marketplace/main/.claude-plugin/marketplace.json",
   "author": {
     "name": "Till Gartner"

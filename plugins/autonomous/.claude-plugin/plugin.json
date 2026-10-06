@@ -1,7 +1,7 @@
 {
   "name": "autonomous",
-  "version": "1.0.0",
-  "description": "Work alone while the user is away: decide instead of asking, log every decision in DECISIONS.md, finish test-first, self-review, then keep testing end-to-end",
+  "version": "2.0.0",
+  "description": "Work alone while the user is away: do whatever it takes to move on (commit, push, issues, archive, deploy) within three hard limits, log every decision in DECISIONS.md, finish test-first, self-review, retro, then keep testing end-to-end",
   "marketplace": "https://raw.githubusercontent.com/tillg/till-claude-code-marketplace/main/.claude-plugin/marketplace.json",
   "author": {
     "name": "Till Gartner"
